@@ -27,7 +27,7 @@ function init() {
 	controls.lockY = true;
 
 	scene = new THREE.Scene();
-	scene.fog = new THREE.FogExp2(0x777777, 0.0005);
+	scene.fog = new THREE.FogExp2(0x000000, 0.0005);
 
 	dungeon = new Dungeon(scene, [
 		"####################",
