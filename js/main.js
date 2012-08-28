@@ -31,7 +31,7 @@ function init() {
 
 	dungeon = new Dungeon(scene, [
 		"####################",
-		"#..................#",
+		"#..*...............#",
 		"#....#...........*.#",
 		"#....#........######",
 		"#....#*............#",
@@ -39,11 +39,11 @@ function init() {
 		"#...##.#######*....#",
 		"#..................#",
 		"#............#.....#",
-		"#............#.....#",
+		"#..........*.#.....#",
 		"####################",
 	]);
 
-	renderer = new THREE.WebGLRenderer({ clearColor: 0xffffff });
+	renderer = new THREE.WebGLRenderer({ clearColor: 0xffffff, maxLights: 6 });
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.shadowMapEnabled = true;
 	renderer.shadowMapSoft = true;
