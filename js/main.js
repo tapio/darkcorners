@@ -418,30 +418,6 @@ function generateMegamaterialPlain(textures) {
 	return new THREE.MeshLambertMaterial({ map: texture });
 }
 
-function generateMegamaterialDebug() {
-	var canvas = document.createElement('canvas'),
-		ctx = canvas.getContext("2d"),
-		size = 256, tile = 16,
-		i, j, h, s;
-
-	canvas.width = size;
-	canvas.height = size;
-	ctx.textBaseline = "top";
-	ctx.font = "8pt arial";
-
-	for (i = 0; i < tile; i++) {
-		for (j = 0; j < tile; j ++) {
-			h = i * tile + j;
-			ctx.fillStyle = "hsl(" + h + ",90%, 50%)";
-			ctx.fillRect(i * tile, j * tile, tile, tile);
-			drawHex(ctx, h, i * tile + 2, j * tile + 2);
-		}
-	}
-	var texture = new THREE.Texture(canvas, new THREE.UVMapping(), THREE.ClampToEdgeWrapping, THREE.ClampToEdgeWrapping, THREE.NearestFilter, THREE.LinearMipMapLinearFilter);
-	texture.needsUpdate = true;
-	return new THREE.MeshLambertMaterial({ map: texture });
-}
-
 function drawHex(ctx, n, x, y) {
 	ctx.fillStyle = "black";
 	ctx.font = "8pt arial";
