@@ -2,6 +2,7 @@ function Dungeon(scene, floorplan) {
 	this.width = floorplan[0].length;
 	this.depth = floorplan.length;
 	this.mesh;
+	this.lights = [];
 
 	var floor_mat = createMaterial("../assets/textures/floor");
 	var wall_mat = createMaterial("../assets/textures/wall");
@@ -29,7 +30,8 @@ function Dungeon(scene, floorplan) {
 		cubes[i] = new THREE.CubeGeometry(100, 100, 100, 1, 1, 1, materials, { px: px, nx: nx, py: true, ny: false, pz: pz, nz: nz });
 	}
 
-	var geometry = new THREE.Geometry();
+	var geometry = new THREE.Geometry(), light;
+	var sphere = new THREE.SphereGeometry(5, 16, 8);
 
 	for (var z = 0; z < this.depth; z++) {
 		for (var x = 0; x < this.width; x++) {
@@ -50,6 +52,16 @@ function Dungeon(scene, floorplan) {
 			this.mesh.position.y = cell == "#" ? 100 : 0;
 			this.mesh.position.z = z * 100 - this.depth/2 * 100;
 			THREE.GeometryUtils.merge(geometry, this.mesh);
+			if (cell == "*") {
+				light = new THREE.PointLight(0xffffaa, 1, 300);
+				light.position.set(this.mesh.position.x, this.mesh.position.y+100, this.mesh.position.z);
+				scene.add(light);
+				//this.lights.push(light);
+				// Debug body
+				var light_body = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial( { color: 0xffffaa } ));
+				light_body.position = light.position;
+				scene.add(light_body);
+			}
 		}
 	}
 	geometry.computeTangents();
@@ -58,11 +70,6 @@ function Dungeon(scene, floorplan) {
 	this.mesh.receiveShadow = true;*/
 	scene.add(this.mesh);
 
-	var ambientLight = new THREE.AmbientLight(0xcccccc);
+	var ambientLight = new THREE.AmbientLight(0xaaaaaa);
 	scene.add(ambientLight);
-
-	var directionalLight = new THREE.DirectionalLight(0xffffff, 2);
-	directionalLight.position.set(1, 1, 0.5).normalize();
-	scene.add(directionalLight);
-
 }

@@ -20,11 +20,11 @@ function createMaterial(base_image) {
 	var shader = THREE.ShaderUtils.lib["normal"];
 	var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
 
-	uniforms["tNormal"].texture = loadTexture(base_image + "_normalmap.jpg");
-	uniforms["uNormalScale"].value = -1;
-
 	uniforms["tDiffuse"].texture = loadTexture(base_image + ".jpg");
 	uniforms["tSpecular"].texture = loadTexture(base_image + "_specular.jpg");
+	uniforms["tNormal"].texture = loadTexture(base_image + "_normalmap.jpg");
+	//uniforms["uShininess"].value = shininess;
+	uniforms["uNormalScale"].value = -1;
 
 	//uniforms["tDisplacement"].texture = THREE.ImageUtils.loadTexture(base_image + "_height.jpg");
 	//uniforms["uDisplacementBias"].value = - 0.428408 * scale;
@@ -39,7 +39,6 @@ function createMaterial(base_image) {
 	uniforms["uSpecularColor"].value.setHex(specular);
 	uniforms["uAmbientColor"].value.setHex(ambient);
 
-	uniforms["uShininess"].value = shininess;
 	//uniforms["wrapRGB"].value.set(0.575, 0.5, 0.5);
 
 	return new THREE.ShaderMaterial({

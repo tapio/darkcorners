@@ -9,7 +9,7 @@ var dungeon;
 var clock = new THREE.Clock();
 
 init();
-animate();
+render();
 
 function init() {
 	container = document.getElementById('container');
@@ -32,11 +32,11 @@ function init() {
 	dungeon = new Dungeon(scene, [
 		"####################",
 		"#..................#",
-		"#....#.............#",
+		"#....#...........*.#",
 		"#....#........######",
-		"#....#.............#",
+		"#....#*............#",
 		"#..................#",
-		"#...##.#######.....#",
+		"#...##.#######*....#",
 		"#..................#",
 		"#............#.....#",
 		"#............#.....#",
@@ -47,6 +47,7 @@ function init() {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.shadowMapEnabled = true;
 	renderer.shadowMapSoft = true;
+	renderer.physicallyBasedShading = true;
 
 	container.innerHTML = "";
 	container.appendChild(renderer.domElement);
@@ -67,12 +68,19 @@ function onWindowResize() {
 }
 
 function animate() {
-	requestAnimationFrame(animate);
-	render();
-	stats.update();
+	function getAnim(time) { return Math.abs(time - (time|0) - 0.5) * 2.0; }
+	var timeNow = new Date().getTime();
+	for (var i = 0; i < dungeon.lights.length; ++i) {
+		var anim = timeNow / (1000.0 + i);
+		anim = 0.5 * getAnim(anim);
+		dungeon.lights[i].intensity = anim;
+	}
 }
 
 function render() {
+	requestAnimationFrame(render);
+	animate();
 	controls.update(clock.getDelta());
 	renderer.render(scene, camera);
+	stats.update();
 }
