@@ -1,4 +1,4 @@
-if (! Detector.webgl) {
+if (!Detector.webgl) {
 	Detector.addGetWebGLMessage();
 	document.getElementById('container').innerHTML = "";
 }
@@ -17,7 +17,6 @@ init();
 animate();
 
 function init() {
-
 	container = document.getElementById('container');
 
 	camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 20000);
@@ -216,45 +215,34 @@ function init() {
 			h = getY(x, z);
 
 			// direct neighbors
-
 			h2 = getY(x - 1, z);
 			nleft = h2 == h || h2 == h + 1;
-
 			h2 = getY(x + 1, z);
 			nright = h2 == h || h2 == h + 1;
-
 			h2 = getY(x, z + 1);
 			nback = h2 == h || h2 == h + 1;
-
 			h2 = getY(x, z - 1);
 			nfront = h2 == h || h2 == h + 1;
 
 			// corner neighbors
-
 			nrb = getY(x - 1, z + 1) == h && x > 0 && z < worldDepth - 1 ? 1 : 0;
 			nrf = getY(x - 1, z - 1) == h && x > 0 && z > 0 ? 1 : 0;
-
 			nlb = getY(x + 1, z + 1) == h && x < worldWidth - 1 && z < worldDepth - 1 ? 1 : 0;
 			nlf = getY(x + 1, z - 1) == h && x < worldWidth - 1 && z > 0 ? 1 : 0;
 
 			// up neighbors
-
 			nleftup  = getY(x - 1, z) > h && x > 0 ? 1 : 0;
 			nrightup = getY(x + 1, z) > h && x < worldWidth - 1 ? 1 : 0;
-
 			nbackup  = getY(x, z + 1) > h && z < worldDepth - 1 ? 1 : 0;
 			nfrontup = getY(x, z - 1) > h && z > 0 ? 1 : 0;
 
 			// up corner neighbors
-
 			nrbup = getY(x - 1, z + 1) > h && x > 0 && z < worldDepth - 1 ? 1 : 0;
 			nrfup = getY(x - 1, z - 1) > h && x > 0 && z > 0 ? 1 : 0;
-
 			nlbup = getY(x + 1, z + 1) > h && x < worldWidth - 1 && z < worldDepth - 1 ? 1 : 0;
 			nlfup = getY(x + 1, z - 1) > h && x < worldWidth - 1 && z > 0 ? 1 : 0;
 
 			// textures
-
 			ti = nleftup * 8 + nrightup * 4 + nfrontup * 2 + nbackup * 1;
 			ri = nrf * 8 + nrb * 4 + 1;
 			li = nlb * 8 + nlf * 4 + 1;
@@ -263,7 +251,6 @@ function init() {
 			ci = nlbup * 8 + nlfup * 4 + nrbup * 2 + nrfup * 1;
 
 			// cube sides
-
 			px = nx = pz = nz = 0;
 			px = !nright || x == 0 ? 1 : 0;
 			nx = !nleft  || x == worldWidth - 1 ? 1 : 0;
