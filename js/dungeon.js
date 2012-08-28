@@ -3,15 +3,15 @@ function Dungeon(scene, floorplan) {
 	this.depth = floorplan.length;
 	this.mesh;
 
-	var floor = loadTexture("../assets/textures/floor.jpg");
-	var wall = loadTexture("../assets/textures/wall.jpg");
+	var floor_mat = createMaterial("../assets/textures/floor");
+	var wall_mat = createMaterial("../assets/textures/wall");
 	var materials = [
-		wall, // right
-		wall, // left
-		floor, // top
-		floor, // bottom
-		wall, // back
-		wall  // front
+		wall_mat, // right
+		wall_mat, // left
+		floor_mat, // top
+		floor_mat, // bottom
+		wall_mat, // back
+		wall_mat  // front
 	];
 
 	function getCell(x, z) {
@@ -51,7 +51,7 @@ function Dungeon(scene, floorplan) {
 			THREE.GeometryUtils.merge(geometry, this.mesh);
 		}
 	}
-
+	geometry.computeTangents();
 	this.mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
 	/*this.mesh.castShadow = true;
 	this.mesh.receiveShadow = true;*/
