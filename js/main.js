@@ -39,9 +39,9 @@ function init() {
 		debug_corner_colors = false,
 		strength = 2,
 		textures = {
-			side: 'textures/minecraft/grass_dirt.png',
-			top: 'textures/minecraft/grass.png',
-			bottom: 'textures/minecraft/dirt.png'
+			side: '../assets/textures/wall.jpg',
+			top: '../assets/textures/floor.jpg',
+			bottom: '../assets/textures/floor.jpg'
 		},
 		m_aot = generateMegamaterialAO(textures, strength, debug_texture, debug_numbers, debug_corner_colors),
 		m_ao  = generateMegamaterialAO(textures, strength, true, debug_numbers, debug_corner_colors),
