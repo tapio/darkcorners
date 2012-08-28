@@ -20,18 +20,19 @@ function init() {
 	container = document.getElementById('container');
 
 	camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 20000);
-	camera.position.y = getY(worldHalfWidth, worldHalfDepth) * 100 + 100;
+	camera.position.y = 100;
 
-	controls = new THREE.FirstPersonControls(camera);
+	controls = new Controls(camera);
 	controls.movementSpeed = 1000;
 	controls.lookSpeed = 0.125;
 	controls.lookVertical = true;
 	controls.constrainVertical = true;
 	controls.verticalMin = 1.1;
-	controls.verticalMax = 2.2;
+	controls.verticalMax = 2.0;
+	controls.lockY = true;
 
 	scene = new THREE.Scene();
-	scene.fog = new THREE.FogExp2(0xffffff, 0.00015);
+	scene.fog = new THREE.FogExp2(0x777777, 0.0005);
 
 	var debug_texture = false,
 		debug_numbers = false,
@@ -42,7 +43,7 @@ function init() {
 			top: '../assets/textures/floor.jpg',
 			bottom: '../assets/textures/floor.jpg'
 		},
-		mat   = generateMegamaterialAO(textures, strength, debug_texture, debug_numbers, debug_corner_colors),
+		mat = generateMegamaterialAO(textures, strength, debug_texture, debug_numbers, debug_corner_colors),
 		materials = [mat, mat, mat, mat, mat, mat];
 
 	var i, j, x, z, h, h2, uv,
@@ -536,7 +537,7 @@ function generateHeight(width, height) {
 	var data = [], size = width * height;
 	for (var i = 0; i < size; i++) {
 		var x = i % width, y = ~~ (i / width);
-		data[i] = Math.random() > 0.5 ? 1 : 0;
+		data[i] = Math.random() > 0.7 ? 1 : 0;
 	}
 	return data;
 }
