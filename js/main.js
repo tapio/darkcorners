@@ -3,6 +3,10 @@ if (! Detector.webgl) {
 	document.getElementById('container').innerHTML = "";
 }
 
+Physijs.scripts.worker = '../libs/physijs_worker.js';
+Physijs.scripts.ammo = '../libs/ammo.js';
+
+
 var fogExp2 = true;
 var container, stats;
 var camera, controls, scene, renderer;
@@ -31,7 +35,8 @@ function init() {
 	controls.verticalMin = 1.1;
 	controls.verticalMax = 2.2;
 
-	scene = new THREE.Scene();
+	scene = new Physijs.Scene();
+	scene.setGravity(new THREE.Vector3(0,10,0));
 	scene.fog = new THREE.FogExp2(0xffffff, 0.00015);
 
 	var debug_texture = false,
@@ -325,7 +330,7 @@ function init() {
 		}
 	}
 
-	mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
+	mesh = new Physijs.ConvexMesh(geometry, new THREE.MeshFaceMaterial());
 	scene.add(mesh);
 
 	var ambientLight = new THREE.AmbientLight(0xcccccc);
@@ -568,5 +573,6 @@ function animate() {
 
 function render() {
 	controls.update(clock.getDelta());
+	scene.simulate();
 	renderer.render(scene, camera);
 }
