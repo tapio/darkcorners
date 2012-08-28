@@ -37,16 +37,12 @@ function init() {
 	var debug_texture = false,
 		debug_numbers = false,
 		debug_corner_colors = false,
-		strength = 2,
+		strength = 4,
 		textures = {
 			side: '../assets/textures/wall.jpg',
 			top: '../assets/textures/floor.jpg',
 			bottom: '../assets/textures/floor.jpg'
 		},
-		m_aot = generateMegamaterialAO(textures, strength, debug_texture, debug_numbers, debug_corner_colors),
-		m_ao  = generateMegamaterialAO(textures, strength, true, debug_numbers, debug_corner_colors),
-		m_t   = generateMegamaterialPlain(textures),
-		//m_d   = generateMegamaterialDebug(),
 		mat   = generateMegamaterialAO(textures, strength, debug_texture, debug_numbers, debug_corner_colors),
 		materials = [mat, mat, mat, mat, mat, mat];
 
@@ -351,12 +347,7 @@ function init() {
 	stats.domElement.style.top = '0px';
 	container.appendChild(stats.domElement);
 
-	document.getElementById("bao").addEventListener("click",  function() { mat.map = m_ao.map; }, false);
-	document.getElementById("baot").addEventListener("click", function() { mat.map = m_aot.map; }, false);
-	document.getElementById("bt").addEventListener("click",   function() { mat.map = m_t.map; }, false);
-
 	window.addEventListener('resize', onWindowResize, false);
-
 }
 
 function onWindowResize() {
