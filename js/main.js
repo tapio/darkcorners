@@ -48,7 +48,7 @@ function init() {
 		m_t   = generateMegamaterialPlain(textures),
 		//m_d   = generateMegamaterialDebug(),
 		mat   = generateMegamaterialAO(textures, strength, debug_texture, debug_numbers, debug_corner_colors),
-		materials = [ mat, mat, mat, mat, mat, mat ];
+		materials = [mat, mat, mat, mat, mat, mat];
 
 	var i, j, x, z, h, h2, uv,
 		px, nx, pz, nz, sides,
@@ -199,19 +199,19 @@ function init() {
 			mm = i + "_" + j;
 			if (i == 0)
 				row = top_row_corners;
-			else if (mixmap[ mm ] != undefined)
+			else if (mixmap[mm] != undefined)
 				row = top_row_mixed;
 			else
 				row = top_row_sides;
-			tilemap[ mm ] = row;
+			tilemap[mm] = row;
 		}
 	}
 
 	function setUVTile(face, s, t) {
-		var j, uv = cube.faceVertexUvs[ 0 ][ face ];
+		var j, uv = cube.faceVertexUvs[0][face];
 		for (j = 0; j < uv.length; j++) {
-			uv[ j ].u += s * (unit+2*padding);
-			uv[ j ].v += t * (unit+2*padding);
+			uv[j].u += s * (unit+2*padding);
+			uv[j].v += t * (unit+2*padding);
 		}
 	}
 
@@ -278,16 +278,16 @@ function init() {
 			cube = new THREE.CubeGeometry(100, 100, 100, 1, 1, 1, materials, sides);
 
 			// revert back to old flipped UVs
-			for (i = 0; i < cube.faceVertexUvs[ 0 ].length; i ++) {
-				uv = cube.faceVertexUvs[ 0 ][ i ];
+			for (i = 0; i < cube.faceVertexUvs[0].length; i++) {
+				uv = cube.faceVertexUvs[0][i];
 				for (j = 0; j < uv.length; j++) {
 					uv[j].v = 1 - uv[j].v;
 				}
 			}
 
 			// set UV tiles
-			for (i = 0; i < cube.faceVertexUvs[ 0 ].length; i ++) {
-				uv = cube.faceVertexUvs[ 0 ][ i ];
+			for (i = 0; i < cube.faceVertexUvs[0].length; i++) {
+				uv = cube.faceVertexUvs[0][i];
 				for (j = 0; j < uv.length; j++) {
 					p = uv[j].u == 0 ? padding : -padding;
 					uv[j].u = uv[j].u * unit + p;
@@ -298,28 +298,28 @@ function init() {
 
 			hash = px * 8 + nx * 4 + pz * 2 + nz;
 
-			face_px = uv_index_map[ hash ].px;
-			face_nx = uv_index_map[ hash ].nx;
-			face_py = uv_index_map[ hash ].py;
-			face_ny = uv_index_map[ hash ].ny;
-			face_pz = uv_index_map[ hash ].pz;
-			face_nz = uv_index_map[ hash ].nz;
+			face_px = uv_index_map[hash].px;
+			face_nx = uv_index_map[hash].nx;
+			face_py = uv_index_map[hash].py;
+			face_ny = uv_index_map[hash].ny;
+			face_pz = uv_index_map[hash].pz;
+			face_nz = uv_index_map[hash].nz;
 
-			if(face_px != N) setUVTile(face_px, ri, sides_row);
-			if(face_nx != N) setUVTile(face_nx, li, sides_row);
+			if (face_px != N) setUVTile(face_px, ri, sides_row);
+			if (face_nx != N) setUVTile(face_nx, li, sides_row);
 
-			if(face_py != N) {
+			if (face_py != N) {
 				mm = ti + "_" + ci;
-				switch (tilemap[ mm ]) {
+				switch (tilemap[mm]) {
 					case top_row_sides:   column = ti; break;
 					case top_row_corners: column = ci; break;
-					case top_row_mixed:   column = mixmap[ mm ]; break;
+					case top_row_mixed:   column = mixmap[mm]; break;
 				}
-				setUVTile(face_py, column, tilemap[ mm ]);
+				setUVTile(face_py, column, tilemap[mm]);
 			}
-			if(face_ny != N) setUVTile(face_ny, 0, bottom_row);
-			if(face_pz != N) setUVTile(face_pz, bi, sides_row);
-			if(face_nz != N) setUVTile(face_nz, fi, sides_row);
+			if (face_ny != N) setUVTile(face_ny, 0, bottom_row);
+			if (face_pz != N) setUVTile(face_pz, bi, sides_row);
+			if (face_nz != N) setUVTile(face_nz, fi, sides_row);
 
 			mesh = new THREE.Mesh(cube);
 			mesh.position.x = x * 100 - worldHalfWidth * 100;
@@ -381,9 +381,9 @@ function generateMegamaterialAO(textures, strength, debug_texture, debug_numbers
 	texture.flipY = false;
 
 	function generateTexture() {
-		if(count == 3) {
-			for(var i = 0; i < 16; i++) {
-				drawAOCorners(ctx, tex_top, 	0, i, i, tile, strength, debug_texture, debug_numbers, debug_corner_colors);
+		if (count == 3) {
+			for (var i = 0; i < 16; i++) {
+				drawAOCorners(ctx, tex_top,    0, i, i, tile, strength, debug_texture, debug_numbers, debug_corner_colors);
 				drawAOMixed  (ctx, tex_top,    1, i, i, tile, strength, debug_texture, debug_numbers, debug_corner_colors);
 				drawAOSides  (ctx, tex_top,    2, i, i, tile, strength, debug_texture, debug_numbers);
 				drawAOSides  (ctx, tex_side,   3, i, i, tile, strength, debug_texture, debug_numbers);
@@ -411,9 +411,9 @@ function generateMegamaterialPlain(textures) {
 	texture.flipY = false;
 
 	function generateTexture() {
-		if(count == 3) {
+		if (count == 3) {
 			var i, sx;
-			for(i = 0; i < 16; i++) {
+			for (i = 0; i < 16; i++) {
 				sx = i * tile;
 				drawBase(ctx, tex_top,    sx, 0 * tile, tile, false);
 				drawBase(ctx, tex_top,    sx, 1 * tile, tile, false);
@@ -438,7 +438,7 @@ function generateMegamaterialDebug() {
 	ctx.textBaseline = "top";
 	ctx.font = "8pt arial";
 
-	for (i = 0; i < tile; i ++) {
+	for (i = 0; i < tile; i++) {
 		for (j = 0; j < tile; j ++) {
 			h = i * tile + j;
 			ctx.fillStyle = "hsl(" + h + ",90%, 50%)";
@@ -470,7 +470,7 @@ function drawBase(ctx, image, sx, sy, tile, debug_texture) {
 }
 
 function drawCorner(ctx, sx, sy, sa, ea, color, step, n) {
-	for(var i = 0; i < n; i++) {
+	for (var i = 0; i < n; i++) {
 		ctx.strokeStyle = color + step * (n - i) + ")";
 		ctx.beginPath();
 		ctx.arc(sx, sy, i, sa, ea, 0) ;
@@ -479,7 +479,7 @@ function drawCorner(ctx, sx, sy, sa, ea, color, step, n) {
 }
 
 function drawSide(ctx, sx, sy, a, b, n, width, height, color, step) {
-	for(var i = 0; i < n; i++) {
+	for (var i = 0; i < n; i++) {
 		ctx.fillStyle = color + step * (n - i) + ")";
 		ctx.fillRect(sx + a * i, sy + b * i, width, height);
 	}
@@ -502,27 +502,27 @@ function drawAOCorners(ctx, image, row, column, corners, tile, strength, debug_t
 function drawAOMixed(ctx, image, row, column, elements, tile, strength, debug_texture, debug_numbers, debug_corner_colors) {
 	var sx = column * tile, sy = row * tile,
 		mmap = {
-			0:  [ 1, 1 ],
-			1:  [ 1, 4 ],
-			2:  [ 2, 2 ],
-			3:  [ 2, 8 ],
-			4:  [ 4, 1 ],
-			5:  [ 4, 2 ],
-			6:  [ 8, 4 ],
-			7:  [ 8, 8 ],
-			8:  [ 1, 5 ],
-			9:  [ 2, 10 ],
-			10: [ 4, 3 ],
-			11: [ 8, 12 ],
-			12: [ 5, 1 ],
-			13: [ 6, 2 ],
-			14: [ 9, 4 ],
-			15: [ 10, 8 ]
+			0:  [1, 1],
+			1:  [1, 4],
+			2:  [2, 2],
+			3:  [2, 8],
+			4:  [4, 1],
+			5:  [4, 2],
+			6:  [8, 4],
+			7:  [8, 8],
+			8:  [1, 5],
+			9:  [2, 10],
+			10: [4, 3],
+			11: [8, 12],
+			12: [5, 1],
+			13: [6, 2],
+			14: [9, 4],
+			15: [10, 8]
 		};
 
 	drawBase(ctx, image, sx, sy, tile, debug_texture);
-	drawAOCornersImp(ctx, image, row, column, mmap[ elements ][1], tile, strength, debug_corner_colors);
-	drawAOSidesImp(ctx, image, row, column, mmap[ elements ][0], tile, strength);
+	drawAOCornersImp(ctx, image, row, column, mmap[elements][1], tile, strength, debug_corner_colors);
+	drawAOSidesImp(ctx, image, row, column, mmap[elements][0], tile, strength);
 	if (debug_numbers) drawHex(ctx, row * tile + elements, sx + 2, sy + 2);
 }
 
@@ -546,7 +546,7 @@ function drawAOCornersImp(ctx, image, row, column, corners, tile, strength, debu
 		full = tile, step = 1 / full, half = full / 2 + strength,
 		color = "rgba(0, 0, 0, ",
 		bottomright = (corners & 8) == 8,
-		topright  	= (corners & 4) == 4,
+		topright    = (corners & 4) == 4,
 		bottomleft  = (corners & 2) == 2,
 		topleft     = (corners & 1) == 1;
 
@@ -582,10 +582,10 @@ function generateHeight(width, height) {
 	var data = [], perlin = new ImprovedNoise(),
 	size = width * height, quality = 2, z = Math.random() * 100;
 	for (var j = 0; j < 4; j ++) {
-		if (j == 0) for (var i = 0; i < size; i ++) data[ i ] = 0;
-		for (var i = 0; i < size; i ++) {
+		if (j == 0) for (var i = 0; i < size; i++) data[i] = 0;
+		for (var i = 0; i < size; i++) {
 			var x = i % width, y = ~~ (i / width);
-			data[ i ] += perlin.noise(x / quality, y / quality, z) * quality;
+			data[i] += perlin.noise(x / quality, y / quality, z) * quality;
 		}
 		quality *= 4
 	}
@@ -593,7 +593,7 @@ function generateHeight(width, height) {
 }
 
 function getY(x, z) {
-	return ~~(data[ x + z * worldWidth ] * 0.2);
+	return ~~(data[x + z * worldWidth] * 0.2);
 }
 
 //
