@@ -35,15 +35,16 @@ function Dungeon(scene, floorplan) {
 		for (var x = 0; x < this.width; x++) {
 			px = nx = pz = nz = 0;
 			cell = getCell(x, z);
-			cell2 = getCell(x + 1, z);
-			px = cell2 != "#" ? 1 : 0;
-			cell2 = getCell(x - 1, z);
-			nx = cell2 != "#" ? 1 : 0;
-			cell2 = getCell(x, z + 1);
-			pz = cell2 != "#" ? 1 : 0;
-			cell2 = getCell(x, z - 1);
-			nz = cell2 != "#" ? 1 : 0;
-
+			if (cell == "#") {
+				cell2 = getCell(x + 1, z);
+				px = cell2 != "#" ? 1 : 0;
+				cell2 = getCell(x - 1, z);
+				nx = cell2 != "#" ? 1 : 0;
+				cell2 = getCell(x, z + 1);
+				pz = cell2 != "#" ? 1 : 0;
+				cell2 = getCell(x, z - 1);
+				nz = cell2 != "#" ? 1 : 0;
+			}
 			this.mesh = new THREE.Mesh(cubes[ px * 8 + nx * 4 + pz * 2 + nz ]);
 			this.mesh.position.x = x * 100 - this.width/2 * 100;
 			this.mesh.position.y = cell == "#" ? 100 : 0;
