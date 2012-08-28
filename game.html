@@ -57,10 +57,10 @@
 
 		<script>
 
-			if ( ! Detector.webgl ) {
+			if (! Detector.webgl) {
 
 				Detector.addGetWebGLMessage();
-				document.getElementById( 'container' ).innerHTML = "";
+				document.getElementById('container').innerHTML = "";
 
 			}
 
@@ -74,7 +74,7 @@
 
 			var worldWidth = 200, worldDepth = 200,
 			worldHalfWidth = worldWidth / 2, worldHalfDepth = worldDepth / 2,
-			data = generateHeight( worldWidth, worldDepth );
+			data = generateHeight(worldWidth, worldDepth);
 
 			var clock = new THREE.Clock();
 
@@ -83,12 +83,12 @@
 
 			function init() {
 
-				container = document.getElementById( 'container' );
+				container = document.getElementById('container');
 
-				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 20000 );
-				camera.position.y = getY( worldHalfWidth, worldHalfDepth ) * 100 + 100;
+				camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 20000);
+				camera.position.y = getY(worldHalfWidth, worldHalfDepth) * 100 + 100;
 
-				controls = new THREE.FirstPersonControls( camera );
+				controls = new THREE.FirstPersonControls(camera);
 
 				controls.movementSpeed = 1000;
 				controls.lookSpeed = 0.125;
@@ -98,7 +98,7 @@
 				controls.verticalMax = 2.2;
 
 				scene = new THREE.Scene();
-				scene.fog = new THREE.FogExp2( 0xffffff, 0.00015 );
+				scene.fog = new THREE.FogExp2(0xffffff, 0.00015);
 
 				var debug_texture = false,
 					debug_numbers = false,
@@ -110,13 +110,13 @@
 							     bottom: 'textures/minecraft/dirt.png'
 								},
 
-					m_aot = generateMegamaterialAO( textures, strength, debug_texture, debug_numbers, debug_corner_colors ),
-					m_ao  = generateMegamaterialAO( textures, strength, true, debug_numbers, debug_corner_colors ),
+					m_aot = generateMegamaterialAO(textures, strength, debug_texture, debug_numbers, debug_corner_colors),
+					m_ao  = generateMegamaterialAO(textures, strength, true, debug_numbers, debug_corner_colors),
 
-					m_t   = generateMegamaterialPlain( textures ),
+					m_t   = generateMegamaterialPlain(textures),
 					//m_d   = generateMegamaterialDebug(),
 
-					mat   = generateMegamaterialAO( textures, strength, debug_texture, debug_numbers, debug_corner_colors ),
+					mat   = generateMegamaterialAO(textures, strength, debug_texture, debug_numbers, debug_corner_colors),
 
 					materials = [ mat, mat, mat, mat, mat, mat ];
 
@@ -274,15 +274,15 @@
 				// mapping from 256 possible corners + sides combinations
 				// into 3 x 16 tiles
 
-				for ( i = 0; i < 16; i++ ) {
+				for (i = 0; i < 16; i++) {
 
-					for ( j = 0; j < 16; j++ ) {
+					for (j = 0; j < 16; j++) {
 
 						mm = i + "_" + j;
 
-						if ( i == 0 )
+						if (i == 0)
 							row = top_row_corners;
-						else if ( mixmap[ mm ] != undefined )
+						else if (mixmap[ mm ] != undefined)
 							row = top_row_mixed;
 						else
 							row = top_row_sides;
@@ -293,10 +293,10 @@
 
 				}
 
-				function setUVTile( face, s, t ) {
+				function setUVTile(face, s, t) {
 
 					var j, uv = cube.faceVertexUvs[ 0 ][ face ];
-					for ( j = 0; j < uv.length; j++ ) {
+					for (j = 0; j < uv.length; j++) {
 
 						uv[ j ].u += s * (unit+2*padding);
 						uv[ j ].v += t * (unit+2*padding);
@@ -305,49 +305,49 @@
 
 				}
 
-				for ( z = 0; z < worldDepth; z ++ ) {
+				for (z = 0; z < worldDepth; z ++) {
 
-					for ( x = 0; x < worldWidth; x ++ ) {
+					for (x = 0; x < worldWidth; x ++) {
 
-						h = getY( x, z );
+						h = getY(x, z);
 
 						// direct neighbors
 
-						h2 = getY( x - 1, z );
+						h2 = getY(x - 1, z);
 						nleft = h2 == h || h2 == h + 1;
 
-						h2 = getY( x + 1, z );
+						h2 = getY(x + 1, z);
 						nright = h2 == h || h2 == h + 1;
 
-						h2 = getY( x, z + 1 );
+						h2 = getY(x, z + 1);
 						nback = h2 == h || h2 == h + 1;
 
-						h2 = getY( x, z - 1 );
+						h2 = getY(x, z - 1);
 						nfront = h2 == h || h2 == h + 1;
 
 						// corner neighbors
 
-						nrb = getY( x - 1, z + 1 ) == h && x > 0 && z < worldDepth - 1 ? 1 : 0;
-						nrf = getY( x - 1, z - 1 ) == h && x > 0 && z > 0 ? 1 : 0;
+						nrb = getY(x - 1, z + 1) == h && x > 0 && z < worldDepth - 1 ? 1 : 0;
+						nrf = getY(x - 1, z - 1) == h && x > 0 && z > 0 ? 1 : 0;
 
-						nlb = getY( x + 1, z + 1 ) == h && x < worldWidth - 1 && z < worldDepth - 1 ? 1 : 0;
-						nlf = getY( x + 1, z - 1 ) == h && x < worldWidth - 1 && z > 0 ? 1 : 0;
+						nlb = getY(x + 1, z + 1) == h && x < worldWidth - 1 && z < worldDepth - 1 ? 1 : 0;
+						nlf = getY(x + 1, z - 1) == h && x < worldWidth - 1 && z > 0 ? 1 : 0;
 
 						// up neighbors
 
-						nleftup  = getY( x - 1, z ) > h && x > 0 ? 1 : 0;
-						nrightup = getY( x + 1, z ) > h && x < worldWidth - 1 ? 1 : 0;
+						nleftup  = getY(x - 1, z) > h && x > 0 ? 1 : 0;
+						nrightup = getY(x + 1, z) > h && x < worldWidth - 1 ? 1 : 0;
 
-						nbackup  = getY( x, z + 1 ) > h && z < worldDepth - 1 ? 1 : 0;
-						nfrontup = getY( x, z - 1 ) > h && z > 0 ? 1 : 0;
+						nbackup  = getY(x, z + 1) > h && z < worldDepth - 1 ? 1 : 0;
+						nfrontup = getY(x, z - 1) > h && z > 0 ? 1 : 0;
 
 						// up corner neighbors
 
-						nrbup = getY( x - 1, z + 1 ) > h && x > 0 && z < worldDepth - 1 ? 1 : 0;
-						nrfup = getY( x - 1, z - 1 ) > h && x > 0 && z > 0 ? 1 : 0;
+						nrbup = getY(x - 1, z + 1) > h && x > 0 && z < worldDepth - 1 ? 1 : 0;
+						nrfup = getY(x - 1, z - 1) > h && x > 0 && z > 0 ? 1 : 0;
 
-						nlbup = getY( x + 1, z + 1 ) > h && x < worldWidth - 1 && z < worldDepth - 1 ? 1 : 0;
-						nlfup = getY( x + 1, z - 1 ) > h && x < worldWidth - 1 && z > 0 ? 1 : 0;
+						nlbup = getY(x + 1, z + 1) > h && x < worldWidth - 1 && z < worldDepth - 1 ? 1 : 0;
+						nlfup = getY(x + 1, z - 1) > h && x < worldWidth - 1 && z > 0 ? 1 : 0;
 
 						// textures
 
@@ -372,15 +372,15 @@
 
 						sides = { px: px, nx: nx, py: true, ny: false, pz: pz, nz: nz };
 
-						cube = new THREE.CubeGeometry( 100, 100, 100, 1, 1, 1, materials, sides );
+						cube = new THREE.CubeGeometry(100, 100, 100, 1, 1, 1, materials, sides);
 
 						// revert back to old flipped UVs
 
-						for ( i = 0; i < cube.faceVertexUvs[ 0 ].length; i ++ ) {
+						for (i = 0; i < cube.faceVertexUvs[ 0 ].length; i ++) {
 
 							uv = cube.faceVertexUvs[ 0 ][ i ];
 
-							for ( j = 0; j < uv.length; j++ ) {
+							for (j = 0; j < uv.length; j++) {
 
 								uv[j].v = 1 - uv[j].v;
 
@@ -390,11 +390,11 @@
 
 						// set UV tiles
 
-						for ( i = 0; i < cube.faceVertexUvs[ 0 ].length; i ++ ) {
+						for (i = 0; i < cube.faceVertexUvs[ 0 ].length; i ++) {
 
 							uv = cube.faceVertexUvs[ 0 ][ i ];
 
-							for ( j = 0; j < uv.length; j++ ) {
+							for (j = 0; j < uv.length; j++) {
 
 								p = uv[j].u == 0 ? padding : -padding;
 								uv[j].u = uv[j].u * unit + p;
@@ -419,68 +419,68 @@
 						face_nz = uv_index_map[ hash ].nz;
 
 
-						if( face_px != N ) setUVTile( face_px, ri, sides_row );
-						if( face_nx != N ) setUVTile( face_nx, li, sides_row );
+						if(face_px != N) setUVTile(face_px, ri, sides_row);
+						if(face_nx != N) setUVTile(face_nx, li, sides_row);
 
-						if( face_py != N ) {
+						if(face_py != N) {
 
 							mm = ti + "_" + ci;
 
-							switch ( tilemap[ mm ] ) {
+							switch (tilemap[ mm ]) {
 							case top_row_sides:   column = ti; break;
 							case top_row_corners: column = ci; break;
 							case top_row_mixed:   column = mixmap[ mm ]; break;
 							}
-							setUVTile( face_py, column, tilemap[ mm ] );
+							setUVTile(face_py, column, tilemap[ mm ]);
 
 						}
-						if( face_ny != N ) setUVTile( face_ny, 0, bottom_row );
+						if(face_ny != N) setUVTile(face_ny, 0, bottom_row);
 
-						if( face_pz != N ) setUVTile( face_pz, bi, sides_row );
-						if( face_nz != N ) setUVTile( face_nz, fi, sides_row );
+						if(face_pz != N) setUVTile(face_pz, bi, sides_row);
+						if(face_nz != N) setUVTile(face_nz, fi, sides_row);
 
 
-						mesh = new THREE.Mesh( cube );
+						mesh = new THREE.Mesh(cube);
 
 						mesh.position.x = x * 100 - worldHalfWidth * 100;
 						mesh.position.y = h * 100;
 						mesh.position.z = z * 100 - worldHalfDepth * 100;
 
-						THREE.GeometryUtils.merge( geometry, mesh );
+						THREE.GeometryUtils.merge(geometry, mesh);
 
 					}
 
 				}
 
-				mesh = new THREE.Mesh( geometry, new THREE.MeshFaceMaterial() );
-				scene.add( mesh );
+				mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
+				scene.add(mesh);
 
-				var ambientLight = new THREE.AmbientLight( 0xcccccc );
-				scene.add( ambientLight );
+				var ambientLight = new THREE.AmbientLight(0xcccccc);
+				scene.add(ambientLight);
 
-				var directionalLight = new THREE.DirectionalLight( 0xffffff, 2 );
-				directionalLight.position.set( 1, 1, 0.5 ).normalize();
-				scene.add( directionalLight );
+				var directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+				directionalLight.position.set(1, 1, 0.5).normalize();
+				scene.add(directionalLight);
 
-				renderer = new THREE.WebGLRenderer( { clearColor: 0xffffff } );
-				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer = new THREE.WebGLRenderer({ clearColor: 0xffffff });
+				renderer.setSize(window.innerWidth, window.innerHeight);
 
 				container.innerHTML = "";
 
-				container.appendChild( renderer.domElement );
+				container.appendChild(renderer.domElement);
 
 				stats = new Stats();
 				stats.domElement.style.position = 'absolute';
 				stats.domElement.style.top = '0px';
-				container.appendChild( stats.domElement );
+				container.appendChild(stats.domElement);
 
-				document.getElementById( "bao" ).addEventListener( "click",  function() { mat.map = m_ao.map; }, false );
-				document.getElementById( "baot" ).addEventListener( "click", function() { mat.map = m_aot.map; }, false );
-				document.getElementById( "bt" ).addEventListener( "click",   function() { mat.map = m_t.map; }, false );
+				document.getElementById("bao").addEventListener("click",  function() { mat.map = m_ao.map; }, false);
+				document.getElementById("baot").addEventListener("click", function() { mat.map = m_aot.map; }, false);
+				document.getElementById("bt").addEventListener("click",   function() { mat.map = m_t.map; }, false);
 
 				//
 
-				window.addEventListener( 'resize', onWindowResize, false );
+				window.addEventListener('resize', onWindowResize, false);
 
 			}
 
@@ -489,39 +489,39 @@
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
 
-				renderer.setSize( window.innerWidth, window.innerHeight );
+				renderer.setSize(window.innerWidth, window.innerHeight);
 
 				controls.handleResize();
 
 			}
 
-			function generateMegamaterialAO( textures, strength, debug_texture, debug_numbers, debug_corner_colors  ) {
+			function generateMegamaterialAO(textures, strength, debug_texture, debug_numbers, debug_corner_colors ) {
 
 				var count = 0,
-					tex_side   = loadTexture( textures.side,   function() { count++; generateTexture() } ),
-					tex_top    = loadTexture( textures.top,    function() { count++; generateTexture() } ),
-					tex_bottom = loadTexture( textures.bottom, function() { count++; generateTexture() } ),
+					tex_side   = loadTexture(textures.side,   function() { count++; generateTexture() }),
+					tex_top    = loadTexture(textures.top,    function() { count++; generateTexture() }),
+					tex_bottom = loadTexture(textures.bottom, function() { count++; generateTexture() }),
 
-					canvas = document.createElement( 'canvas' ),
-					ctx = canvas.getContext( '2d' ),
+					canvas = document.createElement('canvas'),
+					ctx = canvas.getContext('2d'),
 					size = 256, tile = 16;
 
 				canvas.width = canvas.height = size;
 
-				var texture = new THREE.Texture( canvas, new THREE.UVMapping(), THREE.ClampToEdgeWrapping, THREE.ClampToEdgeWrapping, THREE.NearestFilter, THREE.LinearMipMapLinearFilter );
+				var texture = new THREE.Texture(canvas, new THREE.UVMapping(), THREE.ClampToEdgeWrapping, THREE.ClampToEdgeWrapping, THREE.NearestFilter, THREE.LinearMipMapLinearFilter);
 				texture.flipY = false;
 
 				function generateTexture() {
 
-					if( count == 3 ) {
+					if(count == 3) {
 
-						for( var i = 0; i < 16; i++ ) {
+						for(var i = 0; i < 16; i++) {
 
-							drawAOCorners( ctx, tex_top, 	0, i, i, tile, strength, debug_texture, debug_numbers, debug_corner_colors );
-							drawAOMixed  ( ctx, tex_top,    1, i, i, tile, strength, debug_texture, debug_numbers, debug_corner_colors );
-							drawAOSides  ( ctx, tex_top,    2, i, i, tile, strength, debug_texture, debug_numbers );
-							drawAOSides  ( ctx, tex_side,   3, i, i, tile, strength, debug_texture, debug_numbers );
-							drawAOSides  ( ctx, tex_bottom, 4, i, i, tile, strength, debug_texture, debug_numbers );
+							drawAOCorners(ctx, tex_top, 	0, i, i, tile, strength, debug_texture, debug_numbers, debug_corner_colors);
+							drawAOMixed  (ctx, tex_top,    1, i, i, tile, strength, debug_texture, debug_numbers, debug_corner_colors);
+							drawAOSides  (ctx, tex_top,    2, i, i, tile, strength, debug_texture, debug_numbers);
+							drawAOSides  (ctx, tex_side,   3, i, i, tile, strength, debug_texture, debug_numbers);
+							drawAOSides  (ctx, tex_bottom, 4, i, i, tile, strength, debug_texture, debug_numbers);
 
 						}
 
@@ -531,41 +531,41 @@
 
 				}
 
-				return new THREE.MeshLambertMaterial( { map: texture, ambient: 0xbbbbbb } );
+				return new THREE.MeshLambertMaterial({ map: texture, ambient: 0xbbbbbb });
 
 			}
 
-			function generateMegamaterialPlain( textures ) {
+			function generateMegamaterialPlain(textures) {
 
 				var count = 0,
-					tex_side   = loadTexture( textures.side,   function() { count++; generateTexture() } ),
-					tex_top    = loadTexture( textures.top,    function() { count++; generateTexture() } ),
-					tex_bottom = loadTexture( textures.bottom, function() { count++; generateTexture() } ),
+					tex_side   = loadTexture(textures.side,   function() { count++; generateTexture() }),
+					tex_top    = loadTexture(textures.top,    function() { count++; generateTexture() }),
+					tex_bottom = loadTexture(textures.bottom, function() { count++; generateTexture() }),
 
-					canvas = document.createElement( 'canvas' ),
-					ctx = canvas.getContext( '2d' ),
+					canvas = document.createElement('canvas'),
+					ctx = canvas.getContext('2d'),
 					size = 256, tile = 16;
 
 				canvas.width = canvas.height = size;
 
-				var texture = new THREE.Texture( canvas, new THREE.UVMapping(), THREE.ClampToEdgeWrapping, THREE.ClampToEdgeWrapping, THREE.NearestFilter, THREE.LinearMipMapLinearFilter );
+				var texture = new THREE.Texture(canvas, new THREE.UVMapping(), THREE.ClampToEdgeWrapping, THREE.ClampToEdgeWrapping, THREE.NearestFilter, THREE.LinearMipMapLinearFilter);
 				texture.flipY = false;
 
 				function generateTexture() {
 
-					if( count == 3 ) {
+					if(count == 3) {
 
 						var i, sx;
 
-						for( i = 0; i < 16; i++ ) {
+						for(i = 0; i < 16; i++) {
 
 							sx = i * tile;
 
-							drawBase( ctx, tex_top,    sx, 0 * tile, tile, false );
-							drawBase( ctx, tex_top,    sx, 1 * tile, tile, false );
-							drawBase( ctx, tex_top,    sx, 2 * tile, tile, false );
-							drawBase( ctx, tex_side,   sx, 3 * tile, tile, false );
-							drawBase( ctx, tex_bottom, sx, 4 * tile, tile, false );
+							drawBase(ctx, tex_top,    sx, 0 * tile, tile, false);
+							drawBase(ctx, tex_top,    sx, 1 * tile, tile, false);
+							drawBase(ctx, tex_top,    sx, 2 * tile, tile, false);
+							drawBase(ctx, tex_side,   sx, 3 * tile, tile, false);
+							drawBase(ctx, tex_bottom, sx, 4 * tile, tile, false);
 
 						}
 
@@ -575,14 +575,14 @@
 
 				}
 
-				return new THREE.MeshLambertMaterial( { map: texture } );
+				return new THREE.MeshLambertMaterial({ map: texture });
 
 			}
 
 			function generateMegamaterialDebug() {
 
-				var canvas = document.createElement( 'canvas' ),
-					ctx = canvas.getContext( "2d" ),
+				var canvas = document.createElement('canvas'),
+					ctx = canvas.getContext("2d"),
 					size = 256, tile = 16,
 					i, j, h, s;
 
@@ -592,101 +592,101 @@
 				ctx.textBaseline = "top";
 				ctx.font = "8pt arial";
 
-				for ( i = 0; i < tile; i ++ ) {
+				for (i = 0; i < tile; i ++) {
 
-					for ( j = 0; j < tile; j ++ ) {
+					for (j = 0; j < tile; j ++) {
 
 						h = i * tile + j;
 						ctx.fillStyle = "hsl(" + h + ",90%, 50%)";
-						ctx.fillRect( i * tile, j * tile, tile, tile );
+						ctx.fillRect(i * tile, j * tile, tile, tile);
 
-						drawHex( ctx, h, i * tile + 2, j * tile + 2 );
+						drawHex(ctx, h, i * tile + 2, j * tile + 2);
 
 					}
 
 				}
 
-				var texture = new THREE.Texture( canvas, new THREE.UVMapping(), THREE.ClampToEdgeWrapping, THREE.ClampToEdgeWrapping, THREE.NearestFilter, THREE.LinearMipMapLinearFilter );
+				var texture = new THREE.Texture(canvas, new THREE.UVMapping(), THREE.ClampToEdgeWrapping, THREE.ClampToEdgeWrapping, THREE.NearestFilter, THREE.LinearMipMapLinearFilter);
 				texture.needsUpdate = true;
 
-				return new THREE.MeshLambertMaterial( { map: texture } );
+				return new THREE.MeshLambertMaterial({ map: texture });
 
 			}
 
-			function drawHex( ctx, n, x, y ) {
+			function drawHex(ctx, n, x, y) {
 
 				ctx.fillStyle = "black";
 				ctx.font = "8pt arial";
 				ctx.textBaseline = "top";
 
-				var s = n.toString( 16 );
+				var s = n.toString(16);
 				s = n < 16 ? "0" + s : s;
-				ctx.fillText( s, x, y );
+				ctx.fillText(s, x, y);
 
 			}
 
-			function drawBase( ctx, image, sx, sy, tile, debug_texture ) {
+			function drawBase(ctx, image, sx, sy, tile, debug_texture) {
 
-				if ( debug_texture ) {
+				if (debug_texture) {
 
 					ctx.fillStyle = "#888";
-					ctx.fillRect( sx, sy, tile, tile );
+					ctx.fillRect(sx, sy, tile, tile);
 
 				} else {
 
-					ctx.drawImage( image, sx, sy, tile, tile );
+					ctx.drawImage(image, sx, sy, tile, tile);
 
 				}
 
 			}
 
-			function drawCorner( ctx, sx, sy, sa, ea, color, step, n ) {
+			function drawCorner(ctx, sx, sy, sa, ea, color, step, n) {
 
-				for( var i = 0; i < n; i++ ) {
+				for(var i = 0; i < n; i++) {
 
-					ctx.strokeStyle = color + step * ( n - i ) + ")";
+					ctx.strokeStyle = color + step * (n - i) + ")";
 					ctx.beginPath();
-					ctx.arc( sx, sy, i, sa, ea, 0 ) ;
+					ctx.arc(sx, sy, i, sa, ea, 0) ;
 					ctx.stroke();
 
 				}
 
 			}
 
-			function drawSide( ctx, sx, sy, a, b, n, width, height, color, step ) {
+			function drawSide(ctx, sx, sy, a, b, n, width, height, color, step) {
 
-				for( var i = 0; i < n; i++ ) {
+				for(var i = 0; i < n; i++) {
 
-					ctx.fillStyle = color + step * ( n - i ) + ")";
-					ctx.fillRect( sx + a * i, sy + b * i, width, height );
+					ctx.fillStyle = color + step * (n - i) + ")";
+					ctx.fillRect(sx + a * i, sy + b * i, width, height);
 
 				}
 
 			}
 
-			function drawAOSides( ctx, image, row, column, sides, tile, strength, debug_texture, debug_numbers ) {
+			function drawAOSides(ctx, image, row, column, sides, tile, strength, debug_texture, debug_numbers) {
 
 				var sx = column * tile, sy = row * tile;
 
-				drawBase( ctx, image, sx, sy, tile, debug_texture );
-				drawAOSidesImp( ctx, image, row, column, sides, tile, strength );
+				drawBase(ctx, image, sx, sy, tile, debug_texture);
+				drawAOSidesImp(ctx, image, row, column, sides, tile, strength);
 
-				if ( debug_numbers ) drawHex( ctx, row * tile + sides, sx + 2, sy + 2 );
+				if (debug_numbers) drawHex(ctx, row * tile + sides, sx + 2, sy + 2);
 
 			}
 
-			function drawAOCorners( ctx, image, row, column, corners, tile, strength, debug_texture, debug_numbers, debug_corner_colors ) {
+			function drawAOCorners(ctx, image, row, column, corners, tile, strength, debug_texture, debug_numbers, debug_corner_colors) {
 
 				var sx = column * tile, sy = row * tile;
 
-				drawBase( ctx, image, sx, sy, tile, debug_texture );
-				drawAOCornersImp( ctx, image, row, column, corners, tile, strength, debug_corner_colors );
+				drawBase(ctx, image, sx, sy, tile, debug_texture);
+				drawAOCornersImp(ctx, image, row, column, corners, tile, strength, debug_corner_colors);
 
-				if ( debug_numbers ) drawHex( ctx, row * tile + corners, sx + 2, sy + 2 );
+				if (debug_numbers) drawHex(ctx, row * tile + corners, sx + 2, sy + 2);
 
 			}
 
-			function drawAOMixed( ctx, image, row, column, elements, tile, strength, debug_texture, debug_numbers, debug_corner_colors ) {
+			function drawAOMixed(ctx, image, row, column, elements, tile, strength, debug_texture, debug_numbers, debug_corner_colors) {
 
 				var sx = column * tile, sy = row * tile,
 
@@ -709,15 +709,15 @@
 					15: [ 10, 8 ]
 					};
 
-				drawBase( ctx, image, sx, sy, tile, debug_texture );
-				drawAOCornersImp( ctx, image, row, column, mmap[ elements ][1], tile, strength, debug_corner_colors );
-				drawAOSidesImp( ctx, image, row, column, mmap[ elements ][0], tile, strength );
+				drawBase(ctx, image, sx, sy, tile, debug_texture);
+				drawAOCornersImp(ctx, image, row, column, mmap[ elements ][1], tile, strength, debug_corner_colors);
+				drawAOSidesImp(ctx, image, row, column, mmap[ elements ][0], tile, strength);
 
-				if ( debug_numbers ) drawHex( ctx, row * tile + elements, sx + 2, sy + 2 );
+				if (debug_numbers) drawHex(ctx, row * tile + elements, sx + 2, sy + 2);
 
 			}
 
-			function drawAOSidesImp( ctx, image, row, column, sides, tile, strength ) {
+			function drawAOSidesImp(ctx, image, row, column, sides, tile, strength) {
 
 				var sx = column * tile, sy = row * tile,
 					full = tile, step = 1 / full, half = full / 2 + strength,
@@ -729,14 +729,14 @@
 					bottom = (sides & 2) == 2,
 					top    = (sides & 1) == 1;
 
-				if ( bottom ) drawSide( ctx, sx, sy, 0, 1, half, tile, 1, color, step );
-				if ( top )    drawSide( ctx, sx, sy + full - 1, 0, -1, half, tile, 1, color, step );
-				if ( left )   drawSide( ctx, sx, sy, 1, 0, half, 1, tile, color, step );
-				if ( right )  drawSide( ctx, sx + full - 1, sy, -1, 0, half, 1, tile, color, step );
+				if (bottom) drawSide(ctx, sx, sy, 0, 1, half, tile, 1, color, step);
+				if (top)    drawSide(ctx, sx, sy + full - 1, 0, -1, half, tile, 1, color, step);
+				if (left)   drawSide(ctx, sx, sy, 1, 0, half, 1, tile, color, step);
+				if (right)  drawSide(ctx, sx + full - 1, sy, -1, 0, half, 1, tile, color, step);
 
 			}
 
-			function drawAOCornersImp( ctx, image, row, column, corners, tile, strength, debug_corner_colors ) {
+			function drawAOCornersImp(ctx, image, row, column, corners, tile, strength, debug_corner_colors) {
 
 				var sx = column * tile, sy = row * tile,
 
@@ -749,37 +749,37 @@
 					bottomleft  = (corners & 2) == 2,
 					topleft     = (corners & 1) == 1;
 
-				if ( topleft ) {
+				if (topleft) {
 
-					if ( debug_corner_colors ) color = "rgba(200, 0, 0, ";
-					drawCorner( ctx, sx, sy, 0, Math.PI / 2 , color, step, half );
-
-				}
-
-				if ( bottomleft ) {
-
-					if ( debug_corner_colors ) color = "rgba(0, 200, 0, ";
-					drawCorner( ctx, sx, sy + full, 1.5 * Math.PI, 2 * Math.PI, color, step, half );
+					if (debug_corner_colors) color = "rgba(200, 0, 0, ";
+					drawCorner(ctx, sx, sy, 0, Math.PI / 2 , color, step, half);
 
 				}
 
-				if ( bottomright ) {
+				if (bottomleft) {
 
-					if ( debug_corner_colors ) color = "rgba(0, 0, 200, ";
-					drawCorner( ctx, sx + full, sy + full, Math.PI, 1.5 * Math.PI, color, step, half );
+					if (debug_corner_colors) color = "rgba(0, 200, 0, ";
+					drawCorner(ctx, sx, sy + full, 1.5 * Math.PI, 2 * Math.PI, color, step, half);
 
 				}
 
-				if ( topright ) {
+				if (bottomright) {
 
-					if ( debug_corner_colors ) color = "rgba(200, 0, 200, ";
-					drawCorner( ctx, sx + full, sy, Math.PI / 2, Math.PI, color, step, half );
+					if (debug_corner_colors) color = "rgba(0, 0, 200, ";
+					drawCorner(ctx, sx + full, sy + full, Math.PI, 1.5 * Math.PI, color, step, half);
+
+				}
+
+				if (topright) {
+
+					if (debug_corner_colors) color = "rgba(200, 0, 200, ";
+					drawCorner(ctx, sx + full, sy, Math.PI / 2, Math.PI, color, step, half);
 
 				}
 
 			}
 
-			function loadTexture( path, callback ) {
+			function loadTexture(path, callback) {
 
 				var image = new Image();
 
@@ -790,19 +790,19 @@
 
 			}
 
-			function generateHeight( width, height ) {
+			function generateHeight(width, height) {
 
 				var data = [], perlin = new ImprovedNoise(),
 				size = width * height, quality = 2, z = Math.random() * 100;
 
-				for ( var j = 0; j < 4; j ++ ) {
+				for (var j = 0; j < 4; j ++) {
 
-					if ( j == 0 ) for ( var i = 0; i < size; i ++ ) data[ i ] = 0;
+					if (j == 0) for (var i = 0; i < size; i ++) data[ i ] = 0;
 
-					for ( var i = 0; i < size; i ++ ) {
+					for (var i = 0; i < size; i ++) {
 
-						var x = i % width, y = ~~ ( i / width );
-						data[ i ] += perlin.noise( x / quality, y / quality, z ) * quality;
+						var x = i % width, y = ~~ (i / width);
+						data[ i ] += perlin.noise(x / quality, y / quality, z) * quality;
 
 					}
 
@@ -814,9 +814,9 @@
 
 			}
 
-			function getY( x, z ) {
+			function getY(x, z) {
 
-				return ~~( data[ x + z * worldWidth ] * 0.2 );
+				return ~~(data[ x + z * worldWidth ] * 0.2);
 
 			}
 
@@ -824,7 +824,7 @@
 
 			function animate() {
 
-				requestAnimationFrame( animate );
+				requestAnimationFrame(animate);
 
 				render();
 				stats.update();
@@ -833,8 +833,8 @@
 
 			function render() {
 
-				controls.update( clock.getDelta() );
-				renderer.render( scene, camera );
+				controls.update(clock.getDelta());
+				renderer.render(scene, camera);
 
 			}
 
