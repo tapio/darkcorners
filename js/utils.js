@@ -20,9 +20,9 @@ function createMaterial(base_image) {
 	var shader = THREE.ShaderUtils.lib["normal"];
 	var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
 
-	uniforms["tDiffuse"].texture = loadTexture(base_image + ".jpg");
-	uniforms["tSpecular"].texture = loadTexture(base_image + "_specular.jpg");
-	uniforms["tNormal"].texture = loadTexture(base_image + "_normalmap.jpg");
+	uniforms["tDiffuse"].value = loadTexture(base_image + ".jpg");
+	uniforms["tSpecular"].value = loadTexture(base_image + "_specular.jpg");
+	uniforms["tNormal"].value = loadTexture(base_image + "_normalmap.jpg");
 	uniforms["uShininess"].value = shininess;
 	uniforms["uNormalScale"].value = -1;
 
@@ -46,6 +46,7 @@ function createMaterial(base_image) {
 		diffuse: diffuse,
 		specular: specular,
 		shininess: shininess,
+		perPixel: true,
 		map: loadTexture(base_image + ".jpg"),
 		specularMap: loadTexture(base_image + "_specular.jpg")
 		});*/
@@ -54,5 +55,6 @@ function createMaterial(base_image) {
 		fragmentShader: shader.fragmentShader,
 		vertexShader: shader.vertexShader,
 		uniforms: uniforms,
+		fog: true,
 		lights: true });
 }
