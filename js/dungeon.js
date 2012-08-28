@@ -1,7 +1,7 @@
 function Dungeon(scene, floorplan) {
 	this.width = floorplan[0].length;
 	this.depth = floorplan.length;
-	this.mesh;
+	this.mesh = undefined;
 	this.lights = [];
 
 	var floor_mat = createMaterial("../assets/textures/floor");

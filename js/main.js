@@ -18,13 +18,13 @@ function init() {
 	camera.position.y = 100;
 
 	controls = new Controls(camera);
-	controls.movementSpeed = 1000;
+	controls.movementSpeed = 500;
 	controls.lookSpeed = 0.125;
 	controls.lookVertical = true;
-	controls.constrainVertical = true;
+	controls.constrainVerticalLook = true;
 	controls.verticalMin = 1.1;
 	controls.verticalMax = 2.0;
-	controls.lockY = true;
+	controls.freezeObjectY = true;
 
 	scene = new THREE.Scene();
 	scene.fog = new THREE.FogExp2(0x000000, 0.0005);
@@ -40,7 +40,7 @@ function init() {
 		"#..................#",
 		"#............#.....#",
 		"#..........*.#.....#",
-		"####################",
+		"####################"
 	]);
 
 	renderer = new THREE.WebGLRenderer({ clearColor: 0xffffff, maxLights: 6 });
@@ -58,6 +58,9 @@ function init() {
 	container.appendChild(stats.domElement);
 
 	window.addEventListener('resize', onWindowResize, false);
+	document.getElementById("lockmouse").addEventListener('click', function() {
+		container.webkitRequestPointerLock();
+	});
 }
 
 function onWindowResize() {
