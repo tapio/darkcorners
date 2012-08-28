@@ -364,11 +364,11 @@ function generateMegamaterialAO(textures, strength, debug_texture, debug_numbers
 		tex_bottom = loadTexture(textures.bottom, function() { count++; generateTexture() }),
 		canvas = document.createElement('canvas'),
 		ctx = canvas.getContext('2d'),
-		size = 256, tile = 16;
+		size = 2048, tile = 128;
 
 	canvas.width = canvas.height = size;
 
-	var texture = new THREE.Texture(canvas, new THREE.UVMapping(), THREE.ClampToEdgeWrapping, THREE.ClampToEdgeWrapping, THREE.NearestFilter, THREE.LinearMipMapLinearFilter);
+	var texture = new THREE.Texture(canvas, new THREE.UVMapping(), THREE.RepeatWrapping, THREE.RepeatWrapping, THREE.LinearFilter, THREE.LinearMipMapLinearFilter);
 	texture.flipY = false;
 
 	function generateTexture() {
