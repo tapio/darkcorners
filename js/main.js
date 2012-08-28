@@ -80,6 +80,8 @@ function init() {
 	}
 
 	mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
+	mesh.castShadow = true;
+	mesh.receiveShadow = true;
 	scene.add(mesh);
 
 	var ambientLight = new THREE.AmbientLight(0xcccccc);
@@ -91,9 +93,10 @@ function init() {
 
 	renderer = new THREE.WebGLRenderer({ clearColor: 0xffffff });
 	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.shadowMapEnabled = true;
+	renderer.shadowMapSoft = true;
 
 	container.innerHTML = "";
-
 	container.appendChild(renderer.domElement);
 
 	stats = new Stats();
