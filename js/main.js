@@ -7,7 +7,7 @@ var fogExp2 = true;
 var container, stats;
 var camera, controls, scene, renderer;
 var mesh, mat;
-var worldWidth = 200, worldDepth = 200,
+var worldWidth = 50, worldDepth = 50,
 worldHalfWidth = worldWidth / 2, worldHalfDepth = worldDepth / 2,
 data = generateHeight(worldWidth, worldDepth);
 
@@ -546,21 +546,16 @@ function loadTexture(path, callback) {
 }
 
 function generateHeight(width, height) {
-	var data = [], perlin = new ImprovedNoise(),
-	size = width * height, quality = 2, z = Math.random() * 100;
-	for (var j = 0; j < 4; j ++) {
-		if (j == 0) for (var i = 0; i < size; i++) data[i] = 0;
-		for (var i = 0; i < size; i++) {
-			var x = i % width, y = ~~ (i / width);
-			data[i] += perlin.noise(x / quality, y / quality, z) * quality;
-		}
-		quality *= 4
+	var data = [], size = width * height;
+	for (var i = 0; i < size; i++) {
+		var x = i % width, y = ~~ (i / width);
+		data[i] = Math.random() > 0.5 ? 1 : 0;
 	}
 	return data;
 }
 
 function getY(x, z) {
-	return ~~(data[x + z * worldWidth] * 0.2);
+	return ~~(data[x + z * worldWidth]);
 }
 
 //
