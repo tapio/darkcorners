@@ -57,10 +57,15 @@ function init() {
 	stats.domElement.style.top = '0px';
 	container.appendChild(stats.domElement);
 
+	container.requestPointerLock = container.requestPointerLock ||
+			container.webkitRequestPointerLock ||
+			container.mozRequestPointerLock;
+
 	window.addEventListener('resize', onWindowResize, false);
-	document.getElementById("lockmouse").addEventListener('click', function() {
-		container.webkitRequestPointerLock();
-	});
+	document.getElementById("lockmouse").addEventListener('click', container.webkitRequestPointerLock, false);
+	document.addEventListener('pointerlockchange', onPointerLockChange, false);
+	document.addEventListener('webkitpointerlockchange', onPointerLockChange, false);
+	document.addEventListener('mozpointerlockchange', onPointerLockChange, false);
 }
 
 function onWindowResize() {
@@ -68,6 +73,13 @@ function onWindowResize() {
 	camera.updateProjectionMatrix();
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	controls.handleResize();
+}
+
+function onPointerLockChange() {
+	document.pointerLockElement = document.pointerLockElement ||
+		document.webkitPointerLockElement ||
+		document.mozPointerLockElement;
+	controls.pointerLockEnabled = !!document.pointerLockElement;
 }
 
 function animate() {

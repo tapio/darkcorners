@@ -23,6 +23,8 @@ Controls = function (object, domElement) {
 	this.verticalMin = 0;
 	this.verticalMax = Math.PI;
 
+	this.pointerLockEnabled = false;
+
 	this.mouseX = 0;
 	this.mouseY = 0;
 
@@ -144,9 +146,18 @@ Controls = function (object, domElement) {
 			this.object.translateY(-actualMoveSpeed);
 		}
 
-		lon += this.mouseX * actualLookSpeed;
-		if (this.lookVertical)
-			lat -= this.mouseY * actualLookSpeed;
+		if (this.pointerLockEnabled) {
+			if (this.mouseMovementX)
+				lon += this.mouseMovementX * actualLookSpeed * 40;
+			//if (this.lookVertical && this.mouseMovementY)
+			//	lat -= this.mouseMovementY * actualLookSpeed * 40;
+			this.mouseMovementX = 0;
+			this.mouseMovementY = 0;
+		} else {
+			lon += this.mouseX * actualLookSpeed;
+			if (this.lookVertical)
+				lat -= this.mouseY * actualLookSpeed;
+		}
 
 		lat = Math.max(-85, Math.min(85, lat));
 		phi = (90 - lat) * Math.PI / 180;
