@@ -1,3 +1,5 @@
+var DEBUG = true;
+
 if (!Detector.webgl) {
 	Detector.addGetWebGLMessage();
 	document.getElementById('container').innerHTML = "";

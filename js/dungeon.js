@@ -66,9 +66,11 @@ function Dungeon(scene, player, floorplan) {
 				scene.add(light);
 				this.lights.push(light);
 				// Debug body
-				light_body = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xffffaa }));
-				light_body.position = light.position;
-				scene.add(light_body);
+				if (DEBUG) {
+					light_body = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xffffaa }));
+					light_body.position = light.position;
+					scene.add(light_body);
+				}
 			} else if (cell == "S") {
 				player.position.set(this.mesh.position.x, this.mesh.position.y+100, this.mesh.position.z);
 				// TODO: Set rotation
