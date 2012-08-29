@@ -16,7 +16,7 @@ function loadTexture(path) {
 
 function createMaterial(base_image) {
 	var ambient = 0x333333, diffuse = 0xbbbbbb, specular = 0xffffff, shininess = 30, scale = 1.0;
-
+	/*
 	var shader = THREE.ShaderUtils.lib["normal"];
 	var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
 
@@ -46,21 +46,24 @@ function createMaterial(base_image) {
 
 
 	//uniforms["wrapRGB"].value.set(0.575, 0.5, 0.5);
+	*/
 
-	/*return new THREE.MeshPhongMaterial({
+	return new THREE.MeshPhongMaterial({
 		ambient: ambient,
 		diffuse: diffuse,
 		specular: specular,
 		shininess: shininess,
 		perPixel: true,
 		map: loadTexture(base_image + ".jpg"),
-		specularMap: loadTexture(base_image + "_specular.jpg")
-		});*/
+		specularMap: loadTexture(base_image + "_specular.jpg"),
+		normalMap: loadTexture(base_image + "_specular.jpg"),
+		normalScale: -1
+		});
 
-	return new THREE.ShaderMaterial({
+	/*return new THREE.ShaderMaterial({
 		fragmentShader: shader.fragmentShader,
 		vertexShader: shader.vertexShader,
 		uniforms: uniforms,
 		fog: true,
-		lights: true });
+		lights: true });*/
 }
