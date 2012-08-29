@@ -33,10 +33,10 @@ function Dungeon(scene, player, floorplan) {
 	var ambientLight = new THREE.AmbientLight(0xaaaaaa);
 	scene.add(ambientLight);
 
-	//var playerLight = new THREE.PointLight(0xffffaa, 1, 200);
+	var playerLight = new THREE.PointLight(0xffffaa, 1, 200);
 	//playerLight.position = player.position;
-	//scene.add(playerLight);
-	//this.lights.push(playerLight);
+	scene.add(playerLight);
+	this.lights.push(playerLight);
 
 	var geometry = new THREE.Geometry(), light, light_body;
 	var sphere = new THREE.SphereGeometry(5, 16, 8);

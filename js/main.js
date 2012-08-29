@@ -84,12 +84,19 @@ function onPointerLockChange() {
 
 function animate() {
 	function getAnim(time) { return Math.abs(time - (time|0) - 0.5) * 2.0; }
+	function fract(num) { return num - (num|0); }
+
 	var timeNow = new Date().getTime();
-	for (var i = 0; i < dungeon.lights.length; ++i) {
+	for (var i = 1; i < dungeon.lights.length; ++i) {
 		var anim = timeNow / (1000.0 + i);
-		anim = 0.5 * getAnim(anim);
-		dungeon.lights[i].intensity = anim;
+		dungeon.lights[i].intensity = 0.5 + 0.5 * getAnim(anim);
 	}
+
+	var jigglyAng = fract(timeNow / 1000.0) * 2 * Math.PI;
+	var jigglyDist = Math.sin(getAnim(timeNow / 240.0)) * 15;
+	var jigglydx = Math.cos(jigglyAng) * jigglyDist;
+	var jigglydz = Math.sin(jigglyAng) * jigglyDist;
+	dungeon.lights[0].position.set(camera.position.x+jigglydx, camera.position.y, camera.position.z+jigglydz);
 }
 
 function render() {
