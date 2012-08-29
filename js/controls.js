@@ -76,15 +76,18 @@ Controls = function (object, domElement) {
 	};
 
 	this.onMouseMove = function (event) {
-		if (this.domElement === document) {
+		if (this.pointerLockEnabled) {
+			this.mouseX = event.movementX || event.webkitMovementX || event.mozMovementY || 0;
+			this.mouseY = event.movementY || event.webkitMovementY || event.mozMovementY || 0;
+			this.mouseX *= 20;
+			this.mouseY *= 20;
+		} else if (this.domElement === document) {
 			this.mouseX = event.pageX - viewHalfX;
 			this.mouseY = event.pageY - viewHalfY;
 		} else {
 			this.mouseX = event.pageX - this.domElement.offsetLeft - viewHalfX;
 			this.mouseY = event.pageY - this.domElement.offsetTop - viewHalfY;
 		}
-		this.mouseMovementX = event.movementX || event.webkitMovementX || event.mozMovementY;
-		this.mouseMovementY = event.movementX || event.webkitMovementX || event.mozMovementY;
 	};
 
 	this.onKeyDown = function (event) {
@@ -146,18 +149,9 @@ Controls = function (object, domElement) {
 			this.object.translateY(-actualMoveSpeed);
 		}
 
-		if (this.pointerLockEnabled) {
-			if (this.mouseMovementX)
-				lon += this.mouseMovementX * actualLookSpeed * 40;
-			//if (this.lookVertical && this.mouseMovementY)
-			//	lat -= this.mouseMovementY * actualLookSpeed * 40;
-			this.mouseMovementX = 0;
-			this.mouseMovementY = 0;
-		} else {
-			lon += this.mouseX * actualLookSpeed;
-			if (this.lookVertical)
-				lat -= this.mouseY * actualLookSpeed;
-		}
+		lon += this.mouseX * actualLookSpeed;
+		if (this.lookVertical)
+			lat -= this.mouseY * actualLookSpeed;
 
 		lat = Math.max(-85, Math.min(85, lat));
 		phi = (90 - lat) * Math.PI / 180;
@@ -169,6 +163,11 @@ Controls = function (object, domElement) {
 		targetPosition.x = cameraPosition.x + 100 * Math.sin(phi) * Math.cos(theta);
 		targetPosition.y = cameraPosition.y + 100 * Math.cos(phi);
 		targetPosition.z = cameraPosition.z + 100 * Math.sin(phi) * Math.sin(theta);
+
+		if (this.pointerLockEnabled) {
+			this.mouseX = 0;
+			this.mouseY = 0;
+		}
 
 		if (this.freezeObjectY) this.object.position.y = savedY;
 		this.object.lookAt(targetPosition);

@@ -19,11 +19,11 @@ function init() {
 
 	controls = new Controls(camera);
 	controls.movementSpeed = 500;
-	controls.lookSpeed = 0.125;
+	controls.lookSpeed = 0.5;
 	controls.lookVertical = true;
 	controls.constrainVerticalLook = true;
-	controls.verticalMin = 1.1;
-	controls.verticalMax = 2.0;
+	controls.verticalMin = 1.3;
+	controls.verticalMax = 1.9;
 	controls.freezeObjectY = true;
 
 	scene = new THREE.Scene();
@@ -76,10 +76,7 @@ function onWindowResize() {
 }
 
 function onPointerLockChange() {
-	document.pointerLockElement = document.pointerLockElement ||
-		document.webkitPointerLockElement ||
-		document.mozPointerLockElement;
-	controls.pointerLockEnabled = !!document.pointerLockElement;
+	controls.pointerLockEnabled = !controls.pointerLockEnabled;
 }
 
 function animate() {

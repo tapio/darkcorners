@@ -58,7 +58,7 @@ function Dungeon(scene, floorplan) {
 				scene.add(light);
 				this.lights.push(light);
 				// Debug body
-				var light_body = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial( { color: 0xffffaa } ));
+				var light_body = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xffffaa }));
 				light_body.position = light.position;
 				scene.add(light_body);
 			}
