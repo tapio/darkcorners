@@ -1,4 +1,4 @@
-function Dungeon(scene, floorplan) {
+function Dungeon(scene, player, floorplan) {
 	this.width = floorplan[0].length;
 	this.depth = floorplan.length;
 	this.mesh = undefined;
@@ -61,6 +61,9 @@ function Dungeon(scene, floorplan) {
 				var light_body = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xffffaa }));
 				light_body.position = light.position;
 				scene.add(light_body);
+			} else if (cell == "S") {
+				player.position.set(this.mesh.position.x, this.mesh.position.y+100, this.mesh.position.z);
+				// TODO: Set rotation
 			}
 		}
 	}

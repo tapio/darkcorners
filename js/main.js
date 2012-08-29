@@ -15,7 +15,6 @@ function init() {
 	container = document.getElementById('container');
 
 	camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 20000);
-	camera.position.y = 100;
 
 	controls = new Controls(camera);
 	controls.movementSpeed = 500;
@@ -29,7 +28,7 @@ function init() {
 	scene = new THREE.Scene();
 	scene.fog = new THREE.FogExp2(0x000000, 0.0005);
 
-	dungeon = new Dungeon(scene, [
+	dungeon = new Dungeon(scene, camera, [
 		"####################",
 		"#..*...............#",
 		"#....#...........*.#",
@@ -38,7 +37,7 @@ function init() {
 		"#..................#",
 		"#...##.#######*....#",
 		"#..................#",
-		"#............#.....#",
+		"#............#...S.#",
 		"#..........*.#.....#",
 		"####################"
 	]);
