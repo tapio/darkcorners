@@ -56,7 +56,7 @@ function createMaterial(base_image) {
 		perPixel: true,
 		map: loadTexture(base_image + ".jpg"),
 		specularMap: loadTexture(base_image + "_specular.jpg"),
-		normalMap: loadTexture(base_image + "_specular.jpg"),
+		normalMap: loadTexture(base_image + "_normalmap.jpg"),
 		normalScale: -1
 		});
 

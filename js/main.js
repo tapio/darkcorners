@@ -88,7 +88,7 @@ function animate() {
 	for (var i = 0; i < dungeon.lights.length; ++i) {
 		var anim = timeNow / (1000.0 + i);
 		anim = 0.5 * getAnim(anim);
-		//dungeon.lights[i].intensity = anim;
+		dungeon.lights[i].intensity = anim;
 	}
 }
 
