@@ -57,7 +57,7 @@ function createMaterial(base_image) {
 		map: loadTexture(base_image + ".jpg"),
 		specularMap: loadTexture(base_image + "_specular.jpg"),
 		normalMap: loadTexture(base_image + "_normalmap.jpg"),
-		normalScale: -1
+		normalScale: 1
 		});
 
 	/*return new THREE.ShaderMaterial({
