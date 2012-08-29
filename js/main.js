@@ -98,7 +98,7 @@ function animate() {
 	var jigglyDist = Math.sin(getAnim(timeNow / 240.0)) * 15;
 	var jigglydx = Math.cos(jigglyAng) * jigglyDist;
 	var jigglydz = Math.sin(jigglyAng) * jigglyDist;
-	dungeon.lights[0].position.set(camera.position.x+jigglydx, camera.position.y, camera.position.z+jigglydz);
+	dungeon.lights[0].position.set(camera.position.x+jigglydx, camera.position.y - 10, camera.position.z+jigglydz);
 }
 
 function render() {
