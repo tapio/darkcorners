@@ -42,7 +42,7 @@ function init() {
 		"####################"
 	]);
 
-	renderer = new THREE.WebGLRenderer({ clearColor: 0xffffff, maxLights: 6 });
+	renderer = new THREE.WebGLRenderer({ clearColor: 0x000000, maxLights: 6, antialias: true });
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.shadowMapEnabled = true;
 	renderer.shadowMapSoft = true;
@@ -94,8 +94,8 @@ function animate() {
 
 function render() {
 	requestAnimationFrame(render);
-	animate();
 	controls.update(clock.getDelta());
+	animate();
 	renderer.render(scene, camera);
 	stats.update();
 }
