@@ -26,7 +26,7 @@ function createMaterial(base_image) {
 	uniforms["uShininess"].value = shininess;
 	uniforms["uNormalScale"].value = -1;
 
-	//uniforms["tDisplacement"].texture = THREE.ImageUtils.loadTexture(base_image + "_height.jpg");
+	//uniforms["tDisplacement"].texture = loadTexture(base_image + "_height.jpg");
 	//uniforms["uDisplacementBias"].value = - 0.428408 * scale;
 	//uniforms["uDisplacementScale"].value = 2.436143 * scale;
 
@@ -34,10 +34,16 @@ function createMaterial(base_image) {
 	uniforms["enableDiffuse"].value = true;
 	uniforms["enableSpecular"].value = true;
 	uniforms["enableReflection"].value = false;
+	uniforms["enableDisplacement"].value = false;
 
 	uniforms["uDiffuseColor"].value.setHex(diffuse);
 	uniforms["uSpecularColor"].value.setHex(specular);
 	uniforms["uAmbientColor"].value.setHex(ambient);
+
+	uniforms["uDiffuseColor"].value.convertGammaToLinear();
+	uniforms["uSpecularColor"].value.convertGammaToLinear();
+	uniforms["uAmbientColor"].value.convertGammaToLinear();
+
 
 	//uniforms["wrapRGB"].value.set(0.575, 0.5, 0.5);
 

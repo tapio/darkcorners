@@ -53,7 +53,7 @@ function Dungeon(scene, floorplan) {
 			this.mesh.position.z = z * 100 - this.depth/2 * 100;
 			THREE.GeometryUtils.merge(geometry, this.mesh);
 			if (cell == "*") {
-				light = new THREE.PointLight(0xffffaa, 1, 300);
+				light = new THREE.PointLight(0xffffaa, 1, 200);
 				light.position.set(this.mesh.position.x, this.mesh.position.y+100, this.mesh.position.z);
 				scene.add(light);
 				this.lights.push(light);
