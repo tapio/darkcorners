@@ -153,22 +153,22 @@ Controls = function (object, domElement) {
 			lon += this.mouseX * actualLookSpeed;
 			if (this.lookVertical)
 				lat -= this.mouseY * actualLookSpeed;
+		}
 
-			lat = Math.max(-85, Math.min(85, lat));
-			phi = (90 - lat) * Math.PI / 180;
-			theta = lon * Math.PI / 180;
+		lat = Math.max(-85, Math.min(85, lat));
+		phi = (90 - lat) * Math.PI / 180;
+		theta = lon * Math.PI / 180;
 
-			if (this.constrainVerticalLook)
-				phi = THREE.Math.mapLinear(phi, 0, Math.PI, this.verticalMin, this.verticalMax);
+		if (this.constrainVerticalLook)
+			phi = THREE.Math.mapLinear(phi, 0, Math.PI, this.verticalMin, this.verticalMax);
 
-			targetPosition.x = cameraPosition.x + 100 * Math.sin(phi) * Math.cos(theta);
-			targetPosition.y = cameraPosition.y + 100 * Math.cos(phi);
-			targetPosition.z = cameraPosition.z + 100 * Math.sin(phi) * Math.sin(theta);
+		targetPosition.x = cameraPosition.x + 100 * Math.sin(phi) * Math.cos(theta);
+		targetPosition.y = cameraPosition.y + 100 * Math.cos(phi);
+		targetPosition.z = cameraPosition.z + 100 * Math.sin(phi) * Math.sin(theta);
 
-			if (this.pointerLockEnabled) {
-				this.mouseX = 0;
-				this.mouseY = 0;
-			}
+		if (this.pointerLockEnabled) {
+			this.mouseX = 0;
+			this.mouseY = 0;
 		}
 
 		if (this.freezeObjectY) this.object.position.y = savedY;
