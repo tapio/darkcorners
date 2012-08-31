@@ -92,6 +92,7 @@ function animate() {
 	for (var i = 1; i < dungeon.lights.length; ++i) {
 		var anim = timeNow / (1000.0 + i);
 		dungeon.lights[i].intensity = 0.5 + 0.5 * getAnim(anim);
+		dungeon.lights[i].position.y += 4 * (getAnim(anim) - 0.5);
 	}
 
 	var jigglyAng = fract(timeNow / 1000.0) * 2 * Math.PI;
