@@ -82,6 +82,7 @@ function onWindowResize() {
 
 function onPointerLockChange() {
 	controls.pointerLockEnabled = !controls.pointerLockEnabled;
+	document.getElementById("info").className = controls.pointerLockEnabled ? "hidden" : "";
 }
 
 function animate() {
