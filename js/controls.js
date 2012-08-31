@@ -40,6 +40,10 @@ Controls = function (object, domElement) {
 
 	//
 
+	this.reset = function() {
+		lat = 0; lon = 0;
+	}
+
 	this.handleResize = function () {
 		if (this.domElement === document) {
 			viewHalfX = window.innerWidth / 2;
