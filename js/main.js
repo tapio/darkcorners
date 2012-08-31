@@ -30,19 +30,7 @@ function init() {
 	scene = new THREE.Scene();
 	scene.fog = new THREE.FogExp2(0x000000, 0.0005);
 
-	dungeon = new Dungeon(scene, camera, [
-		"####################",
-		"#..*...............#",
-		"#....#...........*.#",
-		"#....#........######",
-		"#....#*............#",
-		"#..................#",
-		"#...##.#######*....#",
-		"#..................#",
-		"#....S.......#.....#",
-		"#..........*.#.....#",
-		"####################"
-	]);
+	dungeon = new Dungeon(scene, camera, maps.test);
 
 	renderer = new THREE.WebGLRenderer({ clearColor: 0x000000, maxLights: 6, antialias: true });
 	renderer.setSize(window.innerWidth, window.innerHeight);

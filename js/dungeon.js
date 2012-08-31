@@ -1,6 +1,6 @@
-function Dungeon(scene, player, floorplan) {
-	this.width = floorplan[0].length;
-	this.depth = floorplan.length;
+function Dungeon(scene, player, map) {
+	this.width = map.map[0].length;
+	this.depth = map.map.length;
 	this.mesh = undefined;
 	this.lights = [];
 
@@ -16,9 +16,9 @@ function Dungeon(scene, player, floorplan) {
 	];
 
 	function getCell(x, z) {
-		if (x < 0 || x >= floorplan[0].length) return "#";
-		else if (z < 0 || z >= floorplan.length) return "#";
-		return floorplan[z][x];
+		if (x < 0 || x >= map.map[0].length) return "#";
+		else if (z < 0 || z >= map.map.length) return "#";
+		return map.map[z][x];
 	}
 
 	var cell, cell2, px, nx, pz, nz, cubes = [];
@@ -38,6 +38,9 @@ function Dungeon(scene, player, floorplan) {
 	scene.add(playerLight);
 	this.lights.push(playerLight);
 
+	// TODO: Set player rotation
+	player.position.set(map.start[0] * map.gridSize, map.gridSize, map.start[1] * map.gridSize);
+
 	var geometry = new THREE.Geometry(), light, light_body;
 	var sphere = new THREE.SphereGeometry(5, 16, 8);
 
@@ -56,9 +59,9 @@ function Dungeon(scene, player, floorplan) {
 				nz = cell2 != "#" ? 1 : 0;
 			}
 			this.mesh = new THREE.Mesh(cubes[ px * 8 + nx * 4 + pz * 2 + nz ]);
-			this.mesh.position.x = x * 100 - this.width/2 * 100;
+			this.mesh.position.x = x * 100;
 			this.mesh.position.y = cell == "#" ? 100 : 0;
-			this.mesh.position.z = z * 100 - this.depth/2 * 100;
+			this.mesh.position.z = z * 100;
 			THREE.GeometryUtils.merge(geometry, this.mesh);
 			if (cell == "*") {
 				var light = new THREE.PointLight(0xffffaa, 1, 200);
@@ -71,9 +74,6 @@ function Dungeon(scene, player, floorplan) {
 					light_body.position = light.position;
 					scene.add(light_body);
 				}
-			} else if (cell == "S") {
-				player.position.set(this.mesh.position.x, this.mesh.position.y+100, this.mesh.position.z);
-				// TODO: Set rotation
 			}
 		}
 	}
