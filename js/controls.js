@@ -62,8 +62,8 @@ Controls = function (object, domElement) {
 		event.stopPropagation();
 		if (this.mouseEnabled) {
 			switch (event.button) {
-				case 0: moveForward = true; break;
-				case 2: moveBackward = true; break;
+				case 0: break;
+				case 2: break;
 			}
 		}
 	};
@@ -73,8 +73,8 @@ Controls = function (object, domElement) {
 		event.stopPropagation();
 		if (this.mouseEnabled) {
 			switch (event.button) {
-				case 0: moveForward = false; break;
-				case 2: moveBackward = false; break;
+				case 0: break;
+				case 2: break;
 			}
 		}
 	};
@@ -105,8 +105,6 @@ Controls = function (object, domElement) {
 			case 83: /*S*/ moveBackward = true; break;
 			case 39: /*right*/
 			case 68: /*D*/ moveRight = true; break;
-			case 82: /*R*/ moveUp = true; break;
-			case 70: /*F*/ moveDown = true; break;
 			case 81: /*Q*/ this.active = !this.active; break;
 		}
 	};
@@ -121,8 +119,6 @@ Controls = function (object, domElement) {
 			case 83: /*S*/ moveBackward = false; break;
 			case 39: /*right*/
 			case 68: /*D*/ moveRight = false; break;
-			case 82: /*R*/ moveUp = false; break;
-			case 70: /*F*/ moveDown = false; break;
 		}
 	};
 
