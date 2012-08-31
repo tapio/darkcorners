@@ -66,8 +66,10 @@ function init() {
 			container.webkitRequestPointerLock ||
 			container.mozRequestPointerLock;
 
-	window.addEventListener('resize', onWindowResize, false);
-	document.getElementById("lockmouse").addEventListener('click', container.webkitRequestPointerLock, false);
+	$(window).resize(onWindowResize);
+	$(window).blur(pause);
+	$(window).focus(resume);
+	$("#lockmouse").click(container.webkitRequestPointerLock);
 	document.addEventListener('pointerlockchange', onPointerLockChange, false);
 	document.addEventListener('webkitpointerlockchange', onPointerLockChange, false);
 	document.addEventListener('mozpointerlockchange', onPointerLockChange, false);
@@ -83,6 +85,14 @@ function onWindowResize() {
 function onPointerLockChange() {
 	controls.pointerLockEnabled = !controls.pointerLockEnabled;
 	document.getElementById("info").className = controls.pointerLockEnabled ? "hidden" : "";
+}
+
+function pause() {
+	controls.active = false;
+}
+
+function resume() {
+	controls.active = true;
 }
 
 function animate() {
