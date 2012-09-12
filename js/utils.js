@@ -24,7 +24,7 @@ function createMaterial(base_image) {
 	uniforms["tSpecular"].value = loadTexture(base_image + "_specular.jpg");
 	uniforms["tNormal"].value = loadTexture(base_image + "_normalmap.jpg");
 	uniforms["uShininess"].value = shininess;
-	uniforms["uNormalScale"].value = -1;
+	uniforms["uNormalScale"].value = new THREE.Vector2(-1, 1);
 
 	//uniforms["tDisplacement"].texture = loadTexture(base_image + "_height.jpg");
 	//uniforms["uDisplacementBias"].value = - 0.428408 * scale;
@@ -44,7 +44,6 @@ function createMaterial(base_image) {
 	uniforms["uSpecularColor"].value.convertGammaToLinear();
 	uniforms["uAmbientColor"].value.convertGammaToLinear();
 
-
 	//uniforms["wrapRGB"].value.set(0.575, 0.5, 0.5);
 	*/
 
@@ -56,8 +55,7 @@ function createMaterial(base_image) {
 		perPixel: true,
 		map: loadTexture(base_image + ".jpg"),
 		specularMap: loadTexture(base_image + "_specular.jpg"),
-		normalMap: loadTexture(base_image + "_normalmap.jpg"),
-		normalScale: 1
+		normalMap: loadTexture(base_image + "_normalmap.jpg")
 		});
 
 	/*return new THREE.ShaderMaterial({
