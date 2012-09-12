@@ -14,19 +14,19 @@ function loadTexture(path) {
 	return texture;
 }
 
-function createMaterial(base_image) {
+function createMaterial(base_path) {
 	var ambient = 0x333333, diffuse = 0xbbbbbb, specular = 0xffffff, shininess = 30, scale = 1.0;
 	/*
 	var shader = THREE.ShaderUtils.lib["normal"];
 	var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
 
-	uniforms["tDiffuse"].value = loadTexture(base_image + ".jpg");
-	uniforms["tSpecular"].value = loadTexture(base_image + "_specular.jpg");
-	uniforms["tNormal"].value = loadTexture(base_image + "_normalmap.jpg");
+	uniforms["tDiffuse"].value = loadTexture(base_path + ".jpg");
+	uniforms["tSpecular"].value = loadTexture(base_path + "_specular.jpg");
+	uniforms["tNormal"].value = loadTexture(base_path + "_normalmap.jpg");
 	uniforms["uShininess"].value = shininess;
 	uniforms["uNormalScale"].value = new THREE.Vector2(-1, 1);
 
-	//uniforms["tDisplacement"].texture = loadTexture(base_image + "_height.jpg");
+	//uniforms["tDisplacement"].texture = loadTexture(base_path + "_height.jpg");
 	//uniforms["uDisplacementBias"].value = - 0.428408 * scale;
 	//uniforms["uDisplacementScale"].value = 2.436143 * scale;
 
@@ -53,9 +53,9 @@ function createMaterial(base_image) {
 		specular: specular,
 		shininess: shininess,
 		perPixel: true,
-		map: loadTexture(base_image + ".jpg"),
-		specularMap: loadTexture(base_image + "_specular.jpg"),
-		normalMap: loadTexture(base_image + "_normalmap.jpg")
+		map: loadTexture(base_path + "/diffuse.jpg"),
+		specularMap: loadTexture(base_path + "/specular.jpg"),
+		normalMap: loadTexture(base_path + "/normal.jpg")
 		});
 
 	/*return new THREE.ShaderMaterial({

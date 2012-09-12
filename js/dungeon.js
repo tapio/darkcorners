@@ -4,8 +4,8 @@ function Dungeon(scene, player, map) {
 	this.mesh = undefined;
 	this.lights = [];
 
-	var floor_mat = createMaterial("../assets/textures/floor");
-	var wall_mat = createMaterial("../assets/textures/wall");
+	var floor_mat = createMaterial("../assets/textures/stone-02");
+	var wall_mat = createMaterial("../assets/textures/stone-01");
 	var materials = [
 		wall_mat, // right
 		wall_mat, // left
