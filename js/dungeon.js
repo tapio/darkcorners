@@ -3,17 +3,22 @@ function Dungeon(scene, player, map) {
 	this.depth = map.map.length;
 	this.mesh = undefined;
 	this.lights = [];
+	var asset_path = "../assets/textures/";
 
-	var floor_mat = createMaterial("../assets/textures/stone-02");
-	var wall_mat = createMaterial("../assets/textures/stone-01");
-	var materials = [
-		wall_mat, // right
-		wall_mat, // left
-		floor_mat, // top
-		floor_mat, // bottom
-		wall_mat, // back
-		wall_mat  // front
-	];
+	var materials = {};
+	for (var tex in map.blocks) {
+		if (!map.blocks.hasOwnProperty(tex)) continue;
+		var floor_mat = map.blocks[tex].floor ? createMaterial(asset_path + map.blocks[tex].floor) : new THREE.MeshBasicMaterial();
+		var wall_mat = map.blocks[tex].wall ? createMaterial(asset_path + map.blocks[tex].wall) : new THREE.MeshBasicMaterial();
+		materials[tex] = [
+			wall_mat, // right
+			wall_mat, // left
+			floor_mat, // top
+			floor_mat, // bottom
+			wall_mat, // back
+			wall_mat  // front
+		];
+	}
 
 	function getCell(x, z) {
 		if (x < 0 || x >= map.map[0].length) return "#";
@@ -22,13 +27,13 @@ function Dungeon(scene, player, map) {
 	}
 
 	var cell, cell2, px, nx, pz, nz, cubes = [];
-	for (var i = 0; i < 16; i++) {
+	/*for (var i = 0; i < 16; i++) {
 		px = (i & 8) == 8;
 		nx = (i & 4) == 4;
 		pz = (i & 2) == 2;
 		nz = (i & 1) == 1;
 		cubes[i] = new THREE.CubeGeometry(100, 100, 100, 1, 1, 1, materials, { px: px, nx: nx, py: true, ny: false, pz: pz, nz: nz });
-	}
+	}*/
 
 	var ambientLight = new THREE.AmbientLight(0xaaaaaa);
 	scene.add(ambientLight);
@@ -48,6 +53,7 @@ function Dungeon(scene, player, map) {
 		for (var x = 0; x < this.width; x++) {
 			px = nx = pz = nz = 0;
 			cell = getCell(x, z);
+			// TODO: Remove hard coded "#", determine wall from block definitions
 			if (cell == "#") {
 				cell2 = getCell(x + 1, z);
 				px = cell2 != "#" ? 1 : 0;
@@ -58,13 +64,17 @@ function Dungeon(scene, player, map) {
 				cell2 = getCell(x, z - 1);
 				nz = cell2 != "#" ? 1 : 0;
 			}
-			this.mesh = new THREE.Mesh(cubes[ px * 8 + nx * 4 + pz * 2 + nz ]);
+			console.log(materials[cell]);
+			// TODO: Would be nice to create less CubeGeometry instances
+			var cube = new THREE.CubeGeometry(100, 100, 100, 1, 1, 1, materials[cell], { px: px, nx: nx, py: true, ny: false, pz: pz, nz: nz });
+			this.mesh = new THREE.Mesh(cube);
+			//this.mesh = new THREE.Mesh(cubes[ px * 8 + nx * 4 + pz * 2 + nz ]);
 			this.mesh.position.x = x * 100;
 			this.mesh.position.y = cell == "#" ? 100 : 0;
 			this.mesh.position.z = z * 100;
 			THREE.GeometryUtils.merge(geometry, this.mesh);
 			if (cell == "*") {
-				var light = new THREE.PointLight(0xffffaa, 1, 200);
+				light = new THREE.PointLight(0xffffaa, 1, 200);
 				light.position.set(this.mesh.position.x, this.mesh.position.y+100, this.mesh.position.z);
 				scene.add(light);
 				this.lights.push(light);
