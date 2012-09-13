@@ -9,7 +9,10 @@ function loadTexture(path) {
 		THREE.RepeatWrapping,
 		THREE.RepeatWrapping,
 		THREE.LinearFilter,
-		THREE.LinearMipMapLinearFilter
+		THREE.LinearMipMapLinearFilter,
+		THREE.RGBAFormat,
+		THREE.UnsignedByteType,
+		maxAnisotropy
 	);
 	return texture;
 }
