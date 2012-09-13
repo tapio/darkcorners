@@ -92,4 +92,18 @@ function Dungeon(scene, player, map) {
 	/*this.mesh.castShadow = true;
 	this.mesh.receiveShadow = true;*/
 	scene.add(this.mesh);
+
+	// Physics plane
+	var ground_material = Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xff00ff}),
+		.8, // high friction
+		.4 // low restitution
+	);
+	ground_material.visible = false;
+	var ground_plane = new Physijs.BoxMesh(
+		new THREE.CubeGeometry(map.gridSize * this.width, 1, map.gridSize * this.depth),
+		ground_material,
+		0 // mass
+	);
+	ground_plane.position = new THREE.Vector3(map.gridSize * this.width * 0.5, map.gridSize/2, map.gridSize * this.depth * 0.5);
+	scene.add(ground_plane);
 }
