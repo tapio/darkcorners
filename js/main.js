@@ -35,7 +35,7 @@ function init() {
 	controls.freezeObjectY = true;
 
 	scene = new Physijs.Scene();
-	scene.setGravity(new THREE.Vector3(0,10,0));
+	scene.setGravity(new THREE.Vector3(0,-100,0));
 	scene.fog = new THREE.FogExp2(0x000000, 0.0005);
 
 	renderer = new THREE.WebGLRenderer({ clearColor: 0x000000, maxLights: 6, antialias: true });

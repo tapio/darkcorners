@@ -90,7 +90,7 @@ function Dungeon(scene, player, map) {
 				function getAssetHandler(posx, posy, posz) {
 					return function(geom) {
 						console.log(geom);
-						var obj = new THREE.Mesh(geom, geom.materials[0]);
+						var obj = new Physijs.CylinderMesh(geom, geom.materials[0], 50);
 						obj.position.set(posx, posy, posz);
 						scene.add(obj)
 					}
