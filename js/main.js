@@ -1,4 +1,5 @@
 var DEBUG = true;
+var maxAnisotropy = 1;
 
 if (!Detector.webgl) {
 	Detector.addGetWebGLMessage();
@@ -37,8 +38,6 @@ function init() {
 	scene.setGravity(new THREE.Vector3(0,10,0));
 	scene.fog = new THREE.FogExp2(0x000000, 0.0005);
 
-	dungeon = new Dungeon(scene, camera, maps.test);
-
 	renderer = new THREE.WebGLRenderer({ clearColor: 0x000000, maxLights: 6, antialias: true });
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.shadowMapEnabled = true;
@@ -46,6 +45,9 @@ function init() {
 	renderer.gammaInput = true;
 	renderer.gammaOutput = true;
 	renderer.physicallyBasedShading = true;
+	maxAnisotropy = renderer.getMaxAnisotropy();
+
+	dungeon = new Dungeon(scene, camera, maps.test);
 
 	dumpInfo();
 
