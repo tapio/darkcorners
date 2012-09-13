@@ -23,7 +23,6 @@ function init() {
 	container = document.getElementById('container');
 
 	camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 20000);
-	camera.position.y = getY(worldHalfWidth, worldHalfDepth) * 100 + 100;
 
 	controls = new Controls(camera);
 	controls.movementSpeed = 500;
@@ -102,7 +101,6 @@ function animate() {
 		dungeon.lights[i].intensity = 0.5 + 0.5 * getAnim(anim);
 		dungeon.lights[i].position.y += 4 * (getAnim(anim) - 0.5);
 	}
-}
 
 	var jigglyAng = fract(timeNow / 1000.0) * 2 * Math.PI;
 	var jigglyDist = Math.sin(getAnim(timeNow / 240.0)) * 15;
