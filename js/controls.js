@@ -17,7 +17,6 @@ Controls = function (object, domElement) {
 	this.autoForward = false;
 	this.mouseEnabled = true;
 	this.active = true;
-	this.freezeObjectY = false;
 
 	this.constrainVerticalLook = false;
 	this.verticalMin = 0;
@@ -124,30 +123,11 @@ Controls = function (object, domElement) {
 
 	this.update = function(delta) {
 		if (!this.active) return;
-		var savedY = this.object.position.y;
 
-		var actualMoveSpeed = delta * this.movementSpeed,
+		var actualMoveSpeed = delta * this.movementSpeed * 1000,
 			actualLookSpeed = this.mouseEnabled ? delta * this.lookSpeed : 0,
 			targetPosition = this.target,
 			cameraPosition = this.object.position;
-
-		if (moveForward || (this.autoForward && !moveBackward)) {
-			this.object.translateZ(-actualMoveSpeed);
-		} else if (moveBackward) {
-			this.object.translateZ(actualMoveSpeed);
-		}
-
-		if (moveLeft) {
-			this.object.translateX(-actualMoveSpeed);
-		} else if (moveRight) {
-			this.object.translateX(actualMoveSpeed);
-		}
-
-		if (moveUp) {
-			this.object.translateY(actualMoveSpeed);
-		} else if (moveDown) {
-			this.object.translateY(-actualMoveSpeed);
-		}
 
 		if (this.pointerLockEnabled || this.mouseX * this.mouseX + this.mouseY * this.mouseY > 5000) {
 			lon += this.mouseX * actualLookSpeed;
@@ -171,8 +151,32 @@ Controls = function (object, domElement) {
 			this.mouseY = 0;
 		}
 
-		if (this.freezeObjectY) this.object.position.y = savedY;
-		this.object.lookAt(targetPosition);
+		this.object.camera.lookAt(targetPosition);
+
+		var moveImpulse = new THREE.Vector3(
+			-actualMoveSpeed * (cameraPosition.x - targetPosition.x),
+			0,
+			-actualMoveSpeed * (cameraPosition.z - targetPosition.z)
+		);
+
+		if (moveForward || (this.autoForward && !moveBackward)) {
+			this.object.applyCentralImpulse(moveImpulse);
+		} else if (moveBackward) {
+			//this.object.translateZ(actualMoveSpeed);
+		}
+
+		if (moveLeft) {
+			//this.object.translateX(-actualMoveSpeed);
+		} else if (moveRight) {
+			//this.object.translateX(actualMoveSpeed);
+		}
+
+		if (moveUp) {
+			//this.object.translateY(actualMoveSpeed);
+		} else if (moveDown) {
+			//this.object.translateY(-actualMoveSpeed);
+		}
+
 	};
 
 

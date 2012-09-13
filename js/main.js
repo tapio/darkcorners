@@ -12,7 +12,7 @@ Physijs.scripts.ammo = '../libs/ammo.js';
 
 var fogExp2 = true;
 var container, stats;
-var camera, controls, scene, renderer;
+var pl, controls, scene, renderer;
 var dungeon;
 var clock = new THREE.Clock();
 
@@ -23,20 +23,27 @@ function init() {
 
 	container = document.getElementById('container');
 
-	camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 20000);
+	scene = new Physijs.Scene();
+	scene.setGravity(new THREE.Vector3(0,-100,0));
+	scene.fog = new THREE.FogExp2(0x000000, 0.0005);
 
-	controls = new Controls(camera);
+	pl = new Physijs.CylinderMesh(
+		new THREE.CylinderGeometry(20, 20, 100 ),
+		new THREE.MeshBasicMaterial({ color: 0xff00ff })
+	);
+	pl.visible = false;
+	// Add pl later to the scene
+
+	pl.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 20000);
+	pl.camera.position = pl.position;
+
+	controls = new Controls(pl);
 	controls.movementSpeed = 500;
 	controls.lookSpeed = 0.5;
 	controls.lookVertical = true;
 	controls.constrainVerticalLook = true;
 	controls.verticalMin = 1.3;
 	controls.verticalMax = 1.9;
-	controls.freezeObjectY = true;
-
-	scene = new Physijs.Scene();
-	scene.setGravity(new THREE.Vector3(0,-100,0));
-	scene.fog = new THREE.FogExp2(0x000000, 0.0005);
 
 	renderer = new THREE.WebGLRenderer({ clearColor: 0x000000, maxLights: 6, antialias: true });
 	renderer.setSize(window.innerWidth, window.innerHeight);
@@ -47,7 +54,8 @@ function init() {
 	renderer.physicallyBasedShading = true;
 	maxAnisotropy = renderer.getMaxAnisotropy();
 
-	dungeon = new Dungeon(scene, camera, maps.test);
+	dungeon = new Dungeon(scene, pl, maps.test);
+	scene.add(pl);
 
 	dumpInfo();
 
@@ -74,8 +82,8 @@ function init() {
 }
 
 function onWindowResize() {
-	camera.aspect = window.innerWidth / window.innerHeight;
-	camera.updateProjectionMatrix();
+	pl.camera.aspect = window.innerWidth / window.innerHeight;
+	pl.camera.updateProjectionMatrix();
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	controls.handleResize();
 }
@@ -108,7 +116,7 @@ function animate() {
 	var jigglyDist = Math.sin(getAnim(timeNow / 240.0)) * 15;
 	var jigglydx = Math.cos(jigglyAng) * jigglyDist;
 	var jigglydz = Math.sin(jigglyAng) * jigglyDist;
-	dungeon.lights[0].position.set(camera.position.x+jigglydx, camera.position.y - 10, camera.position.z+jigglydz);
+	dungeon.lights[0].position.set(pl.position.x+jigglydx, pl.position.y - 10, pl.position.z+jigglydz);
 }
 
 function render() {
@@ -116,7 +124,7 @@ function render() {
 	controls.update(clock.getDelta());
 	scene.simulate();
 	animate();
-	renderer.render(scene, camera);
+	renderer.render(scene, pl.camera);
 	stats.update();
 }
 
