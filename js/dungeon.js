@@ -38,7 +38,7 @@ function Dungeon(scene, player, map) {
 	var ambientLight = new THREE.AmbientLight(0xaaaaaa);
 	scene.add(ambientLight);
 
-	var playerLight = new THREE.PointLight(0xffffaa, 1, 200);
+	var playerLight = new THREE.PointLight(0xffffaa, 1, map.gridSize * 2);
 	//playerLight.position = player.position;
 	scene.add(playerLight);
 	this.lights.push(playerLight);
@@ -65,16 +65,17 @@ function Dungeon(scene, player, map) {
 				nz = cell2 != "#" ? 1 : 0;
 			}
 			// TODO: Would be nice to create less CubeGeometry instances
-			var cube = new THREE.CubeGeometry(100, 100, 100, 1, 1, 1, materials[cell], { px: px, nx: nx, py: true, ny: false, pz: pz, nz: nz });
+			var cube = new THREE.CubeGeometry(map.gridSize, map.gridSize, map.gridSize, 1, 1, 1,
+				materials[cell], { px: px, nx: nx, py: true, ny: false, pz: pz, nz: nz });
 			this.mesh = new THREE.Mesh(cube);
 			//this.mesh = new THREE.Mesh(cubes[ px * 8 + nx * 4 + pz * 2 + nz ]);
-			this.mesh.position.x = x * 100;
-			this.mesh.position.y = cell == "#" ? 100 : 0;
-			this.mesh.position.z = z * 100;
+			this.mesh.position.x = x * map.gridSize;
+			this.mesh.position.y = cell == "#" ? map.gridSize : 0;
+			this.mesh.position.z = z * map.gridSize;
 			THREE.GeometryUtils.merge(geometry, this.mesh);
 			if (cell == "*") {
-				light = new THREE.PointLight(0xffffaa, 1, 200);
-				light.position.set(this.mesh.position.x, this.mesh.position.y+100, this.mesh.position.z);
+				light = new THREE.PointLight(0xffffaa, 1, 2 * map.gridSize);
+				light.position.set(this.mesh.position.x, this.mesh.position.y + map.gridSize, this.mesh.position.z);
 				scene.add(light);
 				this.lights.push(light);
 				// Debug body
