@@ -73,6 +73,7 @@ function Dungeon(scene, player, map) {
 			this.mesh.position.y = cell == "#" ? map.gridSize : 0;
 			this.mesh.position.z = z * map.gridSize;
 			THREE.GeometryUtils.merge(geometry, this.mesh);
+			// Light
 			if (cell == "*") {
 				light = new THREE.PointLight(0xffffaa, 1, 2 * map.gridSize);
 				light.position.set(this.mesh.position.x, this.mesh.position.y + map.gridSize, this.mesh.position.z);
@@ -84,6 +85,18 @@ function Dungeon(scene, player, map) {
 					light_body.position = light.position;
 					scene.add(light_body);
 				}
+			// Barrel
+			} else if (cell == "o") {
+				function getAssetHandler(posx, posy, posz) {
+					return function(geom) {
+						console.log(geom);
+						var obj = new THREE.Mesh(geom, geom.materials[0]);
+						obj.position.set(posx, posy, posz);
+						scene.add(obj)
+					}
+				}
+				var loader = new THREE.JSONLoader();
+				loader.load("../assets/models/barrel/barrel.js", getAssetHandler(x * map.gridSize, 100, z * map.gridSize));
 			}
 		}
 	}
