@@ -12,19 +12,25 @@ body {
 
 a { color: #a06851; }
 
+.hidden {
+	display: none;
+}
+
 #info {
 	position: absolute;
-	top: 0px; width: 100%;
+	top: 50%; width: 100%;
 	padding: 5px;
 }
 
-#oldie {
-	background:rgb(100,0,0) !important;
-	color:#fff !important;
-	margin-top:10em !important;
+button {
+	border: 0;
+	border-radius: 5px;
+	background: rgba(0,0,0,0.7);
+	color: orange;
+	cursor: pointer;
 }
-#oldie a { color:#fff }
 
-
-button { border:0; background:rgba(0,0,0,0.5); color:orange; cursor:pointer }
-button:hover { color:gold }
+button:hover {
+	color:gold;
+	background: rgba(255,0,0,0.8);
+}
