@@ -35,9 +35,8 @@ function init() {
 	// Add pl later to the scene
 
 	pl.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 20000);
-	pl.camera.position = pl.position;
 
-	controls = new Controls(pl);
+	controls = new Controls(pl.camera);
 	controls.movementSpeed = 500;
 	controls.lookSpeed = 0.5;
 	controls.lookVertical = true;
@@ -55,6 +54,7 @@ function init() {
 	maxAnisotropy = renderer.getMaxAnisotropy();
 
 	dungeon = new Dungeon(scene, pl, maps.test);
+	pl.camera.position.set(pl.position.x, pl.position.y, pl.position.z);
 	scene.add(pl);
 
 	dumpInfo();
@@ -121,8 +121,18 @@ function animate() {
 
 function render() {
 	requestAnimationFrame(render);
-	controls.update(clock.getDelta());
+
+	// Player movement, controls and physics
+	var dt = clock.getDelta();
+	var pos0 = new THREE.Vector3(pl.camera.position.x, pl.camera.position.y, pl.camera.position.z);
+	controls.update(dt);
+	var pos1 = new THREE.Vector3(pl.camera.position.x, pl.camera.position.y, pl.camera.position.z);
+	pos1.subSelf(pos0); // Becomes velocity
+	pos1.divideScalar(dt);
+	pl.setLinearVelocity(pos1);
 	scene.simulate();
+	controls.object.position.set(pl.position.x, pl.position.y, pl.position.z);
+
 	animate();
 	renderer.render(scene, pl.camera);
 	stats.update();

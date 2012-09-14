@@ -124,10 +124,12 @@ Controls = function (object, domElement) {
 	this.update = function(delta) {
 		if (!this.active) return;
 
-		var actualMoveSpeed = delta * this.movementSpeed * 1000,
+		var actualMoveSpeed = delta * this.movementSpeed,
 			actualLookSpeed = this.mouseEnabled ? delta * this.lookSpeed : 0,
 			targetPosition = this.target,
 			cameraPosition = this.object.position;
+
+		// Looking
 
 		if (this.pointerLockEnabled || this.mouseX * this.mouseX + this.mouseY * this.mouseY > 5000) {
 			lon += this.mouseX * actualLookSpeed;
@@ -151,30 +153,26 @@ Controls = function (object, domElement) {
 			this.mouseY = 0;
 		}
 
-		this.object.camera.lookAt(targetPosition);
+		this.object.lookAt(targetPosition);
 
-		var moveImpulse = new THREE.Vector3(
-			-actualMoveSpeed * (cameraPosition.x - targetPosition.x),
-			0,
-			-actualMoveSpeed * (cameraPosition.z - targetPosition.z)
-		);
+		// Movement
 
 		if (moveForward || (this.autoForward && !moveBackward)) {
-			this.object.applyCentralImpulse(moveImpulse);
+			this.object.translateZ(-actualMoveSpeed);
 		} else if (moveBackward) {
-			//this.object.translateZ(actualMoveSpeed);
+			this.object.translateZ(actualMoveSpeed);
 		}
 
 		if (moveLeft) {
-			//this.object.translateX(-actualMoveSpeed);
+			this.object.translateX(-actualMoveSpeed);
 		} else if (moveRight) {
-			//this.object.translateX(actualMoveSpeed);
+			this.object.translateX(actualMoveSpeed);
 		}
 
 		if (moveUp) {
-			//this.object.translateY(actualMoveSpeed);
+			this.object.translateY(actualMoveSpeed);
 		} else if (moveDown) {
-			//this.object.translateY(-actualMoveSpeed);
+			this.object.translateY(-actualMoveSpeed);
 		}
 
 	};
