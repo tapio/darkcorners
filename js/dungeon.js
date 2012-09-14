@@ -4,6 +4,7 @@ function Dungeon(scene, player, map) {
 	this.mesh = undefined;
 	this.lights = [];
 	var asset_path = "assets/textures/";
+	var dummy_material = new THREE.MeshBasicMaterial({color: 0xff00ff});
 
 	map.gridSize *= UNIT;
 
@@ -74,6 +75,13 @@ function Dungeon(scene, player, map) {
 			this.mesh.position.y = cell == "#" ? map.gridSize : 0;
 			this.mesh.position.z = z * map.gridSize;
 			THREE.GeometryUtils.merge(geometry, this.mesh);
+			// Collision body
+			if (cell == "#") {
+				var wallbody = new Physijs.BoxMesh(cube, dummy_material, 0);
+				wallbody.position.copy(this.mesh.position);
+				wallbody.visible = false;
+				scene.add(wallbody);
+			}
 			// Light
 			if (cell == "*") {
 				light = new THREE.PointLight(0xffffaa, 1, 2 * map.gridSize);
@@ -108,7 +116,7 @@ function Dungeon(scene, player, map) {
 	scene.add(this.mesh);
 
 	// Physics plane
-	var ground_material = Physijs.createMaterial(new THREE.MeshBasicMaterial({color: 0xff00ff}),
+	var ground_material = Physijs.createMaterial(dummy_material,
 		.8, // high friction
 		.4 // low restitution
 	);
