@@ -3,7 +3,7 @@ function Dungeon(scene, player, map) {
 	this.depth = map.map.length;
 	this.mesh = undefined;
 	this.lights = [];
-	var asset_path = "../assets/textures/";
+	var asset_path = "assets/textures/";
 
 	var materials = {};
 	for (var tex in map.blocks) {
@@ -96,7 +96,7 @@ function Dungeon(scene, player, map) {
 					}
 				}
 				var loader = new THREE.JSONLoader();
-				loader.load("../assets/models/barrel/barrel.js", getAssetHandler(x * map.gridSize, 100, z * map.gridSize));
+				loader.load("assets/models/barrel/barrel.js", getAssetHandler(x * map.gridSize, 100, z * map.gridSize));
 			}
 		}
 	}
