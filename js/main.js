@@ -1,5 +1,6 @@
 var DEBUG = true;
 var maxAnisotropy = 1;
+var UNIT = 1;
 
 if (!Detector.webgl) {
 	Detector.addGetWebGLMessage();
@@ -10,7 +11,6 @@ Physijs.scripts.worker = 'libs/physijs_worker.js';
 Physijs.scripts.ammo = '../libs/ammo.js';
 
 
-var fogExp2 = true;
 var container, stats;
 var pl, controls, scene, renderer;
 var dungeon;
@@ -24,20 +24,20 @@ function init() {
 	container = document.getElementById('container');
 
 	scene = new Physijs.Scene();
-	scene.setGravity(new THREE.Vector3(0,-100,0));
-	scene.fog = new THREE.FogExp2(0x000000, 0.0005);
+	scene.setGravity(new THREE.Vector3(0, -10 * UNIT, 0));
+	//scene.fog = new THREE.FogExp2(0x000000, 0.0005);
 
 	pl = new Physijs.SphereMesh(
-		new THREE.SphereGeometry(50),
+		new THREE.SphereGeometry(1.5 * UNIT),
 		new THREE.MeshBasicMaterial({ color: 0xff00ff })
 	);
 	pl.visible = false;
 	// Add pl later to the scene
 
-	pl.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 20000);
+	pl.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.01 * UNIT, 100 * UNIT);
 
 	controls = new Controls(pl.camera);
-	controls.movementSpeed = 500;
+	controls.movementSpeed = 10 * UNIT;
 	controls.lookSpeed = 0.5;
 	controls.lookVertical = true;
 	controls.constrainVerticalLook = true;
@@ -60,7 +60,6 @@ function init() {
 	dumpInfo();
 
 	container.innerHTML = "";
-
 	container.appendChild(renderer.domElement);
 
 	stats = new Stats();
@@ -109,11 +108,11 @@ function animate() {
 	for (var i = 1; i < dungeon.lights.length; ++i) {
 		var anim = timeNow / (1000.0 + i);
 		dungeon.lights[i].intensity = 0.5 + 0.5 * getAnim(anim);
-		dungeon.lights[i].position.y += 4 * (getAnim(anim) - 0.5);
+		dungeon.lights[i].position.y += 0.04 * (getAnim(anim) - 0.5) * UNIT;
 	}
 
 	var jigglyAng = fract(timeNow / 1000.0) * 2 * Math.PI;
-	var jigglyDist = Math.sin(getAnim(timeNow / 240.0)) * 15;
+	var jigglyDist = Math.sin(getAnim(timeNow / 240.0)) * 0.15 * UNIT;
 	var jigglydx = Math.cos(jigglyAng) * jigglyDist;
 	var jigglydz = Math.sin(jigglyAng) * jigglyDist;
 	dungeon.lights[0].position.set(pl.position.x+jigglydx, pl.position.y - 10, pl.position.z+jigglydz);
@@ -124,11 +123,11 @@ function render() {
 
 	// Player movement, controls and physics
 	var dt = clock.getDelta();
-	var pos0 = new THREE.Vector3(pl.camera.position.x, pl.camera.position.y, pl.camera.position.z);
+	var pos0 = new THREE.Vector3(pl.camera.position.x, 0, pl.camera.position.z);
 	controls.update(dt);
-	var pos1 = new THREE.Vector3(pl.camera.position.x, pl.camera.position.y, pl.camera.position.z);
+	var pos1 = new THREE.Vector3(pl.camera.position.x, 0, pl.camera.position.z);
 	pos1.subSelf(pos0); // Becomes velocity
-	pos1.divideScalar(dt);
+	pos1.divideScalar(dt * UNIT);
 	pl.setLinearVelocity(pos1);
 	scene.simulate();
 	controls.object.position.set(pl.position.x, pl.position.y, pl.position.z);

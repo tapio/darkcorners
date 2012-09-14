@@ -22,6 +22,6 @@ var maps = {
 			"####################"
 		],
 		start: [ 5, 8 ],
-		gridSize: 100
+		gridSize: 3
 	}
 };

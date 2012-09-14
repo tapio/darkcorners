@@ -5,6 +5,8 @@ function Dungeon(scene, player, map) {
 	this.lights = [];
 	var asset_path = "assets/textures/";
 
+	map.gridSize *= UNIT;
+
 	var materials = {};
 	for (var tex in map.blocks) {
 		if (!map.blocks.hasOwnProperty(tex)) continue;
@@ -39,7 +41,6 @@ function Dungeon(scene, player, map) {
 	scene.add(ambientLight);
 
 	var playerLight = new THREE.PointLight(0xffffaa, 1, map.gridSize * 2);
-	//playerLight.position = player.position;
 	scene.add(playerLight);
 	this.lights.push(playerLight);
 
@@ -47,7 +48,7 @@ function Dungeon(scene, player, map) {
 	player.position.set(map.start[0] * map.gridSize, map.gridSize, map.start[1] * map.gridSize);
 
 	var geometry = new THREE.Geometry(), light, light_body;
-	var sphere = new THREE.SphereGeometry(5, 16, 8);
+	var sphere = new THREE.SphereGeometry(0.05 * UNIT, 16, 8);
 
 	for (var z = 0; z < this.depth; z++) {
 		for (var x = 0; x < this.width; x++) {
@@ -90,13 +91,13 @@ function Dungeon(scene, player, map) {
 				function getAssetHandler(posx, posy, posz) {
 					return function(geom) {
 						console.log(geom);
-						var obj = new Physijs.CylinderMesh(geom, geom.materials[0], 5000);
+						var obj = new Physijs.CylinderMesh(geom, geom.materials[0], 10);
 						obj.position.set(posx, posy, posz);
 						scene.add(obj)
 					}
 				}
 				var loader = new THREE.JSONLoader();
-				loader.load("assets/models/barrel/barrel.js", getAssetHandler(x * map.gridSize, 100, z * map.gridSize));
+				loader.load("assets/models/barrel/barrel.js", getAssetHandler(x * map.gridSize, map.gridSize, z * map.gridSize));
 			}
 		}
 	}
@@ -117,6 +118,6 @@ function Dungeon(scene, player, map) {
 		ground_material,
 		0 // mass
 	);
-	ground_plane.position = new THREE.Vector3(map.gridSize * this.width * 0.5, map.gridSize/2, map.gridSize * this.depth * 0.5);
+	ground_plane.position = new THREE.Vector3(map.gridSize * this.width * 0.5, 1, map.gridSize * this.depth * 0.5);
 	scene.add(ground_plane);
 }
