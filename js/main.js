@@ -27,8 +27,8 @@ function init() {
 	scene.setGravity(new THREE.Vector3(0,-100,0));
 	scene.fog = new THREE.FogExp2(0x000000, 0.0005);
 
-	pl = new Physijs.CylinderMesh(
-		new THREE.CylinderGeometry(20, 20, 100 ),
+	pl = new Physijs.SphereMesh(
+		new THREE.SphereGeometry(50),
 		new THREE.MeshBasicMaterial({ color: 0xff00ff })
 	);
 	pl.visible = false;
