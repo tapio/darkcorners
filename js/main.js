@@ -6,7 +6,7 @@ if (!Detector.webgl) {
 	document.getElementById('container').innerHTML = "";
 }
 
-Physijs.scripts.worker = '../libs/physijs_worker.js';
+Physijs.scripts.worker = 'libs/physijs_worker.js';
 Physijs.scripts.ammo = '../libs/ammo.js';
 
 
