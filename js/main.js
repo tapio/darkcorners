@@ -74,7 +74,7 @@ function init() {
 	$(window).resize(onWindowResize);
 	$(window).blur(pause);
 	$(window).focus(resume);
-	$("#lockmouse").click(container.webkitRequestPointerLock);
+	$("#lockmouse").click(container.requestPointerLock);
 	document.addEventListener('pointerlockchange', onPointerLockChange, false);
 	document.addEventListener('webkitpointerlockchange', onPointerLockChange, false);
 	document.addEventListener('mozpointerlockchange', onPointerLockChange, false);
