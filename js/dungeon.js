@@ -34,7 +34,7 @@ function Dungeon(scene, player, map) {
 	var ambientLight = new THREE.AmbientLight(0xaaaaaa);
 	scene.add(ambientLight);
 
-	var playerLight = new THREE.PointLight(0xffffaa, 1, map.gridSize * 2);
+	var playerLight = new THREE.PointLight(0xffffff, 1, map.gridSize * 2);
 	scene.add(playerLight);
 	this.lights.push(playerLight);
 
