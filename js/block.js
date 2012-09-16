@@ -39,7 +39,7 @@ BlockGeometry = function (width, height, depth, segmentsWidth, segmentsHeight, s
 
 	this.sides.px && buildPlane('z', 'y', - 1, - 1, depth, height, width_half, mpx); // px
 	this.sides.nx && buildPlane('z', 'y',   1, - 1, depth, height, - width_half, mnx); // nx
-	this.sides.py && buildPlane('x', 'z', - 1,   1, width, depth, height_half, mpy); // py
+	this.sides.py && buildPlane('x', 'z', - 1,   1, width, depth, height_half, mpy, true); // py
 	this.sides.ny && buildPlane('x', 'z', - 1, - 1, width, depth, - height_half, mny, true); // ny
 	this.sides.pz && buildPlane('x', 'y',   1, - 1, width, height, depth_half, mpz); // pz
 	this.sides.nz && buildPlane('x', 'y', - 1, - 1, width, height, - depth_half, mnz); // nz

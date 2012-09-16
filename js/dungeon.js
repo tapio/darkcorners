@@ -79,7 +79,7 @@ function Dungeon(scene, player, map) {
 			// Light
 			if (cell == "*") {
 				light = new THREE.PointLight(0xffffaa, 1, 2 * map.gridSize);
-				light.position.set(this.mesh.position.x, this.mesh.position.y + map.gridSize, this.mesh.position.z);
+				light.position.set(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z);
 				scene.add(light);
 				this.lights.push(light);
 				// Debug body
