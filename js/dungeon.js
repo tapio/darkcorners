@@ -67,7 +67,7 @@ function Dungeon(scene, player, map) {
 				nz = cell2 != "#" ? 1 : 0;
 			}
 			// TODO: Would be nice to create less CubeGeometry instances
-			var cube = new THREE.CubeGeometry(map.gridSize, map.gridSize, map.gridSize, 1, 1, 1,
+			var cube = new BlockGeometry(map.gridSize, map.gridSize, map.gridSize, 1, 1, 1,
 				materials[cell], { px: px, nx: nx, py: true, ny: false, pz: pz, nz: nz });
 			this.mesh = new THREE.Mesh(cube);
 			//this.mesh = new THREE.Mesh(cubes[ px * 8 + nx * 4 + pz * 2 + nz ]);
