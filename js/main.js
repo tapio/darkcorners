@@ -29,7 +29,8 @@ function init() {
 
 	pl = new Physijs.SphereMesh(
 		new THREE.SphereGeometry(1.5 * UNIT),
-		new THREE.MeshBasicMaterial({ color: 0xff00ff })
+		new THREE.MeshBasicMaterial({ color: 0xff00ff }),
+		100
 	);
 	pl.visible = false;
 	// Add pl later to the scene
@@ -123,12 +124,13 @@ function render() {
 
 	// Player movement, controls and physics
 	var dt = clock.getDelta();
-	var pos0 = new THREE.Vector3(pl.camera.position.x, 0, pl.camera.position.z);
+	var v0 = new THREE.Vector3(pl.camera.position.x, 0, pl.camera.position.z);
 	controls.update(dt);
-	var pos1 = new THREE.Vector3(pl.camera.position.x, 0, pl.camera.position.z);
-	pos1.subSelf(pos0); // Becomes velocity
-	pos1.divideScalar(dt * UNIT);
-	pl.setLinearVelocity(pos1);
+	var v1 = new THREE.Vector3(pl.camera.position.x, 0, pl.camera.position.z);
+	v1.subSelf(v0); // Becomes velocity
+	v1.divideScalar(dt * UNIT);
+	v0 = pl.getLinearVelocity();
+	pl.setLinearVelocity({ x: v1.x, y: v0.y < 0 ? v0.y : 0, z: v1.z });
 	scene.simulate(); // Simulate physics
 	controls.object.position.set(pl.position.x, pl.position.y, pl.position.z);
 

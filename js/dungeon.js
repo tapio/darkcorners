@@ -131,8 +131,8 @@ function Dungeon(scene, player, map) {
 
 	// Physics plane
 	var ground_material = Physijs.createMaterial(dummy_material,
-		0.8, // high friction
-		0.4 // low restitution
+		0.9, // high friction
+		0.0 // low restitution
 	);
 	ground_material.visible = false;
 	var ground_plane = new Physijs.BoxMesh(
