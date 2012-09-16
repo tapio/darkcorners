@@ -13,10 +13,11 @@ function Dungeon(scene, player, map) {
 		if (!map.blocks.hasOwnProperty(tex)) continue;
 		var floor_mat = map.blocks[tex].floor ? createMaterial(asset_path + map.blocks[tex].floor) : new THREE.MeshBasicMaterial();
 		var wall_mat = map.blocks[tex].wall ? createMaterial(asset_path + map.blocks[tex].wall) : new THREE.MeshBasicMaterial();
+		var ceiling_mat = map.blocks[tex].ceiling ? createMaterial(asset_path + map.blocks[tex].ceiling) : new THREE.MeshBasicMaterial();
 		materials[tex] = [
 			wall_mat, // right
 			wall_mat, // left
-			floor_mat, // top
+			ceiling_mat, // top
 			floor_mat, // bottom
 			wall_mat, // back
 			wall_mat  // front
@@ -29,15 +30,7 @@ function Dungeon(scene, player, map) {
 		return map.map[z][x];
 	}
 
-	var cell, cell2, px, nx, pz, nz, cubes = [];
-	/*for (var i = 0; i < 16; i++) {
-		px = (i & 8) == 8;
-		nx = (i & 4) == 4;
-		pz = (i & 2) == 2;
-		nz = (i & 1) == 1;
-		cubes[i] = new THREE.CubeGeometry(100, 100, 100, 1, 1, 1, materials, { px: px, nx: nx, py: true, ny: false, pz: pz, nz: nz });
-	}*/
-
+	var cell, cell2, px, nx, pz, nz, py;
 	var ambientLight = new THREE.AmbientLight(0xaaaaaa);
 	scene.add(ambientLight);
 
@@ -53,7 +46,7 @@ function Dungeon(scene, player, map) {
 
 	for (var z = 0; z < this.depth; z++) {
 		for (var x = 0; x < this.width; x++) {
-			px = nx = pz = nz = 0;
+			px = nx = pz = nz = py = 0;
 			cell = getCell(x, z);
 			// TODO: Remove hard coded "#", determine wall from block definitions
 			if (cell == "#") {
@@ -65,14 +58,15 @@ function Dungeon(scene, player, map) {
 				pz = cell2 != "#" ? 1 : 0;
 				cell2 = getCell(x, z - 1);
 				nz = cell2 != "#" ? 1 : 0;
+			} else {
+				py = 1;
 			}
 			// TODO: Would be nice to create less CubeGeometry instances
 			var cube = new BlockGeometry(map.gridSize, map.gridSize, map.gridSize, 1, 1, 1,
-				materials[cell], { px: px, nx: nx, py: true, ny: false, pz: pz, nz: nz });
+				materials[cell], { px: px, nx: nx, py: py, ny: true, pz: pz, nz: nz });
 			this.mesh = new THREE.Mesh(cube);
-			//this.mesh = new THREE.Mesh(cubes[ px * 8 + nx * 4 + pz * 2 + nz ]);
 			this.mesh.position.x = x * map.gridSize;
-			this.mesh.position.y = cell == "#" ? map.gridSize : 0;
+			this.mesh.position.y = map.gridSize;
 			this.mesh.position.z = z * map.gridSize;
 			THREE.GeometryUtils.merge(geometry, this.mesh);
 			// Collision body
@@ -98,7 +92,6 @@ function Dungeon(scene, player, map) {
 			} else if (cell == "o") {
 				function getAssetHandler(posx, posy, posz) {
 					return function(geom) {
-						console.log(geom);
 						var obj = new Physijs.CylinderMesh(geom, geom.materials[0], 10);
 						obj.position.set(posx, posy, posz);
 						scene.add(obj)

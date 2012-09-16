@@ -3,10 +3,10 @@ var maps = {
 	test: {
 		blocks: {
 			"#": { wall: "stone-01" },
-			".": { floor: "stone-02" },
-			",": { floor: "stone-03" },
-			"*": { floor: "stone-02" },
-			"o": { floor: "stone-02" }
+			".": { floor: "stone-02", ceiling: "stone-01" },
+			",": { floor: "stone-03", ceiling: "stone-01" },
+			"*": { floor: "stone-02", ceiling: "stone-01" },
+			"o": { floor: "stone-02", ceiling: "stone-01" }
 		},
 		map: [
 			"####################",

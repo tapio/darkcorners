@@ -39,12 +39,12 @@ BlockGeometry = function (width, height, depth, segmentsWidth, segmentsHeight, s
 
 	this.sides.px && buildPlane('z', 'y', - 1, - 1, depth, height, width_half, mpx); // px
 	this.sides.nx && buildPlane('z', 'y',   1, - 1, depth, height, - width_half, mnx); // nx
-	this.sides.py && buildPlane('x', 'z',   1,   1, width, depth, height_half, mpy); // py
-	this.sides.ny && buildPlane('x', 'z',   1, - 1, width, depth, - height_half, mny); // ny
+	this.sides.py && buildPlane('x', 'z', - 1,   1, width, depth, height_half, mpy); // py
+	this.sides.ny && buildPlane('x', 'z', - 1, - 1, width, depth, - height_half, mny, true); // ny
 	this.sides.pz && buildPlane('x', 'y',   1, - 1, width, height, depth_half, mpz); // pz
 	this.sides.nz && buildPlane('x', 'y', - 1, - 1, width, height, - depth_half, mnz); // nz
 
-	function buildPlane(u, v, udir, vdir, width, height, depth, material) {
+	function buildPlane(u, v, udir, vdir, width, height, depth, material, flipNormal) {
 		var w, ix, iy,
 		gridX = segmentsWidth || 1,
 		gridY = segmentsHeight || 1,
@@ -69,6 +69,7 @@ BlockGeometry = function (width, height, depth, segmentsWidth, segmentsHeight, s
 		normal = new THREE.Vector3();
 
 		normal[w] = depth > 0 ? 1 : - 1;
+		if (flipNormal) normal[w] *= -1;
 
 		for (iy = 0; iy < gridY1; iy ++) {
 			for (ix = 0; ix < gridX1; ix ++) {
