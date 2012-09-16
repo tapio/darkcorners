@@ -42,8 +42,8 @@ function init() {
 	controls.lookSpeed = 0.5;
 	controls.lookVertical = true;
 	controls.constrainVerticalLook = true;
-	controls.verticalMin = 1.3;
-	controls.verticalMax = 1.9;
+	controls.verticalMin = 1.1;
+	controls.verticalMax = 2.2;
 
 	renderer = new THREE.WebGLRenderer({ clearColor: 0x000000, maxLights: 6, antialias: true });
 	renderer.setSize(window.innerWidth, window.innerHeight);
