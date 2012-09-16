@@ -29,7 +29,7 @@ BlockGeometry = function (width, height, depth, segmentsWidth, segmentsHeight, s
 
 	this.sides = { px: true, nx: true, py: true, ny: true, pz: true, nz: true };
 
-	if (sides != undefined) {
+	if (sides) {
 		for (var s in sides) {
 			if (this.sides[s] !== undefined) {
 				this.sides[s] = sides[s];

@@ -52,8 +52,8 @@ function Dungeon(scene, player, map) {
 				obj = new THREE.Mesh(geom, geom.materials[0]);
 			}
 			obj.position.set(x, y, z);
-			scene.add(obj)
-		}
+			scene.add(obj);
+		};
 	}
 	var loader = new THREE.JSONLoader();
 
@@ -131,8 +131,8 @@ function Dungeon(scene, player, map) {
 
 	// Physics plane
 	var ground_material = Physijs.createMaterial(dummy_material,
-		.8, // high friction
-		.4 // low restitution
+		0.8, // high friction
+		0.4 // low restitution
 	);
 	ground_material.visible = false;
 	var ground_plane = new Physijs.BoxMesh(
