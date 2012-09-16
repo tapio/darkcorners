@@ -3,7 +3,7 @@ function Dungeon(scene, player, map) {
 	this.depth = map.map.length;
 	this.mesh = undefined;
 	this.lights = [];
-	var asset_path = "assets/textures/";
+	var texture_path = "assets/textures/";
 	var dummy_material = new THREE.MeshBasicMaterial({color: 0xff00ff});
 
 	map.gridSize *= UNIT;
@@ -11,9 +11,9 @@ function Dungeon(scene, player, map) {
 	var materials = {};
 	for (var tex in map.blocks) {
 		if (!map.blocks.hasOwnProperty(tex)) continue;
-		var floor_mat = map.blocks[tex].floor ? createMaterial(asset_path + map.blocks[tex].floor) : new THREE.MeshBasicMaterial();
-		var wall_mat = map.blocks[tex].wall ? createMaterial(asset_path + map.blocks[tex].wall) : new THREE.MeshBasicMaterial();
-		var ceiling_mat = map.blocks[tex].ceiling ? createMaterial(asset_path + map.blocks[tex].ceiling) : new THREE.MeshBasicMaterial();
+		var floor_mat = map.blocks[tex].floor ? createMaterial(texture_path + map.blocks[tex].floor) : new THREE.MeshBasicMaterial();
+		var wall_mat = map.blocks[tex].wall ? createMaterial(texture_path + map.blocks[tex].wall) : new THREE.MeshBasicMaterial();
+		var ceiling_mat = map.blocks[tex].ceiling ? createMaterial(texture_path + map.blocks[tex].ceiling) : new THREE.MeshBasicMaterial();
 		materials[tex] = [
 			wall_mat, // right
 			wall_mat, // left
@@ -30,6 +30,33 @@ function Dungeon(scene, player, map) {
 		return map.map[z][x];
 	}
 
+	function getObjectHandler(x, y, z, def) {
+		return function(geom) {
+			if (!def) def = {};
+			var obj;
+			if (def.collision) {
+				if (def.collision == "plane")
+					obj = new Physijs.PlaneMesh(geom, geom.materials[0], def.mass);
+				else if (def.collision == "box")
+					obj = new Physijs.BoxMesh(geom, geom.materials[0], def.mass);
+				else if (def.collision == "sphere")
+					obj = new Physijs.SphereMesh(geom, geom.materials[0], def.mass);
+				else if (def.collision == "cylinder")
+					obj = new Physijs.CylinderMesh(geom, geom.materials[0], def.mass);
+				else if (def.collision == "cone")
+					obj = new Physijs.ConeMesh(geom, geom.materials[0], def.mass);
+				else if (def.collision == "convex")
+					obj = new Physijs.ConvexMesh(geom, geom.materials[0], def.mass);
+				else throw "Unsupported collision mesh type " + def.collision;
+			} else {
+				obj = new THREE.Mesh(geom, geom.materials[0]);
+			}
+			obj.position.set(x, y, z);
+			scene.add(obj)
+		}
+	}
+	var loader = new THREE.JSONLoader();
+
 	var cell, cell2, px, nx, pz, nz, py;
 	var ambientLight = new THREE.AmbientLight(0xaaaaaa);
 	scene.add(ambientLight);
@@ -41,7 +68,7 @@ function Dungeon(scene, player, map) {
 	// TODO: Set player rotation
 	player.position.set(map.start[0] * map.gridSize, map.gridSize, map.start[1] * map.gridSize);
 
-	var geometry = new THREE.Geometry(), light, light_body;
+	var geometry = new THREE.Geometry(), light, light_body, obj;
 	var sphere = new THREE.SphereGeometry(0.05 * UNIT, 16, 8);
 
 	for (var z = 0; z < this.depth; z++) {
@@ -69,7 +96,7 @@ function Dungeon(scene, player, map) {
 			this.mesh.position.y = map.gridSize;
 			this.mesh.position.z = z * map.gridSize;
 			THREE.GeometryUtils.merge(geometry, this.mesh);
-			// Collision body
+			// Collision body for walls
 			if (cell == "#") {
 				var wallbody = new Physijs.BoxMesh(cube, dummy_material, 0);
 				wallbody.position.copy(this.mesh.position);
@@ -88,28 +115,11 @@ function Dungeon(scene, player, map) {
 					light_body.position = light.position;
 					scene.add(light_body);
 				}
-			// Barrel
-			} else if (cell == "o") {
-				function getAssetHandler(posx, posy, posz) {
-					return function(geom) {
-						var obj = new Physijs.CylinderMesh(geom, geom.materials[0], 10);
-						obj.position.set(posx, posy, posz);
-						scene.add(obj)
-					}
-				}
-				var loader = new THREE.JSONLoader();
-				loader.load("assets/models/barrel/barrel.js", getAssetHandler(x * map.gridSize, map.gridSize, z * map.gridSize));
-			// Table
-			} else if (cell == "t") {
-				function getAssetHandler2(posx, posy, posz) {
-					return function(geom) {
-						var obj = new Physijs.BoxMesh(geom, geom.materials[0], 1000);
-						obj.position.set(posx, posy, posz);
-						scene.add(obj)
-					}
-				}
-				var loader2 = new THREE.JSONLoader();
-				loader2.load("assets/models/table-big/table-big.js", getAssetHandler2(x * map.gridSize, map.gridSize, z * map.gridSize));
+			// Objects
+			} else if (map.objects[cell]) {
+				obj = map.objects[cell];
+				loader.load("assets/models/" + obj.name + "/" + obj.name + ".js",
+					getObjectHandler(x * map.gridSize, map.gridSize, z * map.gridSize, obj));
 			}
 		}
 	}

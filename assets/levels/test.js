@@ -9,6 +9,10 @@ var maps = {
 			"o": { floor: "stone-02", ceiling: "stone-01" },
 			"t": { floor: "stone-02", ceiling: "stone-01" }
 		},
+		objects: {
+			"o": { name: "barrel", collision: "cylinder", mass: 50 },
+			"t": { name: "table-big", collision: "box", mass: 1000 }
+		},
 		map: [
 			"####################",
 			"#..*...............#",
