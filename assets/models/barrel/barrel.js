@@ -21,7 +21,7 @@
 	"DbgIndex" : 0,
 	"DbgName" : "barrel",
 	"blending" : "NormalBlending",
-	"colorAmbient" : [0.6400000190734865, 0.6400000190734865, 0.6400000190734865],
+	"colorAmbient" : [0.2, 0.2, 0.2],
 	"colorDiffuse" : [0.6400000190734865, 0.6400000190734865, 0.6400000190734865],
 	"colorSpecular" : [0.5, 0.5, 0.5],
 	"depthTest" : true,
