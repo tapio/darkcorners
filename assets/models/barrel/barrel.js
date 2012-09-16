@@ -30,6 +30,8 @@
 	"mapDiffuseWrap" : ["repeat", "repeat"],
 	"mapSpecular" : "specular.jpg",
 	"mapSpecularWrap" : ["repeat", "repeat"],
+	"mapNormal" : "normal.jpg",
+	"mapNormalWrap" : ["repeat", "repeat"],
 	"shading" : "Phong",
 	"specularCoef" : 50,
 	"transparency" : 1.0,
