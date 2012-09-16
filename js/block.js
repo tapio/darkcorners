@@ -4,7 +4,6 @@
  */
 
 BlockGeometry = function (width, height, depth, segmentsWidth, segmentsHeight, segmentsDepth, materials, sides) {
-
 	THREE.Geometry.call(this);
 
 	var scope = this,
@@ -46,7 +45,6 @@ BlockGeometry = function (width, height, depth, segmentsWidth, segmentsHeight, s
 	this.sides.nz && buildPlane('x', 'y', - 1, - 1, width, height, - depth_half, mnz); // nz
 
 	function buildPlane(u, v, udir, vdir, width, height, depth, material) {
-
 		var w, ix, iy,
 		gridX = segmentsWidth || 1,
 		gridY = segmentsHeight || 1,
@@ -70,21 +68,20 @@ BlockGeometry = function (width, height, depth, segmentsWidth, segmentsHeight, s
 		segment_height = height / gridY,
 		normal = new THREE.Vector3();
 
-		normal[ w ] = depth > 0 ? 1 : - 1;
+		normal[w] = depth > 0 ? 1 : - 1;
 
 		for (iy = 0; iy < gridY1; iy ++) {
 			for (ix = 0; ix < gridX1; ix ++) {
 				var vector = new THREE.Vector3();
-				vector[ u ] = (ix * segment_width - width_half) * udir;
-				vector[ v ] = (iy * segment_height - height_half) * vdir;
-				vector[ w ] = depth;
+				vector[u] = (ix * segment_width - width_half) * udir;
+				vector[v] = (iy * segment_height - height_half) * vdir;
+				vector[w] = depth;
 				scope.vertices.push(vector);
 			}
 		}
 
 		for (iy = 0; iy < gridY; iy++) {
 			for (ix = 0; ix < gridX; ix++) {
-
 				var a = ix + gridX1 * iy;
 				var b = ix + gridX1 * (iy + 1);
 				var c = (ix + 1) + gridX1 * (iy + 1);
@@ -96,12 +93,12 @@ BlockGeometry = function (width, height, depth, segmentsWidth, segmentsHeight, s
 				face.materialIndex = material;
 
 				scope.faces.push(face);
-				scope.faceVertexUvs[ 0 ].push([
-							new THREE.UV(ix / gridX, 1 - iy / gridY),
-							new THREE.UV(ix / gridX, 1 - (iy + 1) / gridY),
-							new THREE.UV((ix + 1) / gridX, 1- (iy + 1) / gridY),
-							new THREE.UV((ix + 1) / gridX, 1 - iy / gridY)
-						]);
+				scope.faceVertexUvs[0].push([
+					new THREE.UV(ix / gridX, 1 - iy / gridY),
+					new THREE.UV(ix / gridX, 1 - (iy + 1) / gridY),
+					new THREE.UV((ix + 1) / gridX, 1- (iy + 1) / gridY),
+					new THREE.UV((ix + 1) / gridX, 1 - iy / gridY)
+				]);
 			}
 		}
 	}
