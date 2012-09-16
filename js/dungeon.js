@@ -99,6 +99,17 @@ function Dungeon(scene, player, map) {
 				}
 				var loader = new THREE.JSONLoader();
 				loader.load("assets/models/barrel/barrel.js", getAssetHandler(x * map.gridSize, map.gridSize, z * map.gridSize));
+			// Table
+			} else if (cell == "t") {
+				function getAssetHandler2(posx, posy, posz) {
+					return function(geom) {
+						var obj = new Physijs.BoxMesh(geom, geom.materials[0], 1000);
+						obj.position.set(posx, posy, posz);
+						scene.add(obj)
+					}
+				}
+				var loader2 = new THREE.JSONLoader();
+				loader2.load("assets/models/table-big/table-big.js", getAssetHandler2(x * map.gridSize, map.gridSize, z * map.gridSize));
 			}
 		}
 	}

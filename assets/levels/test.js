@@ -6,7 +6,8 @@ var maps = {
 			".": { floor: "stone-02", ceiling: "stone-01" },
 			",": { floor: "stone-03", ceiling: "stone-01" },
 			"*": { floor: "stone-02", ceiling: "stone-01" },
-			"o": { floor: "stone-02", ceiling: "stone-01" }
+			"o": { floor: "stone-02", ceiling: "stone-01" },
+			"t": { floor: "stone-02", ceiling: "stone-01" }
 		},
 		map: [
 			"####################",
@@ -18,7 +19,7 @@ var maps = {
 			"#...##.#######*....#",
 			"#........o.........#",
 			"#............#,,,,,#",
-			"#..........*.#,,,,,#",
+			"#......t...*.#,,,,,#",
 			"####################"
 		],
 		start: [ 5, 8 ],

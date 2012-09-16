@@ -129,7 +129,7 @@ function render() {
 	pos1.subSelf(pos0); // Becomes velocity
 	pos1.divideScalar(dt * UNIT);
 	pl.setLinearVelocity(pos1);
-	scene.simulate();
+	scene.simulate(); // Simulate physics
 	controls.object.position.set(pl.position.x, pl.position.y, pl.position.z);
 
 	animate();
