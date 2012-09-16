@@ -126,7 +126,6 @@ Controls = function (object, domElement) {
 
 		var actualMoveSpeed = delta * this.movementSpeed,
 			actualLookSpeed = this.mouseEnabled ? delta * this.lookSpeed : 0,
-			targetPosition = this.target,
 			cameraPosition = this.object.position;
 
 		// Looking
@@ -144,16 +143,16 @@ Controls = function (object, domElement) {
 		if (this.constrainVerticalLook)
 			phi = THREE.Math.mapLinear(phi, 0, Math.PI, this.verticalMin, this.verticalMax);
 
-		targetPosition.x = cameraPosition.x + 100 * Math.sin(phi) * Math.cos(theta);
-		targetPosition.y = cameraPosition.y + 100 * Math.cos(phi);
-		targetPosition.z = cameraPosition.z + 100 * Math.sin(phi) * Math.sin(theta);
+		this.target.x = cameraPosition.x + 100 * Math.sin(phi) * Math.cos(theta);
+		this.target.y = cameraPosition.y + 100 * Math.cos(phi);
+		this.target.z = cameraPosition.z + 100 * Math.sin(phi) * Math.sin(theta);
 
 		if (this.pointerLockEnabled) {
 			this.mouseX = 0;
 			this.mouseY = 0;
 		}
 
-		this.object.lookAt(targetPosition);
+		this.object.lookAt(this.target);
 
 		// Movement
 

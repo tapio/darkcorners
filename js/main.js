@@ -117,6 +117,7 @@ function animate() {
 	var jigglydx = Math.cos(jigglyAng) * jigglyDist;
 	var jigglydz = Math.sin(jigglyAng) * jigglyDist;
 	dungeon.lights[0].position.set(pl.position.x+jigglydx, pl.position.y + 0.1 * UNIT, pl.position.z+jigglydz);
+	dungeon.lights[0].target.position.copy(controls.target);
 }
 
 function render() {
