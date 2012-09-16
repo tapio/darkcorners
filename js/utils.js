@@ -59,7 +59,7 @@ function createMaterial(base_path) {
 		map: loadTexture(base_path + "/diffuse.jpg"),
 		specularMap: loadTexture(base_path + "/specular.jpg"),
 		normalMap: loadTexture(base_path + "/normal.jpg")
-		});
+	});
 
 	/*return new THREE.ShaderMaterial({
 		fragmentShader: shader.fragmentShader,
