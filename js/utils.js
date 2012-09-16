@@ -10,7 +10,7 @@ function loadTexture(path) {
 		THREE.RepeatWrapping,
 		THREE.LinearFilter,
 		THREE.LinearMipMapLinearFilter,
-		THREE.RGBAFormat,
+		THREE.RGBFormat,
 		THREE.UnsignedByteType,
 		maxAnisotropy
 	);
