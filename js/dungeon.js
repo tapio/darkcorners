@@ -64,6 +64,7 @@ function Dungeon(scene, player, map) {
 	scene.add(ambientLight);
 
 	var playerLight = new THREE.SpotLight(0xffffff, 1, map.gridSize * 2);
+	playerLight.angle = Math.PI / 4;
 	playerLight.castShadow = true;
 	playerLight.shadowCameraNear = 0.1 * UNIT;
 	playerLight.shadowCameraFar = 30 * UNIT;
@@ -79,7 +80,7 @@ function Dungeon(scene, player, map) {
 	// TODO: Set player rotation
 	player.position.set(map.start[0] * map.gridSize, map.gridSize, map.start[1] * map.gridSize);
 
-	var geometry = new THREE.Geometry(), light, light_body, obj;
+	var geometry = new THREE.Geometry(), light, light2, light_body, obj;
 	var sphere = new THREE.SphereGeometry(0.05 * UNIT, 16, 8);
 
 	for (var z = 0; z < this.depth; z++) {
@@ -116,10 +117,27 @@ function Dungeon(scene, player, map) {
 			}
 			// Light
 			if (cell == "*") {
+				// Actual light
 				light = new THREE.PointLight(0xffffaa, 1, 2 * map.gridSize);
 				light.position.set(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z);
 				scene.add(light);
 				this.lights.push(light);
+				// Shadow casting light
+				light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
+				light2.position = light.position; //set(light.position.x, light.position.y, light.position.z);
+				light2.target.position.set(light2.position.x, light2.position.y - 1, light2.position.z);
+				light2.angle = Math.PI / 2;
+				light2.castShadow = true;
+				light2.onlyShadow = true;
+				light2.shadowCameraNear = 0.1 * UNIT;
+				light2.shadowCameraFar = 10 * UNIT;
+				light2.shadowCameraFov = 100;
+				light2.shadowBias = -0.0002;
+				light2.shadowDarkness = 0.3;
+				light2.shadowMapWidth = 256;
+				light2.shadowMapHeight = 256;
+				//light2.shadowCameraVisible = true;
+				scene.add(light2);
 				// Debug body
 				if (DEBUG) {
 					light_body = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xffffaa }));
