@@ -12,7 +12,7 @@ Physijs.scripts.ammo = '../libs/ammo.js';
 
 
 var container, stats;
-var pl, controls, scene, renderer;
+var pl, controls, scene, renderer, lightManager;
 var dungeon;
 var clock = new THREE.Clock();
 
@@ -55,9 +55,12 @@ function init() {
 	renderer.physicallyBasedShading = true;
 	maxAnisotropy = renderer.getMaxAnisotropy();
 
+	lightManager = new LightManager({ maxLights: 4 });
+
 	dungeon = new Dungeon(scene, pl, maps.test);
 	pl.camera.position.set(pl.position.x, pl.position.y, pl.position.z);
 	scene.add(pl);
+	lightManager.update(pl);
 
 	dumpInfo();
 
@@ -107,18 +110,18 @@ function animate() {
 	function fract(num) { return num - (num|0); }
 
 	var timeNow = new Date().getTime();
-	for (var i = 1; i < dungeon.lights.length; ++i) {
+	for (var i = 0; i < lightManager.lights.length; ++i) {
 		var anim = timeNow / (1000.0 + i);
-		//dungeon.lights[i].intensity = 0.5 + 0.5 * getAnim(anim);
-		dungeon.lights[i].position.y = 4 * UNIT + (getAnim(anim) - 0.5) * UNIT;
+		//lightManager.lights[i].intensity = 0.5 + 0.5 * getAnim(anim);
+		lightManager.lights[i].position.y = 4 * UNIT + (getAnim(anim) - 0.5) * UNIT;
 	}
 
 	var jigglyAng = fract(timeNow / 1000.0) * 2 * Math.PI;
 	var jigglyDist = Math.sin(getAnim(timeNow / 240.0)) * 0.15 * UNIT;
 	var jigglydx = Math.cos(jigglyAng) * jigglyDist;
 	var jigglydz = Math.sin(jigglyAng) * jigglyDist;
-	dungeon.lights[0].position.set(pl.position.x+jigglydx, pl.position.y + 0.2 * UNIT, pl.position.z+jigglydz);
-	dungeon.lights[0].target.position.copy(controls.target);
+	pl.light.position.set(pl.position.x+jigglydx, pl.position.y + 0.2 * UNIT, pl.position.z+jigglydz);
+	pl.light.target.position.copy(controls.target);
 }
 
 function render() {
@@ -137,6 +140,7 @@ function render() {
 	controls.object.position.set(pl.position.x, pl.position.y, pl.position.z);
 
 	animate();
+	lightManager.update(pl);
 	renderer.render(scene, pl.camera);
 	stats.update();
 }

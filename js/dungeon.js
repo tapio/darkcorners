@@ -2,7 +2,6 @@ function Dungeon(scene, player, map) {
 	this.width = map.map[0].length;
 	this.depth = map.map.length;
 	this.mesh = undefined;
-	this.lights = [];
 	var texture_path = "assets/textures/";
 	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
 
@@ -63,19 +62,18 @@ function Dungeon(scene, player, map) {
 	var ambientLight = new THREE.AmbientLight(0xaaaaaa);
 	scene.add(ambientLight);
 
-	var playerLight = new THREE.SpotLight(0xffffff, 1, map.gridSize * 2);
-	playerLight.angle = Math.PI / 4;
-	playerLight.castShadow = true;
-	playerLight.shadowCameraNear = 0.1 * UNIT;
-	playerLight.shadowCameraFar = 30 * UNIT;
-	playerLight.shadowCameraFov = 60;
-	playerLight.shadowBias = -0.0002;
-	playerLight.shadowDarkness = 0.3;
-	playerLight.shadowMapWidth = 2048;
-	playerLight.shadowMapHeight = 2048;
-	//playerLight.shadowCameraVisible = true;
-	scene.add(playerLight);
-	this.lights.push(playerLight);
+	player.light = new THREE.SpotLight(0xffffff, 1, map.gridSize * 2);
+	player.light.angle = Math.PI / 4;
+	player.light.castShadow = true;
+	player.light.shadowCameraNear = 0.1 * UNIT;
+	player.light.shadowCameraFar = 30 * UNIT;
+	player.light.shadowCameraFov = 60;
+	player.light.shadowBias = -0.0002;
+	player.light.shadowDarkness = 0.3;
+	player.light.shadowMapWidth = 2048;
+	player.light.shadowMapHeight = 2048;
+	//player.light.shadowCameraVisible = true;
+	scene.add(player.light);
 
 	// TODO: Set player rotation
 	player.position.set(map.start[0] * map.gridSize, map.gridSize, map.start[1] * map.gridSize);
@@ -121,7 +119,7 @@ function Dungeon(scene, player, map) {
 				light = new THREE.PointLight(0xffffaa, 1, 2 * map.gridSize);
 				light.position.set(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z);
 				scene.add(light);
-				this.lights.push(light);
+				lightManager.addLight(light);
 				// Shadow casting light
 				light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
 				light2.position = light.position; //set(light.position.x, light.position.y, light.position.z);
@@ -138,6 +136,7 @@ function Dungeon(scene, player, map) {
 				light2.shadowMapHeight = 256;
 				//light2.shadowCameraVisible = true;
 				scene.add(light2);
+				lightManager.addShadow(light2);
 				// Debug body
 				if (DEBUG) {
 					light_body = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xffffaa }));
