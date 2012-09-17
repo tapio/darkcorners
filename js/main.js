@@ -12,8 +12,8 @@ Physijs.scripts.ammo = '../libs/ammo.js';
 
 
 var container, stats;
-var pl, controls, scene, renderer, lightManager;
-var dungeon;
+var pl, controls, scene, renderer, composer;
+var lightManager, dungeon;
 var clock = new THREE.Clock();
 
 init();
@@ -55,6 +55,16 @@ function init() {
 	renderer.physicallyBasedShading = true;
 	maxAnisotropy = renderer.getMaxAnisotropy();
 
+	renderer.autoClear = false;
+	var scenePass = new THREE.RenderPass(scene, pl.camera);
+	var bloomPass = new THREE.BloomPass(0.5);
+	var sepiaPass = new THREE.ShaderPass(THREE.ShaderExtras["sepia"]);
+	sepiaPass.renderToScreen = true;
+	composer = new THREE.EffectComposer(renderer);
+	composer.addPass(scenePass);
+	composer.addPass(bloomPass);
+	composer.addPass(sepiaPass);
+
 	lightManager = new LightManager({ maxLights: 4 });
 
 	dungeon = new Dungeon(scene, pl, maps.test);
@@ -89,6 +99,7 @@ function onWindowResize() {
 	pl.camera.aspect = window.innerWidth / window.innerHeight;
 	pl.camera.updateProjectionMatrix();
 	renderer.setSize(window.innerWidth, window.innerHeight);
+	composer.reset();
 	controls.handleResize();
 }
 
@@ -141,7 +152,8 @@ function render() {
 
 	animate();
 	lightManager.update(pl);
-	renderer.render(scene, pl.camera);
+	//renderer.clear();
+	composer.render(dt);
 	stats.update();
 }
 
