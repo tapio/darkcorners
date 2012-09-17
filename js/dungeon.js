@@ -4,16 +4,16 @@ function Dungeon(scene, player, map) {
 	this.mesh = undefined;
 	this.lights = [];
 	var texture_path = "assets/textures/";
-	var dummy_material = new THREE.MeshBasicMaterial({color: 0xff00ff});
+	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
 
 	map.gridSize *= UNIT;
 
 	var materials = {};
 	for (var tex in map.blocks) {
 		if (!map.blocks.hasOwnProperty(tex)) continue;
-		var floor_mat = map.blocks[tex].floor ? createMaterial(texture_path + map.blocks[tex].floor) : new THREE.MeshBasicMaterial();
-		var wall_mat = map.blocks[tex].wall ? createMaterial(texture_path + map.blocks[tex].wall) : new THREE.MeshBasicMaterial();
-		var ceiling_mat = map.blocks[tex].ceiling ? createMaterial(texture_path + map.blocks[tex].ceiling) : new THREE.MeshBasicMaterial();
+		var floor_mat = map.blocks[tex].floor ? createMaterial(texture_path + map.blocks[tex].floor) : dummy_material;
+		var wall_mat = map.blocks[tex].wall ? createMaterial(texture_path + map.blocks[tex].wall) : dummy_material;
+		var ceiling_mat = map.blocks[tex].ceiling ? createMaterial(texture_path + map.blocks[tex].ceiling) : dummy_material;
 		materials[tex] = [
 			wall_mat, // right
 			wall_mat, // left
