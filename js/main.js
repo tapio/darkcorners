@@ -49,6 +49,7 @@ function init() {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.shadowMapEnabled = true;
 	renderer.shadowMapSoft = true;
+	//renderer.shadowMapDebug = true;
 	renderer.gammaInput = true;
 	renderer.gammaOutput = true;
 	renderer.physicallyBasedShading = true;
@@ -116,7 +117,7 @@ function animate() {
 	var jigglyDist = Math.sin(getAnim(timeNow / 240.0)) * 0.15 * UNIT;
 	var jigglydx = Math.cos(jigglyAng) * jigglyDist;
 	var jigglydz = Math.sin(jigglyAng) * jigglyDist;
-	dungeon.lights[0].position.set(pl.position.x+jigglydx, pl.position.y + 0.1 * UNIT, pl.position.z+jigglydz);
+	dungeon.lights[0].position.set(pl.position.x+jigglydx, pl.position.y + 0.2 * UNIT, pl.position.z+jigglydz);
 	dungeon.lights[0].target.position.copy(controls.target);
 }
 

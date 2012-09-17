@@ -65,11 +65,11 @@ function Dungeon(scene, player, map) {
 
 	var playerLight = new THREE.SpotLight(0xffffff, 1, map.gridSize * 2);
 	playerLight.castShadow = true;
-	playerLight.shadowCameraNear = 0.01 * UNIT;
-	playerLight.shadowCameraFar = 100 * UNIT;
-	playerLight.shadowCameraFov = 50;
-	playerLight.shadowBias = 0.0001;
-	playerLight.shadowDarkness = 0.5;
+	playerLight.shadowCameraNear = 0.1 * UNIT;
+	playerLight.shadowCameraFar = 30 * UNIT;
+	playerLight.shadowCameraFov = 60;
+	playerLight.shadowBias = -0.0002;
+	playerLight.shadowDarkness = 0.3;
 	playerLight.shadowMapWidth = 2048;
 	playerLight.shadowMapHeight = 2048;
 	//playerLight.shadowCameraVisible = true;
@@ -136,7 +136,7 @@ function Dungeon(scene, player, map) {
 	}
 	geometry.computeTangents();
 	this.mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
-	this.mesh.castShadow = false;
+	this.mesh.castShadow = true;
 	this.mesh.receiveShadow = true;
 	scene.add(this.mesh);
 
