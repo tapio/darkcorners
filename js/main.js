@@ -93,7 +93,7 @@ function init() {
 	fxaaPass.uniforms.resolution.value.set(1/window.innerWidth, 1/window.innerHeight);
 	var bloomPass = new THREE.BloomPass(0.5);
 	var adjustPass = new THREE.ShaderPass(THREE.ShaderExtras["hueSaturation"]);
-	adjustPass.uniforms.saturation.value = 0.3;
+	adjustPass.uniforms.saturation.value = 0.2;
 	composer = new THREE.EffectComposer(renderer);
 	composer.addPass(scenePass);
 	//if (CONFIG.antialias) composer.addPass(fxaaPass);
