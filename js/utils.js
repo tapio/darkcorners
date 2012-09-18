@@ -8,8 +8,8 @@ function loadTexture(path) {
 		new THREE.UVMapping(),
 		THREE.RepeatWrapping,
 		THREE.RepeatWrapping,
-		THREE.LinearFilter,
-		THREE.LinearMipMapLinearFilter,
+		CONFIG.linearTextureFilter ? THREE.LinearFilter : THREE.NearestFilter,
+		CONFIG.linearTextureFilter ? THREE.LinearMipMapLinearFilter : THREE.NearestFilter,
 		THREE.RGBFormat,
 		THREE.UnsignedByteType,
 		CONFIG.anisotropy
@@ -60,10 +60,10 @@ function createMaterial(base_path) {
 		diffuse: diffuse,
 		specular: specular,
 		shininess: shininess,
-		perPixel: true,
+		perPixel: CONFIG.perPixelLighting,
 		map: loadTexture(base_path + "/diffuse.jpg"),
-		specularMap: loadTexture(base_path + "/specular.jpg"),
-		normalMap: loadTexture(base_path + "/normal.jpg")
+		specularMap: CONFIG.specularMapping ? loadTexture(base_path + "/specular.jpg") : undefined,
+		normalMap: CONFIG.normalMapping ? loadTexture(base_path + "/normal.jpg") : undefined
 	});
 
 }

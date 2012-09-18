@@ -18,6 +18,10 @@ var CONFIG = {
 	shadows: true,
 	softShadows: true,
 	physicalShading: true,
+	normalMapping: true,
+	specularMapping: true,
+	perPixelLighting: true,
+	linearTextureFilter: true
 };
 
 var updateConfig = function() {
@@ -137,11 +141,15 @@ function init() {
 	gui.add(CONFIG, "maxLights", 0, 6).step(1).onChange(updateConfig);
 	gui.add(controls, "mouseFallback");
 	var guiRenderer = gui.addFolder("Renderer (reload required)");
+	guiRenderer.add(CONFIG, "anisotropy", 1, renderer.getMaxAnisotropy()).step(1);
 	guiRenderer.add(CONFIG, "antialias");
 	guiRenderer.add(CONFIG, "shadows");
 	guiRenderer.add(CONFIG, "softShadows");
 	guiRenderer.add(CONFIG, "physicalShading");
-	guiRenderer.add(CONFIG, "anisotropy", 1, renderer.getMaxAnisotropy()).step(1);
+	guiRenderer.add(CONFIG, "normalMapping");
+	guiRenderer.add(CONFIG, "specularMapping");
+	guiRenderer.add(CONFIG, "perPixelLighting");
+	guiRenderer.add(CONFIG, "linearTextureFilter");
 	guiRenderer.add(window, "reload");
 }
 

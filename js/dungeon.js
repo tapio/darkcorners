@@ -49,7 +49,6 @@ function Dungeon(scene, player, map) {
 				else throw "Unsupported collision mesh type " + def.collision;
 				// Auto-height
 				if (y === null) {
-					console.log(geometry);
 					if (geom.boundingBox)
 						y = 2 * (geom.boundingBox.max.y - geom.boundingBox.min.y) + 0.001;
 					else if (geom.boundingSphere)
