@@ -1,3 +1,20 @@
+
+var geometryCache = new function() {
+	this.geometries = {};
+	var self = this;
+	var loader = new THREE.JSONLoader();
+
+	this.get = function(path, callback) {
+		if (this.geometries[path]) callback(this.geometries[path]);
+		else loader.load(path, function(geometry) {
+			self.geometries[path] = geometry;
+			callback(geometry);
+		});
+	};
+
+	this.clear = function() { this.geometries = {}; };
+};
+
 function Dungeon(scene, player, map) {
 	var self = this;
 	this.width = map.map[0].length;
@@ -73,7 +90,6 @@ function Dungeon(scene, player, map) {
 			scene.add(obj);
 		};
 	}
-	var loader = new THREE.JSONLoader();
 
 	var cell, cell2, px, nx, pz, nz, py;
 	var ambientLight = new THREE.AmbientLight(0xaaaaaa);
@@ -166,7 +182,7 @@ function Dungeon(scene, player, map) {
 			// Objects
 			} else if (map.objects[cell]) {
 				obj = map.objects[cell];
-				loader.load("assets/models/" + obj.name + "/" + obj.name + ".js",
+				geometryCache.get("assets/models/" + obj.name + "/" + obj.name + ".js",
 					getObjectHandler(x * map.gridSize, null, z * map.gridSize, obj));
 			}
 		}
@@ -192,7 +208,7 @@ function Dungeon(scene, player, map) {
 	scene.add(ground_plane);
 
 	// Weapon
-	loader.load("assets/models/knife/knife.js", function(geometry) {
+	geometryCache.get("assets/models/knife/knife.js", function(geometry) {
 		player.rhand = new THREE.Mesh(geometry, geometry.materials[0]);
 		//player.rhand.castShadow = true;
 		player.rhand.receiveShadow = true;
@@ -200,13 +216,13 @@ function Dungeon(scene, player, map) {
 	});
 
 	// Items
-	//loader.load("assets/models/items/health.js",
+	//geometryCache.get("assets/models/items/health.js",
 	//	getObjectHandler(player.position.x, 2, player.position.z, { faceMaterial: true, noShadows: true }));
-	//loader.load("assets/models/items/mana.js",
+	//geometryCache.get("assets/models/items/mana.js",
 	//	getObjectHandler(player.position.x + 1, 2, player.position.z, { faceMaterial: true, noShadows: true }));
 
 	// Monster
-	loader.load("assets/models/shdw3/shdw3.js", function(geometry) {
+	geometryCache.get("assets/models/shdw3/shdw3.js", function(geometry) {
 		geometry.computeMorphNormals();
 		var colorMap = geometry.morphColors[ 0 ];
 		for (var i = 0; i < colorMap.colors.length; ++i) {
