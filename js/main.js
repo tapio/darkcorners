@@ -10,6 +10,9 @@ if (!Detector.webgl) {
 Physijs.scripts.worker = 'libs/physijs_worker.js';
 Physijs.scripts.ammo = '../libs/ammo.js';
 
+var CONFIG = new function() {
+	this.postprocessing = true;
+};
 
 var container, stats;
 var pl, controls, scene, renderer, composer;
@@ -94,6 +97,10 @@ function init() {
 	document.addEventListener('pointerlockchange', onPointerLockChange, false);
 	document.addEventListener('webkitpointerlockchange', onPointerLockChange, false);
 	document.addEventListener('mozpointerlockchange', onPointerLockChange, false);
+
+	// GUI controls
+	var gui = new dat.GUI();
+	gui.add(CONFIG, "postprocessing");
 }
 
 function onWindowResize() {
@@ -154,7 +161,8 @@ function render() {
 	animate();
 	lightManager.update(pl);
 	//renderer.clear();
-	composer.render(dt);
+	if (CONFIG.postprocessing) composer.render(dt);
+	else renderer.render(scene, pl.camera);
 	stats.update();
 }
 
