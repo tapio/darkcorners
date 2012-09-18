@@ -80,11 +80,12 @@ Controls = function (object, domElement) {
 	};
 
 	this.onMouseMove = function (event) {
+		function limit(a, lo, hi) { return a < lo ? lo : (a > hi ? hi : a); }
 		if (this.pointerLockEnabled) {
 			this.mouseX = event.movementX || event.webkitMovementX || event.mozMovementY || 0;
 			this.mouseY = event.movementY || event.webkitMovementY || event.mozMovementY || 0;
-			this.mouseX *= 20;
-			this.mouseY *= 20;
+			this.mouseX = limit(this.mouseX * 20, -600, 600);
+			this.mouseY = limit(this.mouseY * 20, -600, 600);
 		} else if (this.domElement === document) {
 			this.mouseX = event.pageX - viewHalfX;
 			this.mouseY = event.pageY - viewHalfY;
