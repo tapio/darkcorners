@@ -10,8 +10,14 @@ if (!Detector.webgl) {
 Physijs.scripts.worker = 'libs/physijs_worker.js';
 Physijs.scripts.ammo = '../libs/ammo.js';
 
-var CONFIG = new function() {
-	this.postprocessing = true;
+var CONFIG = {
+	postprocessing: true,
+	maxLights: 4,
+	maxShadows: 2,
+	update: function() {
+		lightManager.maxLights = CONFIG.maxLights;
+		lightManager.maxShadows = CONFIG.maxShadows;
+	}
 };
 
 var container, stats;
@@ -69,7 +75,7 @@ function init() {
 	composer.addPass(bloomPass);
 	composer.addPass(adjustPass);
 
-	lightManager = new LightManager({ maxLights: 4 });
+	lightManager = new LightManager({ maxLights: CONFIG.maxLights, maxShadows: CONFIG.maxShadows });
 
 	dungeon = new Dungeon(scene, pl, maps.test);
 	pl.camera.position.set(pl.position.x, pl.position.y, pl.position.z);
@@ -101,6 +107,9 @@ function init() {
 	// GUI controls
 	var gui = new dat.GUI();
 	gui.add(CONFIG, "postprocessing");
+	gui.add(CONFIG, "maxLights", 0, 6).step(1).onChange(CONFIG.update);
+	gui.add(CONFIG, "maxShadows", 0, 6).step(1).onChange(CONFIG.update);
+	gui.add(controls, "mouseFallback");
 }
 
 function onWindowResize() {

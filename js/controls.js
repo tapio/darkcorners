@@ -23,6 +23,7 @@ Controls = function (object, domElement) {
 	this.verticalMax = Math.PI;
 
 	this.pointerLockEnabled = false;
+	this.mouseFallback = false;
 
 	this.mouseX = 0;
 	this.mouseY = 0;
@@ -58,7 +59,7 @@ Controls = function (object, domElement) {
 			this.domElement.focus();
 		}
 		event.preventDefault();
-		event.stopPropagation();
+		//event.stopPropagation();
 		if (this.mouseEnabled) {
 			switch (event.button) {
 				case 0: break;
@@ -69,7 +70,7 @@ Controls = function (object, domElement) {
 
 	this.onMouseUp = function (event) {
 		event.preventDefault();
-		event.stopPropagation();
+		//event.stopPropagation();
 		if (this.mouseEnabled) {
 			switch (event.button) {
 				case 0: break;
@@ -130,7 +131,9 @@ Controls = function (object, domElement) {
 
 		// Looking
 
-		if (this.pointerLockEnabled || this.mouseX * this.mouseX + this.mouseY * this.mouseY > 5000) {
+		if (this.pointerLockEnabled ||
+			(this.mouseFallback && this.mouseX * this.mouseX + this.mouseY * this.mouseY > 5000))
+			{
 			lon += this.mouseX * actualLookSpeed;
 			if (this.lookVertical)
 				lat -= this.mouseY * actualLookSpeed;
