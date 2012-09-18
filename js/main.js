@@ -140,7 +140,7 @@ function init() {
 	gui.add(CONFIG, "maxShadows", 0, 6).step(1).onChange(updateConfig);
 	gui.add(CONFIG, "maxLights", 0, 6).step(1).onChange(updateConfig);
 	gui.add(controls, "mouseFallback");
-	var guiRenderer = gui.addFolder("Renderer (reload required)");
+	var guiRenderer = gui.addFolder("Renderer options (reload required)");
 	guiRenderer.add(CONFIG, "anisotropy", 1, renderer.getMaxAnisotropy()).step(1);
 	guiRenderer.add(CONFIG, "antialias");
 	guiRenderer.add(CONFIG, "shadows");
@@ -216,7 +216,7 @@ function render() {
 
 	animate();
 	lightManager.update(pl);
-	//renderer.clear();
+	renderer.clear();
 	if (CONFIG.postprocessing) composer.render(dt);
 	else renderer.render(scene, pl.camera);
 	stats.update();
