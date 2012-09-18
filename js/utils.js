@@ -12,7 +12,7 @@ function loadTexture(path) {
 		THREE.LinearMipMapLinearFilter,
 		THREE.RGBFormat,
 		THREE.UnsignedByteType,
-		maxAnisotropy
+		CONFIG.anisotropy
 	);
 	return texture;
 }

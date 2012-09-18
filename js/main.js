@@ -1,5 +1,4 @@
 var DEBUG = true;
-var maxAnisotropy = 1;
 var UNIT = 1;
 
 if (!Detector.webgl) {
@@ -14,11 +13,29 @@ var CONFIG = {
 	postprocessing: true,
 	maxLights: 4,
 	maxShadows: 2,
-	update: function() {
-		lightManager.maxLights = CONFIG.maxLights;
-		lightManager.maxShadows = CONFIG.maxShadows;
-	}
+	antialias: true,
+	anisotropy: 0, // 0 = auto
+	shadows: true,
+	softShadows: true,
+	physicalShading: true,
 };
+
+var updateConfig = function() {
+	lightManager.maxLights = CONFIG.maxLights;
+	lightManager.maxShadows = CONFIG.maxShadows;
+	localStorage.setItem("CONFIG", JSON.stringify(CONFIG));
+};
+
+(function() {
+	var loadedConfig = localStorage.getItem("CONFIG");
+	if (loadedConfig) {
+		loadedConfig = JSON.parse(loadedConfig);
+		for (var prop in loadedConfig) {
+			if (loadedConfig.hasOwnProperty(prop) && typeof loadedConfig[prop] !== "function")
+				CONFIG[prop] = loadedConfig[prop];
+		}
+	}
+})();
 
 var container, stats;
 var pl, controls, scene, renderer, composer;
@@ -54,17 +71,21 @@ function init() {
 	controls.verticalMin = 1.1;
 	controls.verticalMax = 2.2;
 
-	renderer = new THREE.WebGLRenderer({ clearColor: 0x000000, maxLights: 6, antialias: true });
+	renderer = new THREE.WebGLRenderer({
+		clearColor: 0x000000,
+		maxLights: CONFIG.maxLights + 1, // Player light is separate
+		antialias: CONFIG.antialias
+	});
 	renderer.setSize(window.innerWidth, window.innerHeight);
-	renderer.shadowMapEnabled = true;
-	renderer.shadowMapSoft = true;
+	renderer.shadowMapEnabled = CONFIG.shadows;
+	renderer.shadowMapSoft = CONFIG.softShadows;
 	//renderer.shadowMapDebug = true;
 	renderer.gammaInput = true;
 	renderer.gammaOutput = true;
-	renderer.physicallyBasedShading = true;
-	maxAnisotropy = renderer.getMaxAnisotropy();
-
+	renderer.physicallyBasedShading = CONFIG.physicalShading;
 	renderer.autoClear = false;
+	if (CONFIG.anisotropy == 0) CONFIG.anisotropy = renderer.getMaxAnisotropy();
+
 	var scenePass = new THREE.RenderPass(scene, pl.camera);
 	var bloomPass = new THREE.BloomPass(0.5);
 	var adjustPass = new THREE.ShaderPass(THREE.ShaderExtras["hueSaturation"]);
@@ -107,9 +128,16 @@ function init() {
 	// GUI controls
 	var gui = new dat.GUI();
 	gui.add(CONFIG, "postprocessing");
-	gui.add(CONFIG, "maxLights", 0, 6).step(1).onChange(CONFIG.update);
-	gui.add(CONFIG, "maxShadows", 0, 6).step(1).onChange(CONFIG.update);
+	gui.add(CONFIG, "maxShadows", 0, 6).step(1).onChange(updateConfig);
+	gui.add(CONFIG, "maxLights", 0, 6).step(1).onChange(updateConfig);
 	gui.add(controls, "mouseFallback");
+	var guiRenderer = gui.addFolder("Renderer (reload required)");
+	guiRenderer.add(CONFIG, "antialias");
+	guiRenderer.add(CONFIG, "shadows");
+	guiRenderer.add(CONFIG, "softShadows");
+	guiRenderer.add(CONFIG, "physicalShading");
+	guiRenderer.add(CONFIG, "anisotropy", 1, renderer.getMaxAnisotropy()).step(1);
+	guiRenderer.add(window, "reload");
 }
 
 function onWindowResize() {
@@ -131,6 +159,11 @@ function pause() {
 
 function resume() {
 	controls.active = true;
+}
+
+function reload() {
+	updateConfig();
+	window.location.reload();
 }
 
 function animate() {
