@@ -4,6 +4,7 @@ function Dungeon(scene, player, map) {
 	this.depth = map.map.length;
 	this.mesh = undefined;
 	this.monsters = [];
+	this.objects = [];
 	var texture_path = "assets/textures/";
 	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
 
@@ -65,6 +66,7 @@ function Dungeon(scene, player, map) {
 			obj.castShadow = true;
 			obj.receiveShadow = true;
 			scene.add(obj);
+			self.objects.push(obj);
 		};
 	}
 	var loader = new THREE.JSONLoader();

@@ -46,9 +46,6 @@ var pl, controls, scene, renderer, composer;
 var lightManager, dungeon;
 var clock = new THREE.Clock();
 
-init();
-render();
-
 function init() {
 
 	container = document.getElementById('container');
@@ -67,7 +64,7 @@ function init() {
 
 	pl.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1 * UNIT, 100 * UNIT);
 
-	controls = new Controls(pl.camera);
+	controls = new Controls(pl.camera, { mouse: mouseHandler });
 	controls.movementSpeed = 10 * UNIT;
 	controls.lookSpeed = 0.5;
 	controls.lookVertical = true;
@@ -182,6 +179,19 @@ function reload() {
 	window.location.reload();
 }
 
+function mouseHandler(button) {
+	var _vector = new THREE.Vector3(0, 0, 1);
+	var projector = new THREE.Projector();
+	projector.unprojectVector(_vector, pl.camera);
+	var ray = new THREE.Ray(pl.camera.position, _vector.subSelf(pl.camera.position).normalize());
+	var intersections = ray.intersectObjects(dungeon.objects);
+	if (intersections.length > 0) {
+		var target = intersections[0].object;
+		if (target.position.distanceToSquared(pl.position) < 9)
+			target.applyCentralImpulse(_vector.multiplyScalar(1000));
+	}
+}
+
 function animate(dt) {
 	function getAnim(time) { return Math.abs(time - (time|0) - 0.5) * 2.0; }
 	function fract(num) { return num - (num|0); }
@@ -267,3 +277,6 @@ function dumpInfo() {
 	};
 	console.log("WebGL info: ", gl_info);
 }
+
+init();
+render();

@@ -6,8 +6,9 @@
  */
 
 // Based on THREE.FirstPersonControls
-Controls = function (object, domElement) {
+Controls = function (object, handlers, domElement) {
 	this.object = object;
+	this.handlers = handlers || {};
 	this.target = new THREE.Vector3(0, 0, 0);
 	this.domElement = (domElement !== undefined) ? domElement : document;
 
@@ -58,12 +59,8 @@ Controls = function (object, domElement) {
 		event.preventDefault();
 		if (this.domElement !== document) this.domElement.focus();
 		if (this.pointerLockEnabled) event.stopPropagation();
-		if (this.mouseEnabled) {
-			switch (event.button) {
-				case 0: break;
-				case 2: break;
-			}
-		}
+		if (this.mouseEnabled && this.handlers.mouse)
+			this.handlers.mouse(event.button);
 	};
 
 	this.onMouseUp = function (event) {
