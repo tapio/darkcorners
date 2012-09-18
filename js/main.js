@@ -86,18 +86,23 @@ function init() {
 	renderer.autoClear = false;
 	if (CONFIG.anisotropy == 0) CONFIG.anisotropy = renderer.getMaxAnisotropy();
 
+	// Postprocessing effects
 	var scenePass = new THREE.RenderPass(scene, pl.camera);
+	var fxaaPass = new THREE.ShaderPass(THREE.ShaderExtras["fxaa"]);
+	fxaaPass.uniforms.resolution.value.set(1/window.innerWidth, 1/window.innerHeight);
 	var bloomPass = new THREE.BloomPass(0.5);
 	var adjustPass = new THREE.ShaderPass(THREE.ShaderExtras["hueSaturation"]);
 	adjustPass.uniforms.saturation.value = 0.3;
-	adjustPass.renderToScreen = true;
 	composer = new THREE.EffectComposer(renderer);
 	composer.addPass(scenePass);
+	//if (CONFIG.antialias) composer.addPass(fxaaPass);
 	composer.addPass(bloomPass);
 	composer.addPass(adjustPass);
+	composer.passes[composer.passes.length - 1].renderToScreen = true;
 
 	lightManager = new LightManager({ maxLights: CONFIG.maxLights, maxShadows: CONFIG.maxShadows });
 
+	// Level etc.
 	dungeon = new Dungeon(scene, pl, maps.test);
 	pl.camera.position.set(pl.position.x, pl.position.y, pl.position.z);
 	scene.add(pl);
@@ -141,6 +146,7 @@ function init() {
 }
 
 function onWindowResize() {
+	// FIXME: Should update fxaaPass (or reset composer)
 	pl.camera.aspect = window.innerWidth / window.innerHeight;
 	pl.camera.updateProjectionMatrix();
 	renderer.setSize(window.innerWidth, window.innerHeight);
