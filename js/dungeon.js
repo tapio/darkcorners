@@ -37,18 +37,20 @@ function Dungeon(scene, player, map) {
 			if (!def) def = {};
 			var obj;
 			if (def.collision) {
+				var material = Physijs.createMaterial(
+					geom.materials[0], 0.7, 0.2); // friction, restition
 				if (def.collision == "plane")
-					obj = new Physijs.PlaneMesh(geom, geom.materials[0], def.mass);
+					obj = new Physijs.PlaneMesh(geom, material, def.mass);
 				else if (def.collision == "box")
-					obj = new Physijs.BoxMesh(geom, geom.materials[0], def.mass);
+					obj = new Physijs.BoxMesh(geom, material, def.mass);
 				else if (def.collision == "sphere")
-					obj = new Physijs.SphereMesh(geom, geom.materials[0], def.mass);
+					obj = new Physijs.SphereMesh(geom, material, def.mass);
 				else if (def.collision == "cylinder")
-					obj = new Physijs.CylinderMesh(geom, geom.materials[0], def.mass);
+					obj = new Physijs.CylinderMesh(geom, material, def.mass);
 				else if (def.collision == "cone")
-					obj = new Physijs.ConeMesh(geom, geom.materials[0], def.mass);
+					obj = new Physijs.ConeMesh(geom, material, def.mass);
 				else if (def.collision == "convex")
-					obj = new Physijs.ConvexMesh(geom, geom.materials[0], def.mass);
+					obj = new Physijs.ConvexMesh(geom, material, def.mass);
 				else throw "Unsupported collision mesh type " + def.collision;
 				// Auto-height
 				if (y === null) {
