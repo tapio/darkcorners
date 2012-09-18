@@ -136,20 +136,20 @@ function init() {
 
 	// GUI controls
 	var gui = new dat.GUI();
-	gui.add(CONFIG, "postprocessing");
+	gui.add(CONFIG, "postprocessing").onChange(updateConfig);
 	gui.add(CONFIG, "maxShadows", 0, 6).step(1).onChange(updateConfig);
 	gui.add(CONFIG, "maxLights", 0, 6).step(1).onChange(updateConfig);
 	gui.add(controls, "mouseFallback");
 	var guiRenderer = gui.addFolder("Renderer options (reload required)");
-	guiRenderer.add(CONFIG, "anisotropy", 1, renderer.getMaxAnisotropy()).step(1);
-	guiRenderer.add(CONFIG, "antialias");
-	guiRenderer.add(CONFIG, "shadows");
-	guiRenderer.add(CONFIG, "softShadows");
-	guiRenderer.add(CONFIG, "physicalShading");
-	guiRenderer.add(CONFIG, "normalMapping");
-	guiRenderer.add(CONFIG, "specularMapping");
-	guiRenderer.add(CONFIG, "perPixelLighting");
-	guiRenderer.add(CONFIG, "linearTextureFilter");
+	guiRenderer.add(CONFIG, "anisotropy", 1, renderer.getMaxAnisotropy()).step(1).onChange(updateConfig);
+	guiRenderer.add(CONFIG, "antialias").onChange(updateConfig);
+	guiRenderer.add(CONFIG, "shadows").onChange(updateConfig);
+	guiRenderer.add(CONFIG, "softShadows").onChange(updateConfig);
+	guiRenderer.add(CONFIG, "physicalShading").onChange(updateConfig);
+	guiRenderer.add(CONFIG, "normalMapping").onChange(updateConfig);
+	guiRenderer.add(CONFIG, "specularMapping").onChange(updateConfig);
+	guiRenderer.add(CONFIG, "perPixelLighting").onChange(updateConfig);
+	guiRenderer.add(CONFIG, "linearTextureFilter").onChange(updateConfig);
 	guiRenderer.add(window, "reload");
 }
 
