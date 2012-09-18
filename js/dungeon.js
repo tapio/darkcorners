@@ -47,6 +47,16 @@ function Dungeon(scene, player, map) {
 				else if (def.collision == "convex")
 					obj = new Physijs.ConvexMesh(geom, geom.materials[0], def.mass);
 				else throw "Unsupported collision mesh type " + def.collision;
+				// Auto-height
+				if (y === null) {
+					console.log(geometry);
+					if (geom.boundingBox)
+						y = 2 * (geom.boundingBox.max.y - geom.boundingBox.min.y) + 0.001;
+					else if (geom.boundingSphere)
+						y = geom.boundingSphere.radius + 0.001;
+					else
+						y = 0;
+				}
 			} else {
 				obj = new THREE.Mesh(geom, geom.materials[0]);
 			}
@@ -147,7 +157,7 @@ function Dungeon(scene, player, map) {
 			} else if (map.objects[cell]) {
 				obj = map.objects[cell];
 				loader.load("assets/models/" + obj.name + "/" + obj.name + ".js",
-					getObjectHandler(x * map.gridSize, map.gridSize, z * map.gridSize, obj));
+					getObjectHandler(x * map.gridSize, null, z * map.gridSize, obj));
 			}
 		}
 	}
