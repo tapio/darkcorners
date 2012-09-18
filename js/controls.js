@@ -55,11 +55,9 @@ Controls = function (object, domElement) {
 	};
 
 	this.onMouseDown = function (event) {
-		if (this.domElement !== document) {
-			this.domElement.focus();
-		}
 		event.preventDefault();
-		//event.stopPropagation();
+		if (this.domElement !== document) this.domElement.focus();
+		if (this.pointerLockEnabled) event.stopPropagation();
 		if (this.mouseEnabled) {
 			switch (event.button) {
 				case 0: break;
@@ -70,7 +68,7 @@ Controls = function (object, domElement) {
 
 	this.onMouseUp = function (event) {
 		event.preventDefault();
-		//event.stopPropagation();
+		if (this.pointerLockEnabled) event.stopPropagation();
 		if (this.mouseEnabled) {
 			switch (event.button) {
 				case 0: break;
