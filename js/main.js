@@ -180,23 +180,33 @@ function reload() {
 	window.location.reload();
 }
 
-function animate() {
+function animate(dt) {
 	function getAnim(time) { return Math.abs(time - (time|0) - 0.5) * 2.0; }
 	function fract(num) { return num - (num|0); }
+	var i;
 
+	for (i = 0; i < dungeon.monsters.length; ++i) {
+		var monster = dungeon.monsters[i];
+		monster.updateAnimation(1000 * dt);
+	}
+
+	// Lights
 	var timeNow = new Date().getTime();
-	for (var i = 0; i < lightManager.lights.length; ++i) {
+	for (i = 0; i < lightManager.lights.length; ++i) {
 		var anim = timeNow / (1000.0 + i);
 		//lightManager.lights[i].intensity = 0.5 + 0.5 * getAnim(anim);
 		lightManager.lights[i].position.y = 4 * UNIT + (getAnim(anim) - 0.5) * UNIT;
 	}
 
+	// Player light
 	var jigglyAng = fract(timeNow / 1000.0) * 2 * Math.PI;
 	var jigglyDist = Math.sin(getAnim(timeNow / 240.0)) * 0.15 * UNIT;
 	var jigglydx = Math.cos(jigglyAng) * jigglyDist;
 	var jigglydz = Math.sin(jigglyAng) * jigglyDist;
 	pl.light.position.set(pl.position.x+jigglydx, pl.position.y + 0.2 * UNIT, pl.position.z+jigglydz);
 	pl.light.target.position.copy(controls.target);
+
+	// Player weapon
 	if (pl.rhand) {
 		pl.rhand.position.set(pl.position.x, pl.position.y, pl.position.z);
 		pl.rhand.rotation.copy(pl.camera.rotation);
@@ -225,7 +235,7 @@ function render() {
 	scene.simulate(); // Simulate physics
 	controls.object.position.set(pl.position.x, pl.position.y, pl.position.z);
 
-	animate();
+	animate(dt);
 	lightManager.update(pl);
 	renderer.clear();
 	if (CONFIG.postprocessing) composer.render(dt);

@@ -1,7 +1,9 @@
 function Dungeon(scene, player, map) {
+	var self = this;
 	this.width = map.map[0].length;
 	this.depth = map.map.length;
 	this.mesh = undefined;
+	this.monsters = [];
 	var texture_path = "assets/textures/";
 	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
 
@@ -186,5 +188,30 @@ function Dungeon(scene, player, map) {
 		//player.rhand.castShadow = true;
 		player.rhand.receiveShadow = true;
 		scene.add(player.rhand);
+	});
+
+	// Monster
+	loader.load("assets/models/shdw3/shdw3.js", function(geometry) {
+		geometry.computeMorphNormals();
+		var colorMap = geometry.morphColors[ 0 ];
+		for (var i = 0; i < colorMap.colors.length; ++i) {
+			geometry.faces[i].color = colorMap.colors[i];
+		}
+
+		var material = new THREE.MeshPhongMaterial({
+			color: 0xffffff, specular: 0xffffff, shininess: 10,
+			morphTargets: true, morphNormals: true, vertexColors: THREE.FaceColors,
+			shading: THREE.SmoothShading, perPixel: true
+		});
+		var monster = new THREE.MorphAnimMesh(geometry, material);
+
+		monster.speed = 0.4;
+		monster.duration = 2000;
+		monster.time = 600 * Math.random();
+		monster.castShadow = true;
+		monster.receiveShadow = true;
+		monster.position.set(pl.position.x + 4, pl.position.y - 0.8, pl.position.z);
+		scene.add(monster);
+		self.monsters.push(monster);
 	});
 }
