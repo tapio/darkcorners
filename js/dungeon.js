@@ -52,23 +52,25 @@ function Dungeon(scene, player, map) {
 				else if (def.collision == "convex")
 					obj = new Physijs.ConvexMesh(geom, material, def.mass);
 				else throw "Unsupported collision mesh type " + def.collision;
-				// Auto-height
-				if (y === null) {
-					if (geom.boundingBox)
-						y = 2 * (geom.boundingBox.max.y - geom.boundingBox.min.y) + 0.001;
-					else if (geom.boundingSphere)
-						y = geom.boundingSphere.radius + 0.001;
-					else
-						y = 0;
-				}
+				self.objects.push(obj);
 			} else {
-				obj = new THREE.Mesh(geom, geom.materials[0]);
+				obj = new THREE.Mesh(geom, def.faceMaterial ? new THREE.MeshFaceMaterial() : geom.materials[0]);
+			}
+			// Auto-height
+			if (y === null) {
+				if (geom.boundingBox)
+					y = 2 * (geom.boundingBox.max.y - geom.boundingBox.min.y) + 0.001;
+				else if (geom.boundingSphere)
+					y = geom.boundingSphere.radius + 0.001;
+				else
+					y = 0;
 			}
 			obj.position.set(x, y, z);
-			obj.castShadow = true;
-			obj.receiveShadow = true;
+			if (!def.noShadows) {
+				obj.castShadow = true;
+				obj.receiveShadow = true;
+			}
 			scene.add(obj);
-			self.objects.push(obj);
 		};
 	}
 	var loader = new THREE.JSONLoader();
@@ -197,6 +199,12 @@ function Dungeon(scene, player, map) {
 		scene.add(player.rhand);
 	});
 
+	// Items
+	//loader.load("assets/models/items/health.js",
+	//	getObjectHandler(player.position.x, 2, player.position.z, { faceMaterial: true, noShadows: true }));
+	//loader.load("assets/models/items/mana.js",
+	//	getObjectHandler(player.position.x + 1, 2, player.position.z, { faceMaterial: true, noShadows: true }));
+
 	// Monster
 	loader.load("assets/models/shdw3/shdw3.js", function(geometry) {
 		geometry.computeMorphNormals();
@@ -217,8 +225,9 @@ function Dungeon(scene, player, map) {
 		monster.time = 600 * Math.random();
 		monster.castShadow = true;
 		monster.receiveShadow = true;
-		monster.position.set(pl.position.x + 4, pl.position.y - 0.8, pl.position.z);
+		monster.position.set(player.position.x + 4, player.position.y - 0.8, player.position.z);
 		scene.add(monster);
 		self.monsters.push(monster);
 	});
+
 }
