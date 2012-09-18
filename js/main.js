@@ -58,12 +58,13 @@ function init() {
 	renderer.autoClear = false;
 	var scenePass = new THREE.RenderPass(scene, pl.camera);
 	var bloomPass = new THREE.BloomPass(0.5);
-	var sepiaPass = new THREE.ShaderPass(THREE.ShaderExtras["sepia"]);
-	sepiaPass.renderToScreen = true;
+	var adjustPass = new THREE.ShaderPass(THREE.ShaderExtras["hueSaturation"]);
+	adjustPass.uniforms.saturation.value = 0.3;
+	adjustPass.renderToScreen = true;
 	composer = new THREE.EffectComposer(renderer);
 	composer.addPass(scenePass);
 	composer.addPass(bloomPass);
-	composer.addPass(sepiaPass);
+	composer.addPass(adjustPass);
 
 	lightManager = new LightManager({ maxLights: 4 });
 
