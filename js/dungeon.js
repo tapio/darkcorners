@@ -179,4 +179,10 @@ function Dungeon(scene, player, map) {
 	);
 	ground_plane.position = new THREE.Vector3(map.gridSize * this.width * 0.5, 1, map.gridSize * this.depth * 0.5);
 	scene.add(ground_plane);
+
+	// Weapon
+	loader.load("assets/models/knife/knife.js", function(geometry) {
+		player.rhand = new THREE.Mesh(geometry, geometry.materials[0]);
+		scene.add(player.rhand);
+	});
 }

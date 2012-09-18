@@ -65,7 +65,7 @@ function init() {
 	pl.visible = false;
 	// Add pl later to the scene
 
-	pl.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.01 * UNIT, 100 * UNIT);
+	pl.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1 * UNIT, 100 * UNIT);
 
 	controls = new Controls(pl.camera);
 	controls.movementSpeed = 10 * UNIT;
@@ -197,6 +197,17 @@ function animate() {
 	var jigglydz = Math.sin(jigglyAng) * jigglyDist;
 	pl.light.position.set(pl.position.x+jigglydx, pl.position.y + 0.2 * UNIT, pl.position.z+jigglydz);
 	pl.light.target.position.copy(controls.target);
+	if (pl.rhand) {
+		pl.rhand.position.set(pl.position.x, pl.position.y, pl.position.z);
+		pl.rhand.rotation.copy(pl.camera.rotation);
+		pl.rhand.updateMatrix();
+		pl.rhand.rotation.y += Math.PI/3;
+		pl.rhand.rotation.z += Math.PI/2;
+		pl.rhand.translateX(0.2*UNIT);
+		pl.rhand.translateY(-0.2*UNIT);
+		pl.rhand.translateZ(-0.5*UNIT);
+
+	}
 }
 
 function render() {
