@@ -183,6 +183,8 @@ function Dungeon(scene, player, map) {
 	// Weapon
 	loader.load("assets/models/knife/knife.js", function(geometry) {
 		player.rhand = new THREE.Mesh(geometry, geometry.materials[0]);
+		//player.rhand.castShadow = true;
+		player.rhand.receiveShadow = true;
 		scene.add(player.rhand);
 	});
 }
