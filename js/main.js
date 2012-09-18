@@ -65,7 +65,7 @@ function init() {
 	pl.visible = false;
 	// Add pl later to the scene
 
-	pl.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1 * UNIT, 100 * UNIT);
+	pl.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1 * UNIT, 100 * UNIT);
 
 	controls = new Controls(pl.camera);
 	controls.movementSpeed = 10 * UNIT;
@@ -77,7 +77,7 @@ function init() {
 
 	renderer = new THREE.WebGLRenderer({
 		clearColor: 0x000000,
-		maxLights: CONFIG.maxLights + 1, // Player light is separate
+		maxLights: CONFIG.maxLights + 2, // Player light is separate
 		antialias: CONFIG.antialias
 	});
 	renderer.setSize(window.innerWidth, window.innerHeight);
@@ -204,7 +204,8 @@ function animate(dt) {
 	var jigglydx = Math.cos(jigglyAng) * jigglyDist;
 	var jigglydz = Math.sin(jigglyAng) * jigglyDist;
 	pl.light.position.set(pl.position.x+jigglydx, pl.position.y + 0.2 * UNIT, pl.position.z+jigglydz);
-	pl.light.target.position.copy(controls.target);
+	pl.shadow.position.copy(pl.light.position);
+	pl.shadow.target.position.copy(controls.target);
 
 	// Player weapon
 	if (pl.rhand) {

@@ -73,18 +73,21 @@ function Dungeon(scene, player, map) {
 	var ambientLight = new THREE.AmbientLight(0xaaaaaa);
 	scene.add(ambientLight);
 
-	player.light = new THREE.SpotLight(0xffffff, 1, map.gridSize * 2);
-	player.light.angle = Math.PI / 4;
-	player.light.castShadow = true;
-	player.light.shadowCameraNear = 0.1 * UNIT;
-	player.light.shadowCameraFar = 30 * UNIT;
-	player.light.shadowCameraFov = 60;
-	player.light.shadowBias = -0.0002;
-	player.light.shadowDarkness = 0.3;
-	player.light.shadowMapWidth = 2048;
-	player.light.shadowMapHeight = 2048;
-	//player.light.shadowCameraVisible = true;
+	player.light = new THREE.PointLight(0x88bbff, 1, map.gridSize * 2);
 	scene.add(player.light);
+	player.shadow = new THREE.SpotLight(player.light.color, player.light.intensity, player.light.distance);
+	player.shadow.angle = Math.PI / 4;
+	player.shadow.onlyShadow = true;
+	player.shadow.castShadow = true;
+	player.shadow.shadowCameraNear = 0.1 * UNIT;
+	player.shadow.shadowCameraFar = 10 * UNIT;
+	player.shadow.shadowCameraFov = 60;
+	player.shadow.shadowBias = -0.0002;
+	player.shadow.shadowDarkness = 0.3;
+	player.shadow.shadowMapWidth = 1024;
+	player.shadow.shadowMapHeight = 1024;
+	player.shadow.shadowCameraVisible = false;
+	scene.add(player.shadow);
 
 	// TODO: Set player rotation
 	player.position.set(map.start[0] * map.gridSize, map.gridSize, map.start[1] * map.gridSize);
