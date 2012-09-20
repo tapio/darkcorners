@@ -17,6 +17,7 @@ function loadTexture(path) {
 	return texture;
 }
 
+
 function createMaterial(name) {
 	var texture_path = "assets/textures/";
 	var ambient = 0x333333, diffuse = 0xbbbbbb, specular = 0xffffff, shininess = 30, scale = 1.0;
@@ -67,4 +68,27 @@ function createMaterial(name) {
 		normalMap: CONFIG.normalMapping ? loadTexture(texture_path + "normal/" + name + ".jpg") : undefined
 	});
 
+}
+
+
+function dumpInfo() {
+	var gl = renderer.context;
+	gl_info = {
+		"Version": gl.getParameter(gl.VERSION),
+		"Shading language": gl.getParameter(gl.SHADING_LANGUAGE_VERSION),
+		"Vendor": gl.getParameter(gl.VENDOR),
+		"Renderer": gl.getParameter(gl.RENDERER),
+		"Max varying vectors": gl.getParameter(gl.MAX_VARYING_VECTORS),
+		"Max vertex attribs": gl.getParameter(gl.MAX_VERTEX_ATTRIBS),
+		"Max vertex uniform vectors": gl.getParameter(gl.MAX_VERTEX_UNIFORM_VECTORS),
+		"Max fragment uniform vectors": gl.getParameter(gl.MAX_FRAGMENT_UNIFORM_VECTORS),
+		"Max renderbuffer size": gl.getParameter(gl.MAX_RENDERBUFFER_SIZE),
+		"Max texture size": gl.getParameter(gl.MAX_TEXTURE_SIZE),
+		"Max cube map texture size": gl.getParameter(gl.MAX_CUBE_MAP_TEXTURE_SIZE),
+		"Max texture image units": gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS),
+		"Max vertex texture units": gl.getParameter(gl.MAX_VERTEX_TEXTURE_IMAGE_UNITS),
+		"Max combined texture units": gl.getParameter(gl.MAX_COMBINED_TEXTURE_IMAGE_UNITS),
+		"Max viewport dims": gl.getParameter(gl.MAX_VIEWPORT_DIMS)[0] + "x" + gl.getParameter(gl.MAX_VIEWPORT_DIMS)[1]
+	};
+	console.log("WebGL info: ", gl_info);
 }
