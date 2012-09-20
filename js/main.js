@@ -88,11 +88,16 @@ function mouseHandler(button) {
 function animate(dt) {
 	function getAnim(time) { return Math.abs(time - (time|0) - 0.5) * 2.0; }
 	function fract(num) { return num - (num|0); }
-	var i;
+	var i, v = new THREE.Vector3();
 
 	for (i = 0; i < dungeon.monsters.length; ++i) {
-		var monster = dungeon.monsters[i].mesh;
-		monster.updateAnimation(1000 * dt);
+		var monster = dungeon.monsters[i];
+		monster.mesh.updateAnimation(1000 * dt);
+		// Look at player
+		v.copy(pl.position);
+		v.subSelf(monster.position);
+		v.y = 0;
+		monster.mesh.lookAt(v.normalize());
 	}
 
 	// Lights
