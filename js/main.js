@@ -55,8 +55,8 @@ function init() {
 	scene.setGravity(new THREE.Vector3(0, -10 * UNIT, 0));
 	//scene.fog = new THREE.FogExp2(0x000000, 0.0005);
 
-	pl = new Physijs.SphereMesh(
-		new THREE.SphereGeometry(1.5 * UNIT),
+	pl = new Physijs.CylinderMesh(
+		new THREE.CylinderGeometry(0.4 * UNIT, 0.4 * UNIT, 2 * UNIT),
 		new THREE.MeshBasicMaterial({ color: 0xff00ff }),
 		100
 	);
@@ -104,10 +104,11 @@ function init() {
 
 	lightManager = new LightManager({ maxLights: CONFIG.maxLights, maxShadows: CONFIG.maxShadows });
 
-	// Level etc.
+	// Create level and finalize player
 	dungeon = new Dungeon(scene, pl, maps.test);
 	pl.camera.position.set(pl.position.x, pl.position.y, pl.position.z);
 	scene.add(pl);
+	pl.setAngularFactor({ x: 0, y: 0, z: 0 });
 	lightManager.update(pl);
 
 	dumpInfo();
@@ -250,7 +251,8 @@ function render() {
 	v0 = pl.getLinearVelocity();
 	pl.setLinearVelocity({ x: v1.x, y: v0.y < 0 ? v0.y : 0, z: v1.z });
 	scene.simulate(); // Simulate physics
-	controls.object.position.set(pl.position.x, pl.position.y, pl.position.z);
+	// FIXME: 0.5 below is magic number to rise camera
+	controls.object.position.set(pl.position.x, pl.position.y + 0.5, pl.position.z);
 
 	animate(dt);
 	lightManager.update(pl);
