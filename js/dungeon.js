@@ -6,7 +6,7 @@ function Dungeon(scene, player, map) {
 	this.mesh = undefined;
 	this.monsters = [];
 	this.objects = [];
-	var dummy_material = new THREE.MeshBasicMaterial({color: 0xff00ff});
+	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
 
 	map.gridSize *= UNIT;
 
