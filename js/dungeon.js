@@ -221,8 +221,8 @@ function Dungeon(scene, player, map) {
 		});
 
 		var monster = new Physijs.CylinderMesh(
-			new THREE.CylinderGeometry(0.6 * UNIT, 0.6 * UNIT, 2 * UNIT),
-			dummy_material, 0
+			new THREE.CylinderGeometry(0.4 * UNIT, 0.4 * UNIT, 2 * UNIT),
+			dummy_material, 100000
 		);
 		monster.visible = false;
 		monster.position.set(player.position.x + 4, player.position.y - 0.8, player.position.z);

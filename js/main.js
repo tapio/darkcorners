@@ -98,6 +98,7 @@ function animate(dt) {
 		v.subSelf(monster.position);
 		v.y = 0;
 		monster.mesh.lookAt(v.normalize());
+		monster.setLinearVelocity(v.multiplyScalar(50 * dt));
 	}
 
 	// Lights
