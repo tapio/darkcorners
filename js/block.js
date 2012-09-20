@@ -94,11 +94,13 @@ BlockGeometry = function (width, height, depth, segmentsWidth, segmentsHeight, s
 				face.materialIndex = material;
 
 				scope.faces.push(face);
+				// Texture coordinate repeating is currently hard-coded so that
+				// 2 units = 1 texture coord
 				scope.faceVertexUvs[0].push([
-					new THREE.UV(ix / gridX, 1 - iy / gridY),
-					new THREE.UV(ix / gridX, 1 - (iy + 1) / gridY),
-					new THREE.UV((ix + 1) / gridX, 1- (iy + 1) / gridY),
-					new THREE.UV((ix + 1) / gridX, 1 - iy / gridY)
+					new THREE.UV(ix / gridX * width/2, (1 - iy / gridY) * height/2),
+					new THREE.UV(ix / gridX * width/2, (1 - (iy + 1) / gridY) * height/2),
+					new THREE.UV((ix + 1) / gridX * width/2, (1- (iy + 1) / gridY) * height/2),
+					new THREE.UV((ix + 1) / gridX * width/2, (1 - iy / gridY) * height/2)
 				]);
 			}
 		}
