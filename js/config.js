@@ -27,6 +27,9 @@ var CONFIG = {
 var updateConfig = function() {
 	lightManager.maxLights = CONFIG.maxLights;
 	lightManager.maxShadows = CONFIG.maxShadows;
+	renderer.shadowMapEnabled = CONFIG.shadows;
+	renderer.shadowMapSoft = CONFIG.softShadows;
+	renderer.physicallyBasedShading = CONFIG.physicalShading;
 	localStorage.setItem("CONFIG", JSON.stringify(CONFIG));
 };
 

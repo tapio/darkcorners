@@ -32,6 +32,17 @@ function updateTextures() {
 }
 
 
+function updateMaterials() {
+	for (var i in cache.materials) {
+		if (!cache.materials.hasOwnProperty(i)) continue;
+		cache.materials[i].perPixel = CONFIG.perPixelLighting;
+		cache.materials[i].needsUpdate = true;
+		// Also affected, shadows, soft shadows, physical shading
+	}
+	updateConfig();
+}
+
+
 function createMaterial(name) {
 	var texture_path = "assets/textures/";
 	var ambient = 0x333333, diffuse = 0xbbbbbb, specular = 0xffffff, shininess = 30, scale = 1.0;
