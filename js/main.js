@@ -11,7 +11,7 @@ function init() {
 	//scene.fog = new THREE.FogExp2(0x000000, 0.0005);
 
 	pl = new Physijs.CylinderMesh(
-		new THREE.CylinderGeometry(0.4 * UNIT, 0.4 * UNIT, 2 * UNIT),
+		new THREE.CylinderGeometry(0.8 * UNIT, 0.4 * UNIT, 2 * UNIT),
 		new THREE.MeshBasicMaterial({ color: 0xff00ff }),
 		100
 	);
