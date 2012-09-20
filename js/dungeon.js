@@ -6,7 +6,7 @@ function Dungeon(scene, player, map) {
 	this.mesh = undefined;
 	this.monsters = [];
 	this.objects = [];
-	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
+	var dummy_material = new THREE.MeshBasicMaterial({color: 0xff00ff});
 
 	map.gridSize *= UNIT;
 
@@ -215,20 +215,28 @@ function Dungeon(scene, player, map) {
 		}
 
 		var material = new THREE.MeshPhongMaterial({
-			color: 0xffffff, specular: 0xffffff, shininess: 10,
+			color: 0x222222, specular: 0xffffff, shininess: 10,
 			morphTargets: true, morphNormals: true, vertexColors: THREE.FaceColors,
 			shading: THREE.SmoothShading, perPixel: true
 		});
-		var monster = new THREE.MorphAnimMesh(geometry, material);
 
-		monster.speed = 0.4;
-		monster.duration = 2000;
-		monster.time = 600 * Math.random();
-		monster.castShadow = true;
-		monster.receiveShadow = true;
+		var monster = new Physijs.CylinderMesh(
+			new THREE.CylinderGeometry(0.6 * UNIT, 0.6 * UNIT, 2 * UNIT),
+			dummy_material, 0
+		);
+		monster.visible = false;
 		monster.position.set(player.position.x + 4, player.position.y - 0.8, player.position.z);
-		scene.add(monster);
 		self.monsters.push(monster);
+
+		monster.mesh = new THREE.MorphAnimMesh(geometry, material);
+		monster.mesh.speed = 0.4;
+		monster.mesh.duration = 2000;
+		monster.mesh.time = 600 * Math.random();
+		monster.mesh.castShadow = true;
+		monster.mesh.receiveShadow = true;
+		monster.add(monster.mesh);
+		scene.add(monster);
+		monster.setAngularFactor({ x: 0, y: 0, z: 0 });
 	});
 
 }
