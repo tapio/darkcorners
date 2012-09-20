@@ -31,7 +31,6 @@ function initUI() {
 	gui.add(CONFIG, "maxLights", 0, 6).step(1).onChange(updateConfig);
 	gui.add(controls, "mouseFallback");
 	var guiRenderer = gui.addFolder("Renderer options (reload required)");
-	guiRenderer.add(CONFIG, "anisotropy", 1, renderer.getMaxAnisotropy()).step(1).onChange(updateConfig);
 	guiRenderer.add(CONFIG, "antialias").onChange(updateConfig);
 	guiRenderer.add(CONFIG, "shadows").onChange(updateConfig);
 	guiRenderer.add(CONFIG, "softShadows").onChange(updateConfig);
@@ -39,8 +38,10 @@ function initUI() {
 	guiRenderer.add(CONFIG, "normalMapping").onChange(updateConfig);
 	guiRenderer.add(CONFIG, "specularMapping").onChange(updateConfig);
 	guiRenderer.add(CONFIG, "perPixelLighting").onChange(updateConfig);
-	guiRenderer.add(CONFIG, "linearTextureFilter").onChange(updateConfig);
 	guiRenderer.add(window, "reload");
+	var guiTextures = gui.addFolder("Texture options");
+	guiTextures.add(CONFIG, "anisotropy", 1, renderer.getMaxAnisotropy()).step(1).onChange(updateTextures);
+	guiTextures.add(CONFIG, "linearTextureFilter").onChange(updateTextures);
 }
 
 function onWindowResize() {

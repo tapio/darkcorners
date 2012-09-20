@@ -1,4 +1,6 @@
 
+var _textures = [];
+
 function loadTexture(path) {
 	var image = new Image();
 	image.onload = function() { texture.needsUpdate = true; };
@@ -14,7 +16,19 @@ function loadTexture(path) {
 		THREE.UnsignedByteType,
 		CONFIG.anisotropy
 	);
+	_textures.push(texture);
 	return texture;
+}
+
+
+function updateTextures() {
+	for (var i = 0; i < _textures.length; ++i) {
+		_textures[i].magFilter = CONFIG.linearTextureFilter ? THREE.LinearFilter : THREE.NearestFilter;
+		_textures[i].minFilter = CONFIG.linearTextureFilter ? THREE.LinearMipMapLinearFilter : THREE.NearestFilter;
+		_textures[i].anisotropy = CONFIG.anisotropy;
+		_textures[i].needsUpdate = true;
+	}
+	updateConfig();
 }
 
 

@@ -61,7 +61,6 @@ function init() {
 
 	// Create level and finalize player
 	dungeon = new Dungeon(scene, pl, maps.test);
-	pl.camera.position.set(pl.position.x, pl.position.y, pl.position.z);
 	scene.add(pl);
 	pl.setAngularFactor({ x: 0, y: 0, z: 0 });
 	lightManager.update(pl);
