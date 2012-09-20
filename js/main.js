@@ -45,6 +45,7 @@ var container, stats;
 var pl, controls, scene, renderer, composer;
 var lightManager, dungeon;
 var clock = new THREE.Clock();
+var cache = new Cache();
 
 function init() {
 
@@ -116,7 +117,7 @@ function init() {
 
 	stats = new Stats();
 	stats.domElement.style.position = 'absolute';
-	stats.domElement.style.top = '0px';
+	stats.domElement.style.bottom = '0px';
 	container.appendChild(stats.domElement);
 
 	container.requestPointerLock = container.requestPointerLock ||
@@ -150,6 +151,9 @@ function init() {
 	guiRenderer.add(CONFIG, "perPixelLighting").onChange(updateConfig);
 	guiRenderer.add(CONFIG, "linearTextureFilter").onChange(updateConfig);
 	guiRenderer.add(window, "reload");
+
+	var now = new Date().getTime();
+	console.log("Initialization took " + (now - performance.timing.navigationStart) + "ms");
 }
 
 function onWindowResize() {

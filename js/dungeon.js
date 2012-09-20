@@ -1,20 +1,4 @@
 
-var geometryCache = new function() {
-	this.geometries = {};
-	var self = this;
-	var loader = new THREE.JSONLoader();
-
-	this.get = function(path, callback) {
-		if (this.geometries[path]) callback(this.geometries[path]);
-		else loader.load(path, function(geometry) {
-			self.geometries[path] = geometry;
-			callback(geometry);
-		});
-	};
-
-	this.clear = function() { this.geometries = {}; };
-};
-
 function Dungeon(scene, player, map) {
 	var self = this;
 	this.width = map.map[0].length;
@@ -29,9 +13,9 @@ function Dungeon(scene, player, map) {
 	var materials = {};
 	for (var tex in map.blocks) {
 		if (!map.blocks.hasOwnProperty(tex)) continue;
-		var floor_mat = map.blocks[tex].floor ? createMaterial(map.blocks[tex].floor) : dummy_material;
-		var wall_mat = map.blocks[tex].wall ? createMaterial(map.blocks[tex].wall) : dummy_material;
-		var ceiling_mat = map.blocks[tex].ceiling ? createMaterial(map.blocks[tex].ceiling) : dummy_material;
+		var floor_mat = map.blocks[tex].floor ? cache.getMaterial(map.blocks[tex].floor) : dummy_material;
+		var wall_mat = map.blocks[tex].wall ? cache.getMaterial(map.blocks[tex].wall) : dummy_material;
+		var ceiling_mat = map.blocks[tex].ceiling ? cache.getMaterial(map.blocks[tex].ceiling) : dummy_material;
 		materials[tex] = [
 			wall_mat, // right
 			wall_mat, // left
@@ -134,8 +118,11 @@ function Dungeon(scene, player, map) {
 				py = 1;
 			}
 			// TODO: Would be nice to create less CubeGeometry instances
-			var cube = new BlockGeometry(map.gridSize, map.gridSize, map.gridSize, 1, 1, 1,
-				materials[cell], { px: px, nx: nx, py: py, ny: true, pz: pz, nz: nz });
+			var sides = { px: px, nx: nx, py: py, ny: true, pz: pz, nz: nz };
+			var cube = cache.getGeometry(cell + "-" + JSON.stringify(sides), function() {
+				return new BlockGeometry(map.gridSize, map.gridSize, map.gridSize, 1, 1, 1,
+					materials[cell], sides);
+			});
 			this.mesh = new THREE.Mesh(cube);
 			this.mesh.position.x = x * map.gridSize;
 			this.mesh.position.y = map.gridSize;
@@ -181,7 +168,7 @@ function Dungeon(scene, player, map) {
 			// Objects
 			} else if (map.objects[cell]) {
 				obj = map.objects[cell];
-				geometryCache.get("assets/models/" + obj.name + "/" + obj.name + ".js",
+				cache.loadModel("assets/models/" + obj.name + "/" + obj.name + ".js",
 					getObjectHandler(x * map.gridSize, null, z * map.gridSize, obj));
 			}
 		}
@@ -207,7 +194,7 @@ function Dungeon(scene, player, map) {
 	scene.add(ground_plane);
 
 	// Weapon
-	geometryCache.get("assets/models/knife/knife.js", function(geometry) {
+	cache.loadModel("assets/models/knife/knife.js", function(geometry) {
 		player.rhand = new THREE.Mesh(geometry, geometry.materials[0]);
 		//player.rhand.castShadow = true;
 		player.rhand.receiveShadow = true;
@@ -215,13 +202,13 @@ function Dungeon(scene, player, map) {
 	});
 
 	// Items
-	//geometryCache.get("assets/models/items/health.js",
+	//cache.loadModel("assets/models/items/health.js",
 	//	getObjectHandler(player.position.x, 2, player.position.z, { faceMaterial: true, noShadows: true }));
-	//geometryCache.get("assets/models/items/mana.js",
+	//cache.loadModel("assets/models/items/mana.js",
 	//	getObjectHandler(player.position.x + 1, 2, player.position.z, { faceMaterial: true, noShadows: true }));
 
 	// Monster
-	geometryCache.get("assets/models/shdw3/shdw3.js", function(geometry) {
+	cache.loadModel("assets/models/shdw3/shdw3.js", function(geometry) {
 		geometry.computeMorphNormals();
 		var colorMap = geometry.morphColors[ 0 ];
 		for (var i = 0; i < colorMap.colors.length; ++i) {
