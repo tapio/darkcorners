@@ -1,5 +1,13 @@
 {
-  "name": "dungeon",
-  "main": "game.html"
+	"name": "dungeon",
+	"main": "game.html",
+	"description": "A 3d game",
+	"nodejs": false,
+	"window": {
+		"title": "Dungeon",
+		"toolbar": false,
+		"width": 1024,
+		"height": 768
+	}
 }
 
