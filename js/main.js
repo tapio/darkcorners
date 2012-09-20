@@ -41,14 +41,14 @@ function init() {
 	renderer.gammaOutput = true;
 	renderer.physicallyBasedShading = CONFIG.physicalShading;
 	renderer.autoClear = false;
-	if (CONFIG.anisotropy == 0) CONFIG.anisotropy = renderer.getMaxAnisotropy();
+	if (!CONFIG.anisotropy) CONFIG.anisotropy = renderer.getMaxAnisotropy();
 
 	// Postprocessing effects
 	var scenePass = new THREE.RenderPass(scene, pl.camera);
-	var fxaaPass = new THREE.ShaderPass(THREE.ShaderExtras["fxaa"]);
+	var fxaaPass = new THREE.ShaderPass(THREE.ShaderExtras.fxaa);
 	fxaaPass.uniforms.resolution.value.set(1/window.innerWidth, 1/window.innerHeight);
 	var bloomPass = new THREE.BloomPass(0.5);
-	var adjustPass = new THREE.ShaderPass(THREE.ShaderExtras["hueSaturation"]);
+	var adjustPass = new THREE.ShaderPass(THREE.ShaderExtras.hueSaturation);
 	adjustPass.uniforms.saturation.value = 0.2;
 	composer = new THREE.EffectComposer(renderer);
 	composer.addPass(scenePass);

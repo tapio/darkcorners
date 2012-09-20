@@ -74,6 +74,13 @@ function Dungeon(scene, player, map) {
 		};
 	}
 
+	function getBlockGeometry(materials, sides) {
+		return function() {
+			return new BlockGeometry(map.gridSize, map.roomHeight, map.gridSize,
+				1, 1, 1, materials, sides);
+		};
+	}
+
 	var cell, cell2, px, nx, pz, nz, py;
 	var ambientLight = new THREE.AmbientLight(0xaaaaaa);
 	scene.add(ambientLight);
@@ -118,10 +125,7 @@ function Dungeon(scene, player, map) {
 				py = 1;
 			}
 			var sides = { px: px, nx: nx, py: py, ny: true, pz: pz, nz: nz };
-			var cube = cache.getGeometry(cell + "-" + JSON.stringify(sides), function() {
-				return new BlockGeometry(map.gridSize, map.roomHeight, map.gridSize, 1, 1, 1,
-					materials[cell], sides);
-			});
+			var cube = cache.getGeometry(cell + "-" + JSON.stringify(sides), getBlockGeometry(materials[cell], sides));
 			this.mesh = new THREE.Mesh(cube);
 			this.mesh.position.x = x * map.gridSize;
 			this.mesh.position.y = map.roomHeight;
