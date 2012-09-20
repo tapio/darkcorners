@@ -95,7 +95,7 @@ function Dungeon(scene, player, map) {
 	scene.add(player.shadow);
 
 	// TODO: Set player rotation
-	player.position.set(map.start[0] * map.gridSize, map.gridSize, map.start[1] * map.gridSize);
+	player.position.set(map.start[0] * map.gridSize, map.roomHeight, map.start[1] * map.gridSize);
 
 	var geometry = new THREE.Geometry(), light, light2, light_body, obj;
 	var sphere = new THREE.SphereGeometry(0.05 * UNIT, 16, 8);
@@ -117,15 +117,14 @@ function Dungeon(scene, player, map) {
 			} else {
 				py = 1;
 			}
-			// TODO: Would be nice to create less CubeGeometry instances
 			var sides = { px: px, nx: nx, py: py, ny: true, pz: pz, nz: nz };
 			var cube = cache.getGeometry(cell + "-" + JSON.stringify(sides), function() {
-				return new BlockGeometry(map.gridSize, map.gridSize, map.gridSize, 1, 1, 1,
+				return new BlockGeometry(map.gridSize, map.roomHeight, map.gridSize, 1, 1, 1,
 					materials[cell], sides);
 			});
 			this.mesh = new THREE.Mesh(cube);
 			this.mesh.position.x = x * map.gridSize;
-			this.mesh.position.y = map.gridSize;
+			this.mesh.position.y = map.roomHeight;
 			this.mesh.position.z = z * map.gridSize;
 			THREE.GeometryUtils.merge(geometry, this.mesh);
 			// Collision body for walls

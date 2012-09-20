@@ -27,6 +27,7 @@ var maps = {
 			"####################"
 		],
 		start: [ 5, 8 ],
-		gridSize: 3
+		gridSize: 2,
+		roomHeight: 3
 	}
 };
