@@ -8,7 +8,7 @@ var cache = new Cache();
 function init() {
 	scene = new Physijs.Scene();
 	scene.setGravity(new THREE.Vector3(0, -10 * UNIT, 0));
-	//scene.fog = new THREE.FogExp2(0x000000, 0.0005);
+	scene.fog = new THREE.FogExp2(0x000000, 0.05);
 
 	pl = new Physijs.CylinderMesh(
 		new THREE.CylinderGeometry(0.8 * UNIT, 0.8 * UNIT, 2 * UNIT),
