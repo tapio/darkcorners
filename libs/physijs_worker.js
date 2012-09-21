@@ -1,5 +1,5 @@
 'use strict';
-
+/// https://github.com/chandlerprall/Physijs (MIT License)
 var	
 	transferableMessage = self.webkitPostMessage || self.postMessage,
 	

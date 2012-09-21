@@ -1,5 +1,5 @@
 'use strict';
-
+/// https://github.com/chandlerprall/Physijs (MIT License)
 window.Physijs = (function() {
 	var THREE_REVISION = parseInt( THREE.REVISION, 10 ),
 		_matrix = new THREE.Matrix4, _is_simulating = false,

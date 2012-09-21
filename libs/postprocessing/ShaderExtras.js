@@ -1,4 +1,5 @@
 /**
+ * Part of Three.js
  * @author alteredq / http://alteredqualia.com/
  * @author zz85 / http://www.lab4games.net/zz85/blog
  * @author davidedc / http://www.sketchpatch.net/

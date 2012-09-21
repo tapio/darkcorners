@@ -1,4 +1,5 @@
 /**
+ * Part of Three.js
  * @author alteredq / http://alteredqualia.com/
  * @author mr.doob / http://mrdoob.com/
  */

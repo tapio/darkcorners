@@ -13,3 +13,16 @@ This is based on several JS libraries, most prominently:
 * dat.GUI - http://code.google.com/p/dat-gui/
 	* Settings GUI
 
+Copyright
+=========
+
+Unless otherwise stated, code in `js/` is mine:
+
+	Copyright (c) Tapio Vierros. All rights reserved.
+
+Third-party code is in `libs/` and belongs to their respective owners.
+Their licenses are mentioned in the files.
+
+The licenses of models and textures in `assets/` can be
+viewed from their respective `readme.txt` files.
+
