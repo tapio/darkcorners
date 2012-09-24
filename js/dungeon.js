@@ -193,12 +193,12 @@ function Dungeon(scene, player, map) {
 	scene.add(ground_plane);
 
 	// Weapon
-	cache.loadModel("assets/models/knife/knife.js", function(geometry) {
+	/*cache.loadModel("assets/models/knife/knife.js", function(geometry) {
 		player.rhand = new THREE.Mesh(geometry, geometry.materials[0]);
 		//player.rhand.castShadow = true;
 		player.rhand.receiveShadow = true;
 		scene.add(player.rhand);
-	});
+	});*/
 
 	// Items
 	//cache.loadModel("assets/models/items/health.js",
@@ -207,7 +207,7 @@ function Dungeon(scene, player, map) {
 	//	getObjectHandler(player.position.x + 1, 2, player.position.z, { faceMaterial: true, noShadows: true }));
 
 	// Monster
-	cache.loadModel("assets/models/shdw3/shdw3.js", function(geometry) {
+	/*cache.loadModel("assets/models/shdw3/shdw3.js", function(geometry) {
 		geometry.computeMorphNormals();
 		var colorMap = geometry.morphColors[ 0 ];
 		for (var i = 0; i < colorMap.colors.length; ++i) {
@@ -237,6 +237,6 @@ function Dungeon(scene, player, map) {
 		monster.add(monster.mesh);
 		scene.add(monster);
 		monster.setAngularFactor({ x: 0, y: 0, z: 0 });
-	});
+	});*/
 
 }
