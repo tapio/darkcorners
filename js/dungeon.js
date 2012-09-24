@@ -142,7 +142,7 @@ function Dungeon(scene, player, map) {
 			if (cell == "*") {
 				// Actual light
 				light = new THREE.PointLight(0xffffaa, 1, 2 * map.gridSize);
-				light.position.set(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z);
+				light.position.set(this.mesh.position.x, this.mesh.position.y + 1, this.mesh.position.z);
 				scene.add(light);
 				lightManager.addLight(light);
 				// Shadow casting light
