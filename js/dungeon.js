@@ -142,7 +142,7 @@ function Dungeon(scene, player, map) {
 			if (cell == "*") {
 				// Actual light
 				light = new THREE.PointLight(0xffffaa, 1, 2 * map.gridSize);
-				light.position.set(this.mesh.position.x, this.mesh.position.y, this.mesh.position.z);
+				light.position.set(this.mesh.position.x, this.mesh.position.y + 1, this.mesh.position.z);
 				scene.add(light);
 				lightManager.addLight(light);
 				// Shadow casting light
@@ -183,26 +183,22 @@ function Dungeon(scene, player, map) {
 	scene.add(this.mesh);
 
 	// Physics plane
-	var ground_material = Physijs.createMaterial(dummy_material,
-		0.9, // high friction
-		0.0 // low restitution
-	);
-	ground_material.visible = false;
 	var ground_plane = new Physijs.BoxMesh(
 		new THREE.CubeGeometry(map.gridSize * this.width, 1, map.gridSize * this.depth),
-		ground_material,
+		Physijs.createMaterial(dummy_material, 0.9, 0.0), // friction, restitution
 		0 // mass
 	);
 	ground_plane.position = new THREE.Vector3(map.gridSize * this.width * 0.5, 1, map.gridSize * this.depth * 0.5);
+	ground_plane.visible = false;
 	scene.add(ground_plane);
 
 	// Weapon
-	cache.loadModel("assets/models/knife/knife.js", function(geometry) {
+	/*cache.loadModel("assets/models/knife/knife.js", function(geometry) {
 		player.rhand = new THREE.Mesh(geometry, geometry.materials[0]);
 		//player.rhand.castShadow = true;
 		player.rhand.receiveShadow = true;
 		scene.add(player.rhand);
-	});
+	});*/
 
 	// Items
 	//cache.loadModel("assets/models/items/health.js",
@@ -211,7 +207,7 @@ function Dungeon(scene, player, map) {
 	//	getObjectHandler(player.position.x + 1, 2, player.position.z, { faceMaterial: true, noShadows: true }));
 
 	// Monster
-	cache.loadModel("assets/models/shdw3/shdw3.js", function(geometry) {
+	/*cache.loadModel("assets/models/shdw3/shdw3.js", function(geometry) {
 		geometry.computeMorphNormals();
 		var colorMap = geometry.morphColors[ 0 ];
 		for (var i = 0; i < colorMap.colors.length; ++i) {
@@ -241,6 +237,6 @@ function Dungeon(scene, player, map) {
 		monster.add(monster.mesh);
 		scene.add(monster);
 		monster.setAngularFactor({ x: 0, y: 0, z: 0 });
-	});
+	});*/
 
 }
