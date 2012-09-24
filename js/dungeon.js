@@ -183,17 +183,13 @@ function Dungeon(scene, player, map) {
 	scene.add(this.mesh);
 
 	// Physics plane
-	var ground_material = Physijs.createMaterial(dummy_material,
-		0.9, // high friction
-		0.0 // low restitution
-	);
-	ground_material.visible = false;
 	var ground_plane = new Physijs.BoxMesh(
 		new THREE.CubeGeometry(map.gridSize * this.width, 1, map.gridSize * this.depth),
-		ground_material,
+		Physijs.createMaterial(dummy_material, 0.9, 0.0), // friction, restitution
 		0 // mass
 	);
 	ground_plane.position = new THREE.Vector3(map.gridSize * this.width * 0.5, 1, map.gridSize * this.depth * 0.5);
+	ground_plane.visible = false;
 	scene.add(ground_plane);
 
 	// Weapon
