@@ -1,6 +1,8 @@
 
 var container, stats;
 var pl, controls, scene, renderer, composer;
+var renderTargetParametersRGBA, renderTargetParametersRGB;
+var colorTarget, depthTarget, depthPassPlugin;
 var lightManager, dungeon;
 var clock = new THREE.Clock();
 var cache = new Cache();
@@ -43,19 +45,41 @@ function init() {
 	renderer.autoClear = false;
 	if (!CONFIG.anisotropy) CONFIG.anisotropy = renderer.getMaxAnisotropy();
 
+	renderTargetParametersRGB  = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBFormat };
+	renderTargetParametersRGBA = { minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, format: THREE.RGBAFormat };
+	depthTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParametersRGBA);
+	colorTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParametersRGB);
+
 	// Postprocessing effects
 	var scenePass = new THREE.RenderPass(scene, pl.camera);
+	var ssaoPass = new THREE.ShaderPass(THREE.ShaderExtras.ssao);
+	ssaoPass.uniforms.tDepth.value = depthTarget;
+	ssaoPass.uniforms.size.value.set(window.innerWidth, window.innerHeight);
+	ssaoPass.uniforms.cameraNear.value = pl.camera.near;
+	ssaoPass.uniforms.cameraFar.value = pl.camera.far;
+	ssaoPass.uniforms.fogNear.value = scene.fog.near;
+	ssaoPass.uniforms.fogFar.value = scene.fog.far;
+	ssaoPass.uniforms.fogEnabled.value = 0;
+	ssaoPass.uniforms.aoClamp.value = 0.4;
+	ssaoPass.uniforms.onlyAO.value = 0;
 	var fxaaPass = new THREE.ShaderPass(THREE.ShaderExtras.fxaa);
 	fxaaPass.uniforms.resolution.value.set(1/window.innerWidth, 1/window.innerHeight);
 	var bloomPass = new THREE.BloomPass(0.5);
 	var adjustPass = new THREE.ShaderPass(THREE.ShaderExtras.hueSaturation);
 	adjustPass.uniforms.saturation.value = 0.2;
-	composer = new THREE.EffectComposer(renderer);
-	composer.addPass(scenePass);
+
+	composer = new THREE.EffectComposer(renderer, colorTarget);
+	//composer.addPass(scenePass);
+	composer.addPass(ssaoPass);
 	//if (CONFIG.antialias) composer.addPass(fxaaPass);
 	composer.addPass(bloomPass);
 	composer.addPass(adjustPass);
 	composer.passes[composer.passes.length - 1].renderToScreen = true;
+
+	// Depth pass
+	depthPassPlugin = new THREE.DepthPassPlugin();
+	depthPassPlugin.renderTarget = depthTarget;
+	renderer.addPrePlugin(depthPassPlugin);
 
 	lightManager = new LightManager({ maxLights: CONFIG.maxLights, maxShadows: CONFIG.maxShadows });
 
@@ -151,8 +175,14 @@ function render() {
 	animate(dt);
 	lightManager.update(pl);
 	renderer.clear();
-	if (CONFIG.postprocessing) composer.render(dt);
-	else renderer.render(scene, pl.camera);
+	if (CONFIG.postprocessing) {
+		renderer.shadowMapEnabled = true;
+		depthPassPlugin.enabled = true;
+		renderer.render(scene, pl.camera, composer.renderTarget2, true);
+		renderer.shadowMapEnabled = false;
+		depthPassPlugin.enabled = false;
+		composer.render(dt);
+	} else renderer.render(scene, pl.camera);
 	stats.update();
 }
 
