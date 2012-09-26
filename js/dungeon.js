@@ -110,16 +110,11 @@ function Dungeon(scene, player, map) {
 		for (var x = 0; x < this.width; x++) {
 			px = nx = pz = nz = py = 0;
 			cell = getCell(x, z);
-			// TODO: Remove hard coded "#", determine wall from block definitions
-			if (cell == "#") {
-				cell2 = getCell(x + 1, z);
-				px = cell2 != "#" ? 1 : 0;
-				cell2 = getCell(x - 1, z);
-				nx = cell2 != "#" ? 1 : 0;
-				cell2 = getCell(x, z + 1);
-				pz = cell2 != "#" ? 1 : 0;
-				cell2 = getCell(x, z - 1);
-				nz = cell2 != "#" ? 1 : 0;
+			if (map.blocks[cell].wall) {
+				px = map.blocks[getCell(x + 1, z)].wall ? 0 : 1;
+				nx = map.blocks[getCell(x - 1, z)].wall ? 0 : 1;
+				pz = map.blocks[getCell(x, z + 1)].wall ? 0 : 1;
+				nz = map.blocks[getCell(x, z - 1)].wall ? 0 : 1;
 			} else {
 				py = 1;
 			}
@@ -131,7 +126,7 @@ function Dungeon(scene, player, map) {
 			this.mesh.position.z = z * map.gridSize;
 			THREE.GeometryUtils.merge(geometry, this.mesh);
 			// Collision body for walls
-			if (cell == "#") {
+			if (map.blocks[cell].wall) {
 				var wallbody = new Physijs.BoxMesh(cube, dummy_material, 0);
 				wallbody.position.copy(this.mesh.position);
 				wallbody.visible = false;
