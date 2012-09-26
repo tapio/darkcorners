@@ -109,6 +109,11 @@ function animate(dt) {
 		//lightManager.lights[i].position.y = 4 * UNIT + (getAnim(anim) - 0.5) * UNIT;
 	}
 
+	// Particles
+	for (i = 0; i < dungeon.emitters.length; ++i) {
+		dungeon.emitters[i].update(dt).render();
+	}
+
 	// Player light
 	var jigglyAng = fract(timeNow / 1000.0) * 2 * Math.PI;
 	var jigglyDist = Math.sin(getAnim(timeNow / 240.0)) * 0.15 * UNIT;

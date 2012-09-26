@@ -6,6 +6,7 @@ function Dungeon(scene, player, map) {
 	this.mesh = undefined;
 	this.monsters = [];
 	this.objects = [];
+	this.emitters = [];
 	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
 
 	map.gridSize *= UNIT;
@@ -141,7 +142,7 @@ function Dungeon(scene, player, map) {
 			if (cell == "*") {
 				// Actual light
 				light = new THREE.PointLight(0xffffaa, 1, 2 * map.gridSize);
-				light.position.set(this.mesh.position.x, map.roomHeight - 0.5, this.mesh.position.z);
+				light.position.set(this.mesh.position.x, map.roomHeight - 1, this.mesh.position.z);
 				scene.add(light);
 				lightManager.addLight(light);
 				// Shadow casting light
@@ -167,6 +168,50 @@ function Dungeon(scene, player, map) {
 					light_body.position = light.position;
 					scene.add(light_body);
 				}
+
+				var emitter	= Fireworks.createEmitter({nParticles : 30})
+					.effectsStackBuilder()
+						.spawnerSteadyRate(20)
+						.position(Fireworks.createShapePoint(0, 0, 0))
+						.velocity(Fireworks.createShapePoint(0, 1, 0))
+						.lifeTime(0.3, 0.6)
+						.randomVelocityDrift(Fireworks.createVector(1, 0, 1))
+						.renderToThreejsParticleSystem({
+							particleSystem: function(emitter) {
+								var geometry = new THREE.Geometry();
+								// Init vertices
+								for( var i = 0; i < emitter.nParticles(); i++ ){
+									geometry.vertices.push( new THREE.Vector3() );
+								}
+								// Init colors
+								geometry.colors	= new Array(emitter.nParticles())
+								for( var i = 0; i < emitter.nParticles(); i++ ){
+									geometry.colors[i] = new THREE.Color();
+								}
+								// Init material
+								var texture	= Fireworks.ProceduralTextures.buildTexture();
+								var material = new THREE.ParticleBasicMaterial({
+									color: new THREE.Color(0xee8800).getHex(),
+									size: 0.3,
+									sizeAttenuation: true,
+									vertexColors: true,
+									map: texture,
+									blending: THREE.AdditiveBlending,
+									depthWrite: false,
+									transparent: true
+								});
+								// Init particle system
+								var particleSystem = new THREE.ParticleSystem(geometry, material);
+								particleSystem.dynamic = true;
+								particleSystem.sortParticles = true;
+								particleSystem.position = light.position;
+								scene.add(particleSystem);
+								return particleSystem;
+							}
+						}).back()
+					.start();
+				this.emitters.push(emitter);
+
 			// Objects
 			} else if (map.objects[cell]) {
 				obj = map.objects[cell];
