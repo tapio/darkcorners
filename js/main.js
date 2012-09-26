@@ -104,14 +104,12 @@ function animate(dt) {
 	// Lights
 	var timeNow = new Date().getTime();
 	for (i = 0; i < lightManager.lights.length; ++i) {
+		var light = lightManager.lights[i];
 		var anim = timeNow / (1000.0 + i);
-		lightManager.lights[i].intensity = 0.5 + 0.5 * getAnim(anim);
+		light.intensity = 0.5 + 0.5 * getAnim(anim);
 		//lightManager.lights[i].position.y = 4 * UNIT + (getAnim(anim) - 0.5) * UNIT;
-	}
-
-	// Particles
-	for (i = 0; i < dungeon.emitters.length; ++i) {
-		dungeon.emitters[i].update(dt).render();
+		if (light.visible && light.emitter)
+			light.emitter.update(dt).render();
 	}
 
 	// Player light

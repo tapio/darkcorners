@@ -6,7 +6,6 @@ function Dungeon(scene, player, map) {
 	this.mesh = undefined;
 	this.monsters = [];
 	this.objects = [];
-	this.emitters = [];
 	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
 
 	map.gridSize *= UNIT;
@@ -163,7 +162,7 @@ function Dungeon(scene, player, map) {
 				scene.add(light2);
 				lightManager.addShadow(light2);
 
-				var emitter	= Fireworks.createEmitter({nParticles : 30})
+				light.emitter = Fireworks.createEmitter({ nParticles : 30 })
 					.effectsStackBuilder()
 						.spawnerSteadyRate(20)
 						.position(Fireworks.createShapeSphere(0, 0, 0, 0.1))
@@ -171,16 +170,14 @@ function Dungeon(scene, player, map) {
 						.lifeTime(0.3, 0.6)
 						.renderToThreejsParticleSystem({
 							particleSystem: function(emitter) {
-								var geometry = new THREE.Geometry();
+								var i, geometry = new THREE.Geometry();
 								// Init vertices
-								for( var i = 0; i < emitter.nParticles(); i++ ){
-									geometry.vertices.push( new THREE.Vector3() );
-								}
+								for (i = 0; i < emitter.nParticles(); i++)
+									geometry.vertices.push(new THREE.Vector3());
 								// Init colors
-								geometry.colors	= new Array(emitter.nParticles())
-								for( var i = 0; i < emitter.nParticles(); i++ ){
+								geometry.colors	= new Array(emitter.nParticles());
+								for (i = 0; i < emitter.nParticles(); i++)
 									geometry.colors[i] = new THREE.Color();
-								}
 								// Init material
 								var texture	= Fireworks.ProceduralTextures.buildTexture();
 								var material = new THREE.ParticleBasicMaterial({
@@ -203,7 +200,6 @@ function Dungeon(scene, player, map) {
 							}
 						}).back()
 					.start();
-				this.emitters.push(emitter);
 
 			// Objects
 			} else if (map.objects[cell]) {
