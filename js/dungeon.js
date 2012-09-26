@@ -59,7 +59,7 @@ function Dungeon(scene, player, map) {
 			// Auto-height
 			if (y === null) {
 				if (geom.boundingBox)
-					y = 2 * (geom.boundingBox.max.y - geom.boundingBox.min.y) + 0.001;
+					y = 1.5 + 0.5 * (geom.boundingBox.max.y - geom.boundingBox.min.y) + 0.001;
 				else if (geom.boundingSphere)
 					y = geom.boundingSphere.radius + 0.001;
 				else
