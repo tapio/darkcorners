@@ -108,17 +108,13 @@ function animate(dt) {
 		var light = lightManager.lights[i];
 		var anim = timeNow / (1000.0 + i);
 		light.intensity = 0.5 + 0.5 * getAnim(anim);
-		//lightManager.lights[i].position.y = 4 * UNIT + (getAnim(anim) - 0.5) * UNIT;
 		if (light.visible && light.emitter)
 			light.emitter.update(dt).render();
 	}
 
 	// Player light
-	var jigglyAng = fract(timeNow / 1000.0) * 2 * Math.PI;
-	var jigglyDist = Math.sin(getAnim(timeNow / 240.0)) * 0.15 * UNIT;
-	var jigglydx = Math.cos(jigglyAng) * jigglyDist;
-	var jigglydz = Math.sin(jigglyAng) * jigglyDist;
-	pl.light.position.set(pl.position.x+jigglydx, pl.position.y + 0.2 * UNIT, pl.position.z+jigglydz);
+	pl.light.intensity = 0.5 + 0.5 * getAnim(timeNow / 1000.0);
+	pl.light.position.set(pl.position.x, pl.position.y + 0.2, pl.position.z);
 	pl.shadow.position.copy(pl.light.position);
 	pl.shadow.target.position.copy(controls.target);
 
