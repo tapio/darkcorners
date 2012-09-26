@@ -69,7 +69,8 @@ function init() {
 	initUI();
 
 	var now = new Date().getTime();
-	console.log("Initialization took " + (now - performance.timing.navigationStart) + "ms");
+	if (window.performance)
+		console.log("Initialization took " + (now - window.performance.timing.navigationStart) + "ms");
 }
 
 function mouseHandler(button) {
@@ -159,5 +160,4 @@ function render() {
 	stats.update();
 }
 
-init();
-render();
+$(document).ready(function() { init(); render(); });
