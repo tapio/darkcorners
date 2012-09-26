@@ -58,12 +58,8 @@ function Dungeon(scene, player, map) {
 			}
 			// Auto-height
 			if (y === null) {
-				if (geom.boundingBox)
-					y = 1.5 + 0.5 * (geom.boundingBox.max.y - geom.boundingBox.min.y) + 0.001;
-				else if (geom.boundingSphere)
-					y = geom.boundingSphere.radius + 0.001;
-				else
-					y = 0;
+				if (!geom.boundingBox) geom.computeBoundingBox();
+				y = 0.5 * (geom.boundingBox.max.y - geom.boundingBox.min.y) + 0.001;
 			}
 			obj.position.set(x, y, z);
 			if (!def.noShadows) {
@@ -102,7 +98,10 @@ function Dungeon(scene, player, map) {
 	scene.add(player.shadow);
 
 	// TODO: Set player rotation
-	player.position.set(map.start[0] * map.gridSize, map.roomHeight, map.start[1] * map.gridSize);
+	player.geometry.computeBoundingBox();
+	player.position.x = map.start[0] * map.gridSize;
+	player.position.y = 0.5 * (player.geometry.boundingBox.max.y - player.geometry.boundingBox.min.y) + 0.001;
+	player.position.z = map.start[1] * map.gridSize;
 
 	var geometry = new THREE.Geometry(), light, light2, light_body, obj;
 	var sphere = new THREE.SphereGeometry(0.05 * UNIT, 16, 8);
@@ -128,7 +127,7 @@ function Dungeon(scene, player, map) {
 			var cube = cache.getGeometry(cell + "-" + JSON.stringify(sides), getBlockGeometry(materials[cell], sides));
 			this.mesh = new THREE.Mesh(cube);
 			this.mesh.position.x = x * map.gridSize;
-			this.mesh.position.y = map.roomHeight;
+			this.mesh.position.y = 0.5 * map.roomHeight;
 			this.mesh.position.z = z * map.gridSize;
 			THREE.GeometryUtils.merge(geometry, this.mesh);
 			// Collision body for walls
@@ -142,7 +141,7 @@ function Dungeon(scene, player, map) {
 			if (cell == "*") {
 				// Actual light
 				light = new THREE.PointLight(0xffffaa, 1, 2 * map.gridSize);
-				light.position.set(this.mesh.position.x, this.mesh.position.y + 1, this.mesh.position.z);
+				light.position.set(this.mesh.position.x, map.roomHeight - 0.5, this.mesh.position.z);
 				scene.add(light);
 				lightManager.addLight(light);
 				// Shadow casting light
@@ -188,7 +187,7 @@ function Dungeon(scene, player, map) {
 		Physijs.createMaterial(dummy_material, 0.9, 0.0), // friction, restitution
 		0 // mass
 	);
-	ground_plane.position = new THREE.Vector3(map.gridSize * this.width * 0.5, 1, map.gridSize * this.depth * 0.5);
+	ground_plane.position = new THREE.Vector3(map.gridSize * this.width * 0.5, -0.5, map.gridSize * this.depth * 0.5);
 	ground_plane.visible = false;
 	scene.add(ground_plane);
 
@@ -225,6 +224,7 @@ function Dungeon(scene, player, map) {
 			dummy_material, 100000
 		);
 		monster.visible = false;
+		// TODO: Fix positioning
 		monster.position.set(player.position.x + 4, player.position.y - 0.8, player.position.z);
 		self.monsters.push(monster);
 
