@@ -166,10 +166,9 @@ function Dungeon(scene, player, map) {
 				var emitter	= Fireworks.createEmitter({nParticles : 30})
 					.effectsStackBuilder()
 						.spawnerSteadyRate(20)
-						.position(Fireworks.createShapePoint(0, 0, 0))
+						.position(Fireworks.createShapeSphere(0, 0, 0, 0.1))
 						.velocity(Fireworks.createShapePoint(0, 1, 0))
 						.lifeTime(0.3, 0.6)
-						.randomVelocityDrift(Fireworks.createVector(1, 0, 1))
 						.renderToThreejsParticleSystem({
 							particleSystem: function(emitter) {
 								var geometry = new THREE.Geometry();
