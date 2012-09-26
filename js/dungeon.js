@@ -104,7 +104,7 @@ function Dungeon(scene, player, map) {
 	player.position.y = 0.5 * (player.geometry.boundingBox.max.y - player.geometry.boundingBox.min.y) + 0.001;
 	player.position.z = map.start[1] * map.gridSize;
 
-	var geometry = new THREE.Geometry(), light, light2, light_body, obj;
+	var geometry = new THREE.Geometry(), light, light2, obj;
 	var sphere = new THREE.SphereGeometry(0.05 * UNIT, 16, 8);
 
 	for (var z = 0; z < this.depth; z++) {
@@ -162,12 +162,6 @@ function Dungeon(scene, player, map) {
 				//light2.shadowCameraVisible = true;
 				scene.add(light2);
 				lightManager.addShadow(light2);
-				// Debug body
-				if (DEBUG) {
-					light_body = new THREE.Mesh(sphere, new THREE.MeshBasicMaterial({ color: 0xffffaa }));
-					light_body.position = light.position;
-					scene.add(light_body);
-				}
 
 				var emitter	= Fireworks.createEmitter({nParticles : 30})
 					.effectsStackBuilder()
