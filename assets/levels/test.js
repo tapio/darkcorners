@@ -2,9 +2,11 @@
 var maps = {
 	test: {
 		blocks: {
+			" ": { floor: "stone-02", dummy: true },
 			"#": { wall: "stone-01" },
 			".": { floor: "stone-02", ceiling: "stone-01" },
-			",": { floor: "stone-03", ceiling: "stone-01" },
+			",": { floor: "stone-03" },
+			"-": { ceiling: "stone-01" },
 			"*": { floor: "stone-02", ceiling: "stone-01" },
 			"o": { floor: "stone-02", ceiling: "stone-01" },
 			"u": { floor: "stone-02", ceiling: "stone-01" },
@@ -15,7 +17,7 @@ var maps = {
 			"u": { name: "box", collision: "box", mass: 150 },
 			"t": { name: "table-big", collision: "box", mass: 1000 }
 		},
-		map: [
+		map: [[
 			"####################",
 			"#..*...............#",
 			"#....#ooooooo....*.#",
@@ -27,7 +29,19 @@ var maps = {
 			"#u...........#,,,,,#",
 			"#u.....t...*.#,,,,,#",
 			"####################"
-		],
+		],[
+			"                    ",
+			"                    ",
+			"      ########      ",
+			"      #------#      ",
+			"      ########      ",
+			"                    ",
+			"                    ",
+			"             #######",
+			"             #-----#",
+			"             #-----#",
+			"             #######"
+		]],
 		start: [ 5, 8 ],
 		gridSize: 2,
 		roomHeight: 3

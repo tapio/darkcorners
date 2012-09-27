@@ -1,8 +1,8 @@
 
 function Dungeon(scene, player, map) {
 	var self = this;
-	this.width = map.map[0].length;
-	this.depth = map.map.length;
+	this.width = map.map[0][0].length;
+	this.depth = map.map[0].length;
 	this.mesh = undefined;
 	this.monsters = [];
 	this.objects = [];
@@ -26,10 +26,10 @@ function Dungeon(scene, player, map) {
 		];
 	}
 
-	function getCell(x, z) {
-		if (x < 0 || x >= map.map[0].length) return "#";
-		else if (z < 0 || z >= map.map.length) return "#";
-		return map.map[z][x];
+	function getCell(x, y, z) {
+		if (x < 0 || x >= map.map[y][0].length) return "#";
+		else if (z < 0 || z >= map.map[y].length) return "#";
+		return map.map[y][z][x];
 	}
 
 	function getObjectHandler(x, y, z, def) {
@@ -77,7 +77,6 @@ function Dungeon(scene, player, map) {
 		};
 	}
 
-	var cell, cell2, px, nx, pz, nz, py;
 	var ambientLight = new THREE.AmbientLight(0xaaaaaa);
 	scene.add(ambientLight);
 
@@ -105,104 +104,119 @@ function Dungeon(scene, player, map) {
 
 	var geometry = new THREE.Geometry(), light, light2, obj;
 	var sphere = new THREE.SphereGeometry(0.05 * UNIT, 16, 8);
+	var cell, block, px, nx, pz, nz, py, ny, sides, cube;
 
-	for (var z = 0; z < this.depth; z++) {
-		for (var x = 0; x < this.width; x++) {
-			px = nx = pz = nz = py = 0;
-			cell = getCell(x, z);
-			if (map.blocks[cell].wall) {
-				px = map.blocks[getCell(x + 1, z)].wall ? 0 : 1;
-				nx = map.blocks[getCell(x - 1, z)].wall ? 0 : 1;
-				pz = map.blocks[getCell(x, z + 1)].wall ? 0 : 1;
-				nz = map.blocks[getCell(x, z - 1)].wall ? 0 : 1;
-				// If wall completely surrounded by walls, skip
-				if (px + nx + pz + nz === 0) continue;
-			} else {
-				py = 1;
-			}
-			var sides = { px: px, nx: nx, py: py, ny: true, pz: pz, nz: nz };
-			var cube = cache.getGeometry(cell + "-" + JSON.stringify(sides), getBlockGeometry(materials[cell], sides));
-			this.mesh = new THREE.Mesh(cube);
-			this.mesh.position.x = x * map.gridSize;
-			this.mesh.position.y = 0.5 * map.roomHeight;
-			this.mesh.position.z = z * map.gridSize;
-			THREE.GeometryUtils.merge(geometry, this.mesh);
-			// Collision body for walls
-			if (map.blocks[cell].wall) {
-				var wallbody = new Physijs.BoxMesh(cube, dummy_material, 0);
-				wallbody.position.copy(this.mesh.position);
-				wallbody.visible = false;
-				scene.add(wallbody);
-			}
-			// Light
-			if (cell == "*") {
-				// Actual light
-				light = new THREE.PointLight(0xffffaa, 1, 2 * map.gridSize);
-				light.position.set(this.mesh.position.x, map.roomHeight - 1, this.mesh.position.z);
-				scene.add(light);
-				lightManager.addLight(light);
-				// Shadow casting light
-				light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
-				light2.position = light.position; //set(light.position.x, light.position.y, light.position.z);
-				light2.target.position.set(light2.position.x, light2.position.y - 1, light2.position.z);
-				light2.angle = Math.PI / 2;
-				light2.castShadow = true;
-				light2.onlyShadow = true;
-				light2.shadowCameraNear = 0.1 * UNIT;
-				light2.shadowCameraFar = 10 * UNIT;
-				light2.shadowCameraFov = 100;
-				light2.shadowBias = -0.0002;
-				light2.shadowDarkness = 0.3;
-				light2.shadowMapWidth = 256;
-				light2.shadowMapHeight = 256;
-				//light2.shadowCameraVisible = true;
-				scene.add(light2);
-				lightManager.addShadow(light2);
+	for (var y = 0; y < map.map.length; ++y) {
+		for (var z = 0; z < this.depth; z++) {
+			for (var x = 0; x < this.width; x++) {
+				px = nx = pz = nz = py = ny = 0;
+				cell = getCell(x, y, z);
+				block = map.blocks[cell];
+				if (!block) continue;
+				if (block.wall) {
+					px = map.blocks[getCell(x + 1, y, z)].wall ? 0 : 1;
+					nx = map.blocks[getCell(x - 1, y, z)].wall ? 0 : 1;
+					pz = map.blocks[getCell(x, y, z + 1)].wall ? 0 : 1;
+					nz = map.blocks[getCell(x, y, z - 1)].wall ? 0 : 1;
+					// If wall completely surrounded by walls, skip
+					if (px + nx + pz + nz === 0) continue;
+				} else {
+					if (block.ceiling) {
+						if (y >= map.map.length-1) py = 1;
+						else {
+							var b = map.blocks[getCell(x, y + 1, z)];
+							if (b.floor || b.wall) py = 1;
+						}
+					}
+					if (block.floor) ny = 1;
+				}
+				sides = { px: px, nx: nx, py: py, ny: ny, pz: pz, nz: nz };
+				if (!block.dummy) {
+					cube = cache.getGeometry(cell + "-" + JSON.stringify(sides),
+						getBlockGeometry(materials[cell], sides));
+					this.mesh = new THREE.Mesh(cube);
+					this.mesh.position.x = x * map.gridSize;
+					this.mesh.position.y = (y + 0.5) * map.roomHeight;
+					this.mesh.position.z = z * map.gridSize;
+					THREE.GeometryUtils.merge(geometry, this.mesh);
+					// Collision body for walls
+					if (block.wall) {
+						var wallbody = new Physijs.BoxMesh(cube, dummy_material, 0);
+						wallbody.position.copy(this.mesh.position);
+						wallbody.visible = false;
+						scene.add(wallbody);
+					}
+				}
+				// Light
+				if (cell == "*") {
+					// Actual light
+					light = new THREE.PointLight(0xffffaa, 1, 2 * map.gridSize);
+					light.position.set(this.mesh.position.x, map.roomHeight - 1, this.mesh.position.z);
+					scene.add(light);
+					lightManager.addLight(light);
+					// Shadow casting light
+					light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
+					light2.position = light.position; //set(light.position.x, light.position.y, light.position.z);
+					light2.target.position.set(light2.position.x, light2.position.y - 1, light2.position.z);
+					light2.angle = Math.PI / 2;
+					light2.castShadow = true;
+					light2.onlyShadow = true;
+					light2.shadowCameraNear = 0.1 * UNIT;
+					light2.shadowCameraFar = 10 * UNIT;
+					light2.shadowCameraFov = 100;
+					light2.shadowBias = -0.0002;
+					light2.shadowDarkness = 0.3;
+					light2.shadowMapWidth = 256;
+					light2.shadowMapHeight = 256;
+					//light2.shadowCameraVisible = true;
+					scene.add(light2);
+					lightManager.addShadow(light2);
 
-				light.emitter = Fireworks.createEmitter({ nParticles : 30 })
-					.effectsStackBuilder()
-						.spawnerSteadyRate(20)
-						.position(Fireworks.createShapeSphere(0, 0, 0, 0.1))
-						.velocity(Fireworks.createShapePoint(0, 1, 0))
-						.lifeTime(0.3, 0.6)
-						.renderToThreejsParticleSystem({
-							particleSystem: function(emitter) {
-								var i, geometry = new THREE.Geometry();
-								// Init vertices
-								for (i = 0; i < emitter.nParticles(); i++)
-									geometry.vertices.push(new THREE.Vector3());
-								// Init colors
-								geometry.colors	= new Array(emitter.nParticles());
-								for (i = 0; i < emitter.nParticles(); i++)
-									geometry.colors[i] = new THREE.Color();
-								// Init material
-								var texture	= Fireworks.ProceduralTextures.buildTexture();
-								var material = new THREE.ParticleBasicMaterial({
-									color: new THREE.Color(0xee8800).getHex(),
-									size: 0.3,
-									sizeAttenuation: true,
-									vertexColors: true,
-									map: texture,
-									blending: THREE.AdditiveBlending,
-									depthWrite: false,
-									transparent: true
-								});
-								// Init particle system
-								var particleSystem = new THREE.ParticleSystem(geometry, material);
-								particleSystem.dynamic = true;
-								particleSystem.sortParticles = true;
-								particleSystem.position = light.position;
-								scene.add(particleSystem);
-								return particleSystem;
-							}
-						}).back()
-					.start();
+					light.emitter = Fireworks.createEmitter({ nParticles : 30 })
+						.effectsStackBuilder()
+							.spawnerSteadyRate(20)
+							.position(Fireworks.createShapeSphere(0, 0, 0, 0.1))
+							.velocity(Fireworks.createShapePoint(0, 1, 0))
+							.lifeTime(0.3, 0.6)
+							.renderToThreejsParticleSystem({
+								particleSystem: function(emitter) {
+									var i, geometry = new THREE.Geometry();
+									// Init vertices
+									for (i = 0; i < emitter.nParticles(); i++)
+										geometry.vertices.push(new THREE.Vector3());
+									// Init colors
+									geometry.colors	= new Array(emitter.nParticles());
+									for (i = 0; i < emitter.nParticles(); i++)
+										geometry.colors[i] = new THREE.Color();
+									// Init material
+									var texture	= Fireworks.ProceduralTextures.buildTexture();
+									var material = new THREE.ParticleBasicMaterial({
+										color: new THREE.Color(0xee8800).getHex(),
+										size: 0.3,
+										sizeAttenuation: true,
+										vertexColors: true,
+										map: texture,
+										blending: THREE.AdditiveBlending,
+										depthWrite: false,
+										transparent: true
+									});
+									// Init particle system
+									var particleSystem = new THREE.ParticleSystem(geometry, material);
+									particleSystem.dynamic = true;
+									particleSystem.sortParticles = true;
+									particleSystem.position = light.position;
+									scene.add(particleSystem);
+									return particleSystem;
+								}
+							}).back()
+						.start();
 
-			// Objects
-			} else if (map.objects[cell]) {
-				obj = map.objects[cell];
-				cache.loadModel("assets/models/" + obj.name + "/" + obj.name + ".js",
-					getObjectHandler(x * map.gridSize, null, z * map.gridSize, obj));
+				// Objects
+				} else if (map.objects[cell]) {
+					obj = map.objects[cell];
+					cache.loadModel("assets/models/" + obj.name + "/" + obj.name + ".js",
+						getObjectHandler(x * map.gridSize, null, z * map.gridSize, obj));
+				}
 			}
 		}
 	}
