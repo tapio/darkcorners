@@ -60,7 +60,7 @@ function init() {
 	lightManager = new LightManager({ maxLights: CONFIG.maxLights, maxShadows: CONFIG.maxShadows });
 
 	// Create level and finalize player
-	dungeon = new Dungeon(scene, pl, maps.test);
+	dungeon = new Dungeon(scene, pl);
 	scene.add(pl);
 	pl.setAngularFactor({ x: 0, y: 0, z: 0 });
 	lightManager.update(pl);
@@ -91,7 +91,7 @@ function animate(dt) {
 	function fract(num) { return num - (num|0); }
 	var i, v = new THREE.Vector3();
 
-	for (i = 0; i < dungeon.monsters.length; ++i) {
+	/*for (i = 0; i < dungeon.monsters.length; ++i) {
 		var monster = dungeon.monsters[i];
 		monster.mesh.updateAnimation(1000 * dt);
 		// Look at player
@@ -100,7 +100,7 @@ function animate(dt) {
 		v.y = 0;
 		monster.mesh.lookAt(v.normalize());
 		monster.setLinearVelocity(v.multiplyScalar(50 * dt));
-	}
+	}*/
 
 	// Lights
 	var timeNow = new Date().getTime();
@@ -113,11 +113,13 @@ function animate(dt) {
 	}
 
 	// Player light
+	if (false) {
 	pl.light.intensity = 0.5 + 0.5 * getAnim(timeNow / 1000.0);
 	pl.light.position.set(pl.position.x, pl.position.y + 0.2, pl.position.z);
 	pl.shadow.position.copy(pl.light.position);
 	pl.shadow.target.position.copy(controls.target);
-
+	}
+	
 	// Player weapon
 	if (pl.rhand) {
 		pl.rhand.position.set(pl.position.x, pl.position.y, pl.position.z);
