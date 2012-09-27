@@ -11,7 +11,6 @@ function Cache() {
 		if (!m) { // First time request for this model
 			this.models[path] = [ callback ];
 			loader.load(path, function(geometry) {
-				console.log(path);
 				var mm = self.models[path];
 				for (var i = 0; i < mm.length; ++i)
 					mm[i](geometry);
