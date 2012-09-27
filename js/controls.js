@@ -81,7 +81,6 @@ Controls = function (object, handlers, domElement) {
 			this.mouseY = event.movementY || event.webkitMovementY || event.mozMovementY || 0;
 			this.mouseX = limit(this.mouseX * 20, -600, 600);
 			this.mouseY = limit(this.mouseY * 20, -600, 600);
-			console.log(this.mouseX, this.mouseY);
 		} else if (this.domElement === document) {
 			this.mouseX = event.pageX - viewHalfX;
 			this.mouseY = event.pageY - viewHalfY;
