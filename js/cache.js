@@ -8,11 +8,19 @@ function Cache() {
 
 	this.loadModel = function(path, callback) {
 		var m = this.models[path];
-		if (m) callback(m);
-		else loader.load(path, function(geometry) {
-			self.models[path] = geometry;
-			callback(geometry);
-		});
+		if (!m) { // First time request for this model
+			this.models[path] = [ callback ];
+			loader.load(path, function(geometry) {
+				console.log(path);
+				var mm = self.models[path];
+				for (var i = 0; i < mm.length; ++i)
+					mm[i](geometry);
+				self.models[path] = geometry;
+			});
+		} else if (m instanceof Array) { // Pending
+			m.push(callback);
+		} else // Already loaded
+			callback(m);
 	};
 
 	this.getGeometry = function(name, generator) {
