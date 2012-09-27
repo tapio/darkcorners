@@ -115,6 +115,8 @@ function Dungeon(scene, player, map) {
 				nx = map.blocks[getCell(x - 1, z)].wall ? 0 : 1;
 				pz = map.blocks[getCell(x, z + 1)].wall ? 0 : 1;
 				nz = map.blocks[getCell(x, z - 1)].wall ? 0 : 1;
+				// If wall completely surrounded by walls, skip
+				if (px + nx + pz + nz === 0) continue;
 			} else {
 				py = 1;
 			}
