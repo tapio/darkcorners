@@ -141,6 +141,16 @@ function Dungeon(scene, player, map) {
 					THREE.GeometryUtils.merge(geometry, this.mesh);
 					// Collision body for walls
 					if (block.wall) {
+						// Bounding box needs tweaking if there is only one side in the block
+						cube.computeBoundingBox();
+						if (Math.abs(cube.boundingBox.max.x - cube.boundingBox.min.x) <= 0.0001) {
+							cube.boundingBox.min.x = -0.5 * map.gridSize;
+							cube.boundingBox.max.x = 0.5 * map.gridSize;
+						}
+						if (Math.abs(cube.boundingBox.max.z - cube.boundingBox.min.z) <= 0.0001) {
+							cube.boundingBox.min.z = -0.5 * map.gridSize;
+							cube.boundingBox.max.z = 0.5 * map.gridSize;
+						}
 						var wallbody = new Physijs.BoxMesh(cube, dummy_material, 0);
 						wallbody.position.copy(this.mesh.position);
 						wallbody.visible = false;
