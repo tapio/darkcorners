@@ -133,7 +133,7 @@ function animate(dt) {
 		pl.rhand.translateZ(-0.5*UNIT);
 	}
 
-	console.log(pl.position.x, pl.position.z);
+	//console.log(pl.position.x, pl.position.z);
 }
 
 function render() {
