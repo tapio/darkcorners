@@ -1,297 +1,345 @@
-
-function Dungeon(scene, player, map) {
+function Dungeon(scene, player) {
 	var self = this;
-	this.width = map.map[0][0].length;
-	this.depth = map.map[0].length;
-	this.mesh = undefined;
-	this.monsters = [];
 	this.objects = [];
 	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
+	var debug_material = new THREE.MeshBasicMaterial({color: 0xff00ff});
 
-	map.gridSize *= UNIT;
+	var gridSize = 2;
+	var roomHeight = 3;
+	var WALL = "#";
+	var OPEN = ".";
 
-	var materials = {};
-	for (var tex in map.blocks) {
-		if (!map.blocks.hasOwnProperty(tex)) continue;
-		var floor_mat = map.blocks[tex].floor ? cache.getMaterial(map.blocks[tex].floor) : dummy_material;
-		var wall_mat = map.blocks[tex].wall ? cache.getMaterial(map.blocks[tex].wall) : dummy_material;
-		var ceiling_mat = map.blocks[tex].ceiling ? cache.getMaterial(map.blocks[tex].ceiling) : dummy_material;
-		materials[tex] = [
-			wall_mat, // right
-			wall_mat, // left
-			ceiling_mat, // top
-			floor_mat, // bottom
-			wall_mat, // back
-			wall_mat  // front
+	this.levels = [];
+
+	this.generate = function() {
+		var nLevels = 1;
+		for (var i = 0; i < nLevels; ++i) {
+			this.levels.push(this.generateLevel(new THREE.Vector3()));
+		}
+	};
+
+	this.generateLevel = function(pos) {
+		var width = rand(15,25), depth = rand(15,25);
+		var level = { map: new Array(width * depth) };
+		level.width = width; level.depth = depth;
+
+		level.get = function(x, z) {
+			if (x < 0 || x >= width) return WALL;
+			else if (z < 0 || z >= depth) return WALL;
+			return level.map[z * width + x];
+		};
+
+		level.set = function(x, z, obj) {
+			if (x < 0 || x >= width) return;
+			else if (z < 0 || z >= depth) return;
+			level.map[z * width + x] = obj;
+		};
+
+		// Materials
+		level.env = randProp(assets.environments);
+
+		// Outline & rooms
+		for (var j = 0; j < depth; ++j) {
+			for (var i = 0; i < width; ++i) {
+				level.set(i, j, Math.random() < 0.15 ? WALL : OPEN);
+			}
+		}
+
+		// Place player
+		// TODO: Set player rotation
+		player.geometry.computeBoundingBox();
+		player.position.x = width * 0.5 * gridSize;
+		player.position.y = 0.5 * (player.geometry.boundingBox.max.y - player.geometry.boundingBox.min.y) + 0.001;
+		player.position.z = depth * 0.5 * gridSize;
+
+		return level;
+	};
+
+	this.generateMesh = function(level) {
+		// Materials
+		var floor_mat = randElem(level.env.floor);
+		var ceiling_mat = randElem(level.env.ceiling);
+		var wall_mat = randElem(level.env.wall);
+		var block_materials = [
+			cache.getMaterial(wall_mat), // right
+			cache.getMaterial(wall_mat), // left
+			dummy_material, // top
+			dummy_material, // bottom
+			cache.getMaterial(wall_mat), // back
+			cache.getMaterial(wall_mat)  // front
 		];
-	}
 
-	function getCell(x, y, z) {
-		if (x < 0 || x >= map.map[y][0].length) return "#";
-		else if (z < 0 || z >= map.map[y].length) return "#";
-		return map.map[y][z][x];
-	}
-
-	function getObjectHandler(x, y, z, def) {
-		return function(geom) {
-			if (!def) def = {};
-			var obj;
-			if (def.collision) {
-				var material = Physijs.createMaterial(
-					geom.materials[0], 0.7, 0.2); // friction, restition
-				if (def.collision == "plane")
-					obj = new Physijs.PlaneMesh(geom, material, def.mass);
-				else if (def.collision == "box")
-					obj = new Physijs.BoxMesh(geom, material, def.mass);
-				else if (def.collision == "sphere")
-					obj = new Physijs.SphereMesh(geom, material, def.mass);
-				else if (def.collision == "cylinder")
-					obj = new Physijs.CylinderMesh(geom, material, def.mass);
-				else if (def.collision == "cone")
-					obj = new Physijs.ConeMesh(geom, material, def.mass);
-				else if (def.collision == "convex")
-					obj = new Physijs.ConvexMesh(geom, material, def.mass);
-				else throw "Unsupported collision mesh type " + def.collision;
-				self.objects.push(obj);
-			} else {
-				obj = new THREE.Mesh(geom, def.faceMaterial ? new THREE.MeshFaceMaterial() : geom.materials[0]);
-			}
-			// Auto-height
-			if (y === null) {
-				if (!geom.boundingBox) geom.computeBoundingBox();
-				y = 0.5 * (geom.boundingBox.max.y - geom.boundingBox.min.y) + 0.001;
-			}
-			obj.position.set(x, y, z);
-			if (!def.noShadows) {
-				obj.castShadow = true;
-				obj.receiveShadow = true;
-			}
-			scene.add(obj);
-		};
-	}
-
-	function getBlockGeometry(materials, sides) {
-		return function() {
-			return new BlockGeometry(map.gridSize, map.roomHeight, map.gridSize,
-				1, 1, 1, materials, sides);
-		};
-	}
-
-	var ambientLight = new THREE.AmbientLight(0xaaaaaa);
-	scene.add(ambientLight);
-
-	player.light = new THREE.PointLight(0x88bbff, 1, map.gridSize * 2);
-	scene.add(player.light);
-	player.shadow = new THREE.SpotLight(player.light.color, player.light.intensity, player.light.distance);
-	player.shadow.angle = Math.PI / 4;
-	player.shadow.onlyShadow = true;
-	player.shadow.castShadow = true;
-	player.shadow.shadowCameraNear = 0.1 * UNIT;
-	player.shadow.shadowCameraFar = 10 * UNIT;
-	player.shadow.shadowCameraFov = 60;
-	player.shadow.shadowBias = -0.0002;
-	player.shadow.shadowDarkness = 0.3;
-	player.shadow.shadowMapWidth = 1024;
-	player.shadow.shadowMapHeight = 1024;
-	player.shadow.shadowCameraVisible = false;
-	scene.add(player.shadow);
-
-	// TODO: Set player rotation
-	player.geometry.computeBoundingBox();
-	player.position.x = map.start[0] * map.gridSize;
-	player.position.y = 0.5 * (player.geometry.boundingBox.max.y - player.geometry.boundingBox.min.y) + 0.001;
-	player.position.z = map.start[1] * map.gridSize;
-
-	var geometry = new THREE.Geometry(), light, light2, obj;
-	var sphere = new THREE.SphereGeometry(0.05 * UNIT, 16, 8);
-	var cell, block, px, nx, pz, nz, py, ny, sides, cube;
-
-	for (var y = 0; y < map.map.length; ++y) {
-		for (var z = 0; z < this.depth; z++) {
-			for (var x = 0; x < this.width; x++) {
+		// Level geometry
+		var geometry = new THREE.Geometry(), mesh;
+		var cell, px, nx, pz, nz, hash;
+		for (var j = 0; j < level.depth; ++j) {
+			for (var i = 0; i < level.width; ++i) {
 				px = nx = pz = nz = py = ny = 0;
-				cell = getCell(x, y, z);
-				block = map.blocks[cell];
-				if (!block) continue;
-				if (block.wall) {
-					px = map.blocks[getCell(x + 1, y, z)].wall ? 0 : 1;
-					nx = map.blocks[getCell(x - 1, y, z)].wall ? 0 : 1;
-					pz = map.blocks[getCell(x, y, z + 1)].wall ? 0 : 1;
-					nz = map.blocks[getCell(x, y, z - 1)].wall ? 0 : 1;
+				cell = level.get(i, j);
+				if (cell === OPEN) continue;
+				if (cell === WALL) {
+					px = level.get(i + 1, j) == WALL ? 0 : 1;
+					nx = level.get(i - 1, j) == WALL ? 0 : 2;
+					pz = level.get(i, j + 1) == WALL ? 0 : 4;
+					nz = level.get(i, j - 1) == WALL ? 0 : 8;
+					hash = px + nx + pz + nz;
 					// If wall completely surrounded by walls, skip
-					if (px + nx + pz + nz === 0) continue;
+					if (hash === 0) continue;
+					var cube = cache.getGeometry(hash, function() {
+						return new BlockGeometry(gridSize, roomHeight, gridSize,
+							1, 1, 1, block_materials,
+							{ px: px, nx: nx, py: 0, ny: 0, pz: pz, nz: nz });
+					});
+					mesh = new THREE.Mesh(cube);
+					mesh.position.x = (i + 0.5) * gridSize;
+					mesh.position.y = 0.5 * roomHeight;
+					mesh.position.z = (j + 0.5) * gridSize;
+					THREE.GeometryUtils.merge(geometry, mesh);
+					// Collision body
+					var wallbody = new Physijs.BoxMesh(cube, dummy_material, 0);
+					wallbody.position.copy(mesh.position);
+					wallbody.visible = false;
+					scene.add(wallbody);
 				} else {
-					if (block.ceiling) {
-						if (y >= map.map.length-1) py = 1;
-						else {
-							var b = map.blocks[getCell(x, y + 1, z)];
-							if (b.floor || b.wall) py = 1;
-						}
-					}
-					if (block.floor) ny = 1;
-				}
-				sides = { px: px, nx: nx, py: py, ny: ny, pz: pz, nz: nz };
-				if (!block.dummy) {
-					cube = cache.getGeometry(cell + "-" + JSON.stringify(sides),
-						getBlockGeometry(materials[cell], sides));
-					this.mesh = new THREE.Mesh(cube);
-					this.mesh.position.x = x * map.gridSize;
-					this.mesh.position.y = (y + 0.5) * map.roomHeight;
-					this.mesh.position.z = z * map.gridSize;
-					THREE.GeometryUtils.merge(geometry, this.mesh);
-					// Collision body for walls
-					if (block.wall) {
-						// Bounding box needs tweaking if there is only one side in the block
-						cube.computeBoundingBox();
-						if (Math.abs(cube.boundingBox.max.x - cube.boundingBox.min.x) <= 0.0001) {
-							cube.boundingBox.min.x = -0.5 * map.gridSize;
-							cube.boundingBox.max.x = 0.5 * map.gridSize;
-						}
-						if (Math.abs(cube.boundingBox.max.z - cube.boundingBox.min.z) <= 0.0001) {
-							cube.boundingBox.min.z = -0.5 * map.gridSize;
-							cube.boundingBox.max.z = 0.5 * map.gridSize;
-						}
-						var wallbody = new Physijs.BoxMesh(cube, dummy_material, 0);
-						wallbody.position.copy(this.mesh.position);
-						wallbody.visible = false;
-						scene.add(wallbody);
-					}
-				}
-				// Light
-				if (cell == "*") {
-					// Actual light
-					light = new THREE.PointLight(0xffffaa, 1, 2 * map.gridSize);
-					light.position.set(this.mesh.position.x, map.roomHeight - 1, this.mesh.position.z);
-					scene.add(light);
-					lightManager.addLight(light);
-					// Shadow casting light
-					light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
-					light2.position = light.position; //set(light.position.x, light.position.y, light.position.z);
-					light2.target.position.set(light2.position.x, light2.position.y - 1, light2.position.z);
-					light2.angle = Math.PI / 2;
-					light2.castShadow = true;
-					light2.onlyShadow = true;
-					light2.shadowCameraNear = 0.1 * UNIT;
-					light2.shadowCameraFar = 10 * UNIT;
-					light2.shadowCameraFov = 100;
-					light2.shadowBias = -0.0002;
-					light2.shadowDarkness = 0.3;
-					light2.shadowMapWidth = 256;
-					light2.shadowMapHeight = 256;
-					//light2.shadowCameraVisible = true;
-					scene.add(light2);
-					lightManager.addShadow(light2);
 
-					light.emitter = Fireworks.createEmitter({ nParticles : 30 })
-						.effectsStackBuilder()
-							.spawnerSteadyRate(20)
-							.position(Fireworks.createShapeSphere(0, 0, 0, 0.1))
-							.velocity(Fireworks.createShapePoint(0, 1, 0))
-							.lifeTime(0.3, 0.6)
-							.renderToThreejsParticleSystem({
-								particleSystem: function(emitter) {
-									var i, geometry = new THREE.Geometry();
-									// Init vertices
-									for (i = 0; i < emitter.nParticles(); i++)
-										geometry.vertices.push(new THREE.Vector3());
-									// Init colors
-									geometry.colors	= new Array(emitter.nParticles());
-									for (i = 0; i < emitter.nParticles(); i++)
-										geometry.colors[i] = new THREE.Color();
-									// Init material
-									var texture	= Fireworks.ProceduralTextures.buildTexture();
-									var material = new THREE.ParticleBasicMaterial({
-										color: new THREE.Color(0xee8800).getHex(),
-										size: 0.3,
-										sizeAttenuation: true,
-										vertexColors: true,
-										map: texture,
-										blending: THREE.AdditiveBlending,
-										depthWrite: false,
-										transparent: true
-									});
-									// Init particle system
-									var particleSystem = new THREE.ParticleSystem(geometry, material);
-									particleSystem.dynamic = true;
-									particleSystem.sortParticles = true;
-									particleSystem.position = light.position;
-									scene.add(particleSystem);
-									return particleSystem;
-								}
-							}).back()
-						.start();
-
-				// Objects
-				} else if (map.objects[cell]) {
-					obj = map.objects[cell];
-					cache.loadModel("assets/models/" + obj.name + "/" + obj.name + ".js",
-						getObjectHandler(x * map.gridSize, null, z * map.gridSize, obj));
 				}
 			}
 		}
-	}
-	geometry.computeTangents();
-	this.mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
-	this.mesh.castShadow = true;
-	this.mesh.receiveShadow = true;
-	scene.add(this.mesh);
 
-	// Physics plane
-	var ground_plane = new Physijs.BoxMesh(
-		new THREE.CubeGeometry(map.gridSize * this.width, 1, map.gridSize * this.depth),
-		Physijs.createMaterial(dummy_material, 0.9, 0.0), // friction, restitution
-		0 // mass
-	);
-	ground_plane.position = new THREE.Vector3(map.gridSize * this.width * 0.5, -0.5, map.gridSize * this.depth * 0.5);
-	ground_plane.visible = false;
-	scene.add(ground_plane);
+		// Level borders
+		function makeBorder(w, dir, x, z) {
+			var border = new Physijs.PlaneMesh(
+				new PlaneGeometry(gridSize * w, roomHeight, w, roomHeight, dir),
+				cache.getMaterial(wall_mat), 0);
+			border.position.set(x, roomHeight/2, z);
+			scene.add(border);
+		}
+		makeBorder(level.depth, "px", 0, gridSize * level.depth / 2); // neg x
+		makeBorder(level.depth, "nx", gridSize * level.width, gridSize * level.depth / 2); // pos x
+		makeBorder(level.width, "pz", gridSize * level.width / 2, 0); // neg z
+		makeBorder(level.width, "nz", gridSize * level.width / 2, gridSize * level.depth); // pos z
 
-	// Weapon
-	/*cache.loadModel("assets/models/knife/knife.js", function(geometry) {
-		player.rhand = new THREE.Mesh(geometry, geometry.materials[0]);
-		//player.rhand.castShadow = true;
-		player.rhand.receiveShadow = true;
-		scene.add(player.rhand);
-	});*/
+		// Ceiling, no collision needed
+		var ceiling_plane = new THREE.Mesh(
+			new PlaneGeometry(gridSize * level.width, gridSize * level.depth,
+				level.width, level.depth, "ny"),
+			cache.getMaterial(ceiling_mat)
+		);
+		ceiling_plane.position.set(gridSize * level.width * 0.5, roomHeight, gridSize * level.depth * 0.5);
+		scene.add(ceiling_plane);
 
-	// Items
-	//cache.loadModel("assets/models/items/health.js",
-	//	getObjectHandler(player.position.x, 2, player.position.z, { faceMaterial: true, noShadows: true }));
-	//cache.loadModel("assets/models/items/mana.js",
-	//	getObjectHandler(player.position.x + 1, 2, player.position.z, { faceMaterial: true, noShadows: true }));
+		// Floor with collision
+		var floor_plane = new Physijs.PlaneMesh(
+			new PlaneGeometry(gridSize * level.width, gridSize * level.depth,
+				level.width, level.depth, "py"),
+			Physijs.createMaterial(cache.getMaterial(floor_mat), 0.9, 0.0), // friction, restitution
+			0 // mass
+		);
+		floor_plane.position.set(gridSize * level.width * 0.5, 0.0, gridSize * level.depth * 0.5);
+		scene.add(floor_plane);
 
-	// Monster
-	/*cache.loadModel("assets/models/shdw3/shdw3.js", function(geometry) {
-		geometry.computeMorphNormals();
-		var colorMap = geometry.morphColors[ 0 ];
-		for (var i = 0; i < colorMap.colors.length; ++i) {
-			geometry.faces[i].color = colorMap.colors[i];
+		// Level mesh
+		geometry.computeTangents();
+		mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
+		mesh.castShadow = true;
+		mesh.receiveShadow = true;
+		scene.add(mesh);
+	};
+
+	this.generateLights = function(level) {
+		// Ambient
+		scene.add(new THREE.AmbientLight(0xaaaaaa));
+
+		// Particle system initializer for point lights
+		function particleSystemCreator(emitter) {
+			var i, geometry = new THREE.Geometry();
+			// Init vertices
+			for (i = 0; i < emitter.nParticles(); i++)
+				geometry.vertices.push(new THREE.Vector3());
+			// Init colors
+			geometry.colors	= new Array(emitter.nParticles());
+			for (i = 0; i < emitter.nParticles(); i++)
+				geometry.colors[i] = new THREE.Color();
+			// Init material
+			var texture	= Fireworks.ProceduralTextures.buildTexture();
+			var material = new THREE.ParticleBasicMaterial({
+				color: new THREE.Color(0xee8800).getHex(),
+				size: 0.3,
+				sizeAttenuation: true,
+				vertexColors: true,
+				map: texture,
+				blending: THREE.AdditiveBlending,
+				depthWrite: false,
+				transparent: true
+			});
+			// Init particle system
+			var particleSystem = new THREE.ParticleSystem(geometry, material);
+			particleSystem.dynamic = true;
+			particleSystem.sortParticles = true;
+			particleSystem.position = light.position;
+			scene.add(particleSystem);
+			return particleSystem;
 		}
 
-		var material = new THREE.MeshPhongMaterial({
-			color: 0x222222, specular: 0xffffff, shininess: 10,
-			morphTargets: true, morphNormals: true, vertexColors: THREE.FaceColors,
-			shading: THREE.SmoothShading, perPixel: true
-		});
+		// Point lights
+		var nLights = Math.floor(level.width * level.depth / 50);
+		var pos = new THREE.Vector3();
+		var i = 0;
+		while (i < nLights) {
+			// Pick a random place
+			pos.x = rand(0, level.width);
+			pos.z = rand(0, level.depth);
+			// Make sure we are not inside a wall
+			if (level.get(pos.x, pos.z) === WALL) continue;
+			// Pick a random cardinal direction
+			var dir = rand(0,3) * Math.PI * 0.5;
+			var dx = Math.round(Math.cos(dir));
+			var dz = -Math.round(Math.sin(dir));
+			// Travel until wall found
+			while (level.get(pos.x, pos.z) !== WALL) {
+				pos.x += dx;
+				pos.z += dz;
+			}
+			// Back away to wall face and convert to real units
+			pos.x = (pos.x - 0.6 * dx + 0.5) * gridSize;
+			pos.z = (pos.z - 0.6 * dz + 0.5) * gridSize;
+			pos.y = roomHeight * 0.7;
+			// TODO: Check for too close light positions
+			++i;
+			// Actual light
+			var light = new THREE.PointLight(0xffffaa, 1, 2 * gridSize);
+			light.position.copy(pos);
+			scene.add(light);
+			lightManager.addLight(light);
+			// Shadow casting light
+			// TODO: Adjust the camera based on placing lights nearer walls
+			var light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
+			light2.position = light.position;
+			light2.target.position.set(light2.position.x, light2.position.y - 1, light2.position.z);
+			light2.angle = Math.PI / 2;
+			light2.castShadow = true;
+			light2.onlyShadow = true;
+			light2.shadowCameraNear = 0.1 * UNIT;
+			light2.shadowCameraFar = 10 * UNIT;
+			light2.shadowCameraFov = 100;
+			light2.shadowBias = -0.0002;
+			light2.shadowDarkness = 0.3;
+			light2.shadowMapWidth = 256;
+			light2.shadowMapHeight = 256;
+			//light2.shadowCameraVisible = true;
+			scene.add(light2);
+			lightManager.addShadow(light2);
 
-		var monster = new Physijs.CylinderMesh(
-			new THREE.CylinderGeometry(0.4 * UNIT, 0.4 * UNIT, 2 * UNIT),
-			dummy_material, 100000
-		);
-		monster.visible = false;
-		// TODO: Fix positioning
-		monster.position.set(player.position.x + 4, player.position.y - 0.8, player.position.z);
-		self.monsters.push(monster);
+			light.emitter = Fireworks.createEmitter({ nParticles : 30 })
+				.effectsStackBuilder()
+					.spawnerSteadyRate(20)
+					.position(Fireworks.createShapeSphere(0, 0, 0, 0.1))
+					.velocity(Fireworks.createShapePoint(0, 1, 0))
+					.lifeTime(0.3, 0.6)
+					.renderToThreejsParticleSystem({
+						particleSystem: particleSystemCreator
+					}).back()
+				.start();
+		}
 
-		monster.mesh = new THREE.MorphAnimMesh(geometry, material);
-		monster.mesh.speed = 0.4;
-		monster.mesh.duration = 2000;
-		monster.mesh.time = 600 * Math.random();
-		monster.mesh.castShadow = true;
-		monster.mesh.receiveShadow = true;
-		monster.add(monster.mesh);
-		scene.add(monster);
-		monster.setAngularFactor({ x: 0, y: 0, z: 0 });
-	});*/
+		// Player's torch
+		player.light = new THREE.PointLight(0x88bbff, 1, gridSize * 2);
+		scene.add(player.light);
+		player.shadow = new THREE.SpotLight(player.light.color, player.light.intensity, player.light.distance);
+		player.shadow.angle = Math.PI / 4;
+		player.shadow.onlyShadow = true;
+		player.shadow.castShadow = true;
+		player.shadow.shadowCameraNear = 0.1 * UNIT;
+		player.shadow.shadowCameraFar = 10 * UNIT;
+		player.shadow.shadowCameraFov = 60;
+		player.shadow.shadowBias = -0.0002;
+		player.shadow.shadowDarkness = 0.3;
+		player.shadow.shadowMapWidth = 1024;
+		player.shadow.shadowMapHeight = 1024;
+		player.shadow.shadowCameraVisible = false;
+		scene.add(player.shadow);
+	};
 
+	this.generateObjects = function(level) {
+		function objectHandler(pos, def) {
+			return function handleObject(geometry) {
+				if (!def) def = {};
+				var obj;
+				if (def.collision) {
+					var material = Physijs.createMaterial(
+						geometry.materials[0], 0.7, 0.2); // friction, restition
+					if (def.collision == "plane")
+						obj = new Physijs.PlaneMesh(geometry, material, def.mass);
+					else if (def.collision == "box")
+						obj = new Physijs.BoxMesh(geometry, material, def.mass);
+					else if (def.collision == "sphere")
+						obj = new Physijs.SphereMesh(geometry, material, def.mass);
+					else if (def.collision == "cylinder")
+						obj = new Physijs.CylinderMesh(geometry, material, def.mass);
+					else if (def.collision == "cone")
+						obj = new Physijs.ConeMesh(geometry, material, def.mass);
+					else if (def.collision == "convex")
+						obj = new Physijs.ConvexMesh(geometry, material, def.mass);
+					else throw "Unsupported collision mesh type " + def.collision;
+					self.objects.push(obj);
+				} else {
+					obj = new THREE.Mesh(geometry, def.faceMaterial ? new THREE.MeshFaceMaterial() : geometry.materials[0]);
+				}
+				// Auto-height
+				if (pos.y === null) {
+					if (!geometry.boundingBox) geometry.computeBoundingBox();
+					pos.y = 0.5 * (geometry.boundingBox.max.y - geometry.boundingBox.min.y) + 0.001;
+				}
+				obj.position.copy(pos);
+				if (!def.noShadows) {
+					obj.castShadow = true;
+					obj.receiveShadow = true;
+				}
+				scene.add(obj);
+			};
+		}
+
+		var nObjects = Math.floor(level.width * level.depth / 20);
+		var pos = new THREE.Vector3();
+		var i = 0;
+		while (i < nObjects) {
+			// Pick a random place
+			pos.x = rand(0, level.width);
+			pos.z = rand(0, level.depth);
+			// Make sure we are not inside a wall
+			if (level.get(pos.x, pos.z) === WALL) continue;
+			// TODO: Place most near walls
+			// TODO: Groups, stacks, etc?
+			// TODO: Check for too close to other objects
+			++i;
+
+			pos.x *= gridSize;
+			pos.z *= gridSize;
+			pos.y = null; // Auto
+
+			var objname = randElem(level.env.objects);
+			var obj = cache.loadModel("assets/models/" + objname + "/" + objname + ".js",
+				objectHandler(new THREE.Vector3().copy(pos), assets.objects[objname]));
+		}
+	};
+
+	this.generate();
+	this.generateMesh(this.levels[0]);
+	this.generateLights(this.levels[0]);
+	this.generateObjects(this.levels[0]);
+}
+
+function randProp(obj) {
+	var result, count = 0;
+	for (var prop in obj)
+		if (Math.random() < 1.0 / ++count) result = prop;
+	return obj[result];
+}
+
+function randElem(arr) {
+	return arr[(Math.random() * arr.length) | 0];
+}
+
+function rand(lo, hi) {
+	return lo + Math.floor(Math.random() * (hi - lo + 1));
 }

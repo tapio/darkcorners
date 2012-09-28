@@ -28,7 +28,7 @@ function initUI() {
 					document.removeEventListener('mozfullscreenchange', onFullscreenChange);
 					container.requestPointerLock();
 				}
-			}
+			};
 			document.addEventListener('fullscreenchange', onFullscreenChange, false);
 			document.addEventListener('mozfullscreenchange', onFullscreenChange, false);
 			container.requestFullscreen();
