@@ -1,6 +1,6 @@
 function Dungeon(scene, player) {
 	var self = this;
-	this.monsters = [];
+	this.objects = [];
 	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
 	var debug_material = new THREE.MeshBasicMaterial({color: 0xff00ff});
 
@@ -41,13 +41,8 @@ function Dungeon(scene, player) {
 		// Outline & rooms
 		for (var j = 0; j < depth; ++j) {
 			for (var i = 0; i < width; ++i) {
-				level.set(i, j, Math.random() < 0.2 ? WALL : OPEN);
+				level.set(i, j, Math.random() < 0.15 ? WALL : OPEN);
 			}
-		}
-
-		// Populate
-		for (var o = 0; o < 10; ++o) {
-
 		}
 
 		// Place player
@@ -87,7 +82,7 @@ function Dungeon(scene, player) {
 					nx = level.get(i - 1, j) == WALL ? 0 : 2;
 					pz = level.get(i, j + 1) == WALL ? 0 : 4;
 					nz = level.get(i, j - 1) == WALL ? 0 : 8;
-					var hash = px + nx + pz + nz;
+					hash = px + nx + pz + nz;
 					// If wall completely surrounded by walls, skip
 					if (hash === 0) continue;
 					var cube = cache.getGeometry(hash, function() {
@@ -263,12 +258,75 @@ function Dungeon(scene, player) {
 		player.shadow.shadowMapHeight = 1024;
 		player.shadow.shadowCameraVisible = false;
 		scene.add(player.shadow);
-	}
+	};
 
+	this.generateObjects = function(level) {
+		function objectHandler(pos, def) {
+			return function handleObject(geometry) {
+				if (!def) def = {};
+				var obj;
+				if (def.collision) {
+					var material = Physijs.createMaterial(
+						geometry.materials[0], 0.7, 0.2); // friction, restition
+					if (def.collision == "plane")
+						obj = new Physijs.PlaneMesh(geometry, material, def.mass);
+					else if (def.collision == "box")
+						obj = new Physijs.BoxMesh(geometry, material, def.mass);
+					else if (def.collision == "sphere")
+						obj = new Physijs.SphereMesh(geometry, material, def.mass);
+					else if (def.collision == "cylinder")
+						obj = new Physijs.CylinderMesh(geometry, material, def.mass);
+					else if (def.collision == "cone")
+						obj = new Physijs.ConeMesh(geometry, material, def.mass);
+					else if (def.collision == "convex")
+						obj = new Physijs.ConvexMesh(geometry, material, def.mass);
+					else throw "Unsupported collision mesh type " + def.collision;
+					self.objects.push(obj);
+				} else {
+					obj = new THREE.Mesh(geometry, def.faceMaterial ? new THREE.MeshFaceMaterial() : geometry.materials[0]);
+				}
+				// Auto-height
+				if (pos.y === null) {
+					if (!geometry.boundingBox) geometry.computeBoundingBox();
+					pos.y = 0.5 * (geometry.boundingBox.max.y - geometry.boundingBox.min.y) + 0.001;
+				}
+				obj.position.copy(pos);
+				if (!def.noShadows) {
+					obj.castShadow = true;
+					obj.receiveShadow = true;
+				}
+				scene.add(obj);
+			};
+		}
+
+		var nObjects = Math.floor(level.width * level.depth / 20);
+		var pos = new THREE.Vector3();
+		var i = 0;
+		while (i < nObjects) {
+			// Pick a random place
+			pos.x = rand(0, level.width);
+			pos.z = rand(0, level.depth);
+			// Make sure we are not inside a wall
+			if (level.get(pos.x, pos.z) === WALL) continue;
+			// TODO: Place most near walls
+			// TODO: Groups, stacks, etc?
+			// TODO: Check for too close to other objects
+			++i;
+
+			pos.x *= gridSize;
+			pos.z *= gridSize;
+			pos.y = null; // Auto
+
+			var objname = randElem(level.env.objects);
+			var obj = cache.loadModel("assets/models/" + objname + "/" + objname + ".js",
+				objectHandler(new THREE.Vector3().copy(pos), assets.objects[objname]));
+		}
+	};
 
 	this.generate();
 	this.generateMesh(this.levels[0]);
 	this.generateLights(this.levels[0]);
+	this.generateObjects(this.levels[0]);
 }
 
 function randProp(obj) {

@@ -74,9 +74,6 @@ function init() {
 }
 
 function mouseHandler(button) {
-	// FIXME:
-	return;
-
 	var _vector = new THREE.Vector3(0, 0, 1);
 	var projector = new THREE.Projector();
 	projector.unprojectVector(_vector, pl.camera);
