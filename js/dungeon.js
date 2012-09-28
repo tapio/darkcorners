@@ -2,6 +2,10 @@ function Dungeon(scene, player) {
 	var self = this;
 	this.monsters = [];
 	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
+	var debug_material = new THREE.MeshBasicMaterial({color: 0xff00ff});
+
+	var gridSize = 2;
+	var roomHeight = 3;
 
 	this.levels = [];
 
@@ -15,6 +19,7 @@ function Dungeon(scene, player) {
 	this.generateLevel = function(pos) {
 		var width = rand(10,15), depth = rand(10,15);
 		var level = { map: new Array(width * depth) };
+		level.width = width; level.depth = depth;
 
 		level.get = function(x, z) {
 			if (x < 0 || x >= width) return null;
@@ -37,9 +42,7 @@ function Dungeon(scene, player) {
 		// Outline & rooms
 		for (var j = 0; j < depth; ++j) {
 			for (var i = 0; i < width; ++i) {
-				if (i == 0 || j == 0 || i == width-1 || j == depth-1)
-					level.set(i, j, WALL);
-				else level.set(i, j, OPEN);
+				level.set(i, j, OPEN);
 			}
 		}
 
@@ -48,27 +51,106 @@ function Dungeon(scene, player) {
 
 		}
 
+		// Place player
+		// TODO: Set player rotation
+		player.geometry.computeBoundingBox();
+		player.position.x = width * 0.5 * gridSize;
+		player.position.y = 0.5 * (player.geometry.boundingBox.max.y - player.geometry.boundingBox.min.y) + 0.001;
+		player.position.z = depth * 0.5 * gridSize;
+
 		console.log(level);
 
 		return level;
 	};
 
 	this.generateMesh = function(level) {
-		//var floor = randElem(level.env.floor);
-		//var ceiling = randElem(level.env.ceiling);
-		//var wall = randElem(level.env.wall);
+		// Materials
+		var floor_mat = randElem(level.env.floor);
+		var ceiling_mat = randElem(level.env.ceiling);
+		var wall_mat = randElem(level.env.wall);
+		var wall_materials = [
+			cache.getMaterial(wall_mat), // right
+			cache.getMaterial(wall_mat), // left
+			dummy_material, // top
+			dummy_material, // bottom
+			cache.getMaterial(wall_mat), // back
+			cache.getMaterial(wall_mat)  // front
+		];
+
+		// Level geometry
+		var geometry = new THREE.Geometry()
+		for (var j = 0; j < level.depth; ++j) {
+			for (var i = 0; i < level.width; ++i) {
+				
+			}
+		}
+
+		// Level borders
+		// TODO: Create bounding walls as single quads and physics planes
+
+		// Ceiling, no collision needed
+		// TODO: Texture repeat
+		var ceiling_plane = new THREE.Mesh(
+			// TODO: Only ny side
+			new THREE.CubeGeometry(gridSize * level.width, 0.01, gridSize * level.depth),
+			cache.getMaterial(ceiling_mat)
+		);
+		ceiling_plane.position.set(gridSize * level.width * 0.5, roomHeight + 0.005, gridSize * level.depth * 0.5);
+		scene.add(ceiling_plane);
+
+		// Floor with collision
+		// TODO: Texture repeat
+		var floor_plane = new Physijs.BoxMesh(
+			new THREE.CubeGeometry(gridSize * level.width, 1, gridSize * level.depth),
+			Physijs.createMaterial(cache.getMaterial(floor_mat), 0.9, 0.0), // friction, restitution
+			0 // mass
+		);
+		floor_plane.position.set(gridSize * level.width * 0.5, -0.5, gridSize * level.depth * 0.5);
+		scene.add(floor_plane);
+
+		// Level mesh
+		geometry.computeTangents();
+		var mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
+		mesh.castShadow = true;
+		mesh.receiveShadow = true;
+		scene.add(mesh);
 	};
+
+	this.generateLights = function() {
+		// Ambient
+		scene.add(new THREE.AmbientLight(0xaaaaaa));
+		// Point lights
+		// TODO
+
+		// Player's torch
+		player.light = new THREE.PointLight(0x88bbff, 1, gridSize * 2);
+		scene.add(player.light);
+		player.shadow = new THREE.SpotLight(player.light.color, player.light.intensity, player.light.distance);
+		player.shadow.angle = Math.PI / 4;
+		player.shadow.onlyShadow = true;
+		player.shadow.castShadow = true;
+		player.shadow.shadowCameraNear = 0.1 * UNIT;
+		player.shadow.shadowCameraFar = 10 * UNIT;
+		player.shadow.shadowCameraFov = 60;
+		player.shadow.shadowBias = -0.0002;
+		player.shadow.shadowDarkness = 0.3;
+		player.shadow.shadowMapWidth = 1024;
+		player.shadow.shadowMapHeight = 1024;
+		player.shadow.shadowCameraVisible = false;
+		scene.add(player.shadow);
+	}
+
 
 	this.generate();
 	this.generateMesh(this.levels[0]);
-
+	this.generateLights();
 }
 
 function randProp(obj) {
 	var result, count = 0;
 	for (var prop in obj)
 		if (Math.random() < 1.0 / ++count) result = prop;
-	return result;
+	return obj[result];
 }
 
 function randElem(arr) {
