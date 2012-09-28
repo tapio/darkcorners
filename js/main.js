@@ -116,13 +116,11 @@ function animate(dt) {
 	}
 
 	// Player light
-	if (false) {
 	pl.light.intensity = 0.5 + 0.5 * getAnim(timeNow / 1000.0);
 	pl.light.position.set(pl.position.x, pl.position.y + 0.2, pl.position.z);
 	pl.shadow.position.copy(pl.light.position);
 	pl.shadow.target.position.copy(controls.target);
-	}
-	
+
 	// Player weapon
 	if (pl.rhand) {
 		pl.rhand.position.set(pl.position.x, pl.position.y, pl.position.z);
