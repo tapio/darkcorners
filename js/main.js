@@ -132,6 +132,8 @@ function animate(dt) {
 		pl.rhand.translateY(0.2*UNIT);
 		pl.rhand.translateZ(-0.5*UNIT);
 	}
+
+	console.log(pl.position.x, pl.position.z);
 }
 
 function render() {

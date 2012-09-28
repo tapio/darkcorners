@@ -23,10 +23,10 @@ PlaneGeometry = function ( width, height, segmentsWidth, segmentsheight, dir ) {
 	dir = dir || "pz";
 	switch (dir) {
 		case "nx": normal.x = -1; xmul.z = -1; ymul.y = 1; break;
-		case "px": normal.x =  1; xmul.z = 1; ymul.y = -1; break;
+		case "px": normal.x =  1; xmul.z = -1; ymul.y = -1; break;
 		case "ny": normal.y = -1; xmul.x = -1; ymul.z = 1; break;
 		case "py": normal.y =  1; xmul.x = -1; ymul.z = -1; break;
-		case "nz": normal.z = -1; xmul.x = -1; ymul.y = 1; break;
+		case "nz": normal.z = -1; xmul.x = 1; ymul.y = 1; break;
 		case "pz": normal.z =  1; xmul.x = 1; ymul.y = -1; break;
 		default: console.error("Unknown plane direction " + dir);
 	}

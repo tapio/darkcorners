@@ -68,7 +68,7 @@ function Dungeon(scene, player) {
 		var floor_mat = randElem(level.env.floor);
 		var ceiling_mat = randElem(level.env.ceiling);
 		var wall_mat = randElem(level.env.wall);
-		var wall_materials = [
+		var block_materials = [
 			cache.getMaterial(wall_mat), // right
 			cache.getMaterial(wall_mat), // left
 			dummy_material, // top
@@ -86,7 +86,17 @@ function Dungeon(scene, player) {
 		}
 
 		// Level borders
-		var nx_wall = new PlaneGeometry();
+		function makeBorder(w, dir, x, z) {
+			var border = new Physijs.PlaneMesh(
+				new PlaneGeometry(gridSize * w, roomHeight, w, roomHeight, dir),
+				cache.getMaterial(wall_mat), 0);
+			border.position.set(x, roomHeight/2, z);
+			scene.add(border);
+		}
+		makeBorder(level.depth, "px", 0, gridSize * level.depth / 2); // neg x
+		makeBorder(level.depth, "nx", gridSize * level.width, gridSize * level.depth / 2); // pos x
+		makeBorder(level.width, "pz", gridSize * level.width / 2, 0); // neg z
+		makeBorder(level.width, "nz", gridSize * level.width / 2, gridSize * level.depth); // pos z
 
 		// Ceiling, no collision needed
 		console.log(level.width, level.depth, gridSize);
@@ -95,7 +105,7 @@ function Dungeon(scene, player) {
 				level.width, level.depth, "ny"),
 			cache.getMaterial(ceiling_mat)
 		);
-		ceiling_plane.position.set(gridSize * level.width * 0.5, roomHeight + 0.005, gridSize * level.depth * 0.5);
+		ceiling_plane.position.set(gridSize * level.width * 0.5, roomHeight, gridSize * level.depth * 0.5);
 		scene.add(ceiling_plane);
 
 		// Floor with collision
@@ -105,7 +115,7 @@ function Dungeon(scene, player) {
 			Physijs.createMaterial(cache.getMaterial(floor_mat), 0.9, 0.0), // friction, restitution
 			0 // mass
 		);
-		floor_plane.position.set(gridSize * level.width * 0.5, -0.5, gridSize * level.depth * 0.5);
+		floor_plane.position.set(gridSize * level.width * 0.5, 0.0, gridSize * level.depth * 0.5);
 		scene.add(floor_plane);
 
 		// Level mesh

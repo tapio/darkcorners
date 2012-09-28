@@ -6,7 +6,7 @@ var assets = {
 	},
 	environments: {
 		"dungeon": {
-			wall: [ "stone-01"],
+			wall: [ "stone-01" ],
 			floor: [ "stone-02", "stone-03" ],
 			ceiling: [ "stone-01" ],
 			objects: [ "barrel", "box" ]
