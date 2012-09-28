@@ -17,7 +17,7 @@ function Dungeon(scene, player) {
 	};
 
 	this.generateLevel = function(pos) {
-		var width = rand(10,15), depth = rand(10,15);
+		var width = rand(15,25), depth = rand(15,25);
 		var level = { map: new Array(width * depth) };
 		level.width = width; level.depth = depth;
 
@@ -86,25 +86,23 @@ function Dungeon(scene, player) {
 		}
 
 		// Level borders
-		// TODO: Create bounding walls as single quads and physics planes
+		var nx_wall = new PlaneGeometry();
 
 		// Ceiling, no collision needed
 		console.log(level.width, level.depth, gridSize);
 		var ceiling_plane = new THREE.Mesh(
-			new BlockGeometry(gridSize * level.width, 0.01, gridSize * level.depth,
-				level.width, 1, level.depth, cache.getMaterial(ceiling_mat),
-				{ px: 0, nx: 0, py: 1, ny: 0, pz: 0, nz: 0 }),
-			new THREE.MeshFaceMaterial()
+			new PlaneGeometry(gridSize * level.width, gridSize * level.depth,
+				level.width, level.depth, "ny"),
+			cache.getMaterial(ceiling_mat)
 		);
 		ceiling_plane.position.set(gridSize * level.width * 0.5, roomHeight + 0.005, gridSize * level.depth * 0.5);
 		scene.add(ceiling_plane);
 
 		// Floor with collision
-		var floor_plane = new Physijs.BoxMesh(
-			new BlockGeometry(gridSize * level.width, 1, gridSize * level.depth,
-				level.width, 1, level.depth, cache.getMaterial(floor_mat),
-				{ px: 0, nx: 0, py: 0, ny: 1, pz: 0, nz: 0 }),
-			Physijs.createMaterial(new THREE.MeshFaceMaterial(), 0.9, 0.0), // friction, restitution
+		var floor_plane = new Physijs.PlaneMesh(
+			new PlaneGeometry(gridSize * level.width, gridSize * level.depth,
+				level.width, level.depth, "py"),
+			Physijs.createMaterial(cache.getMaterial(floor_mat), 0.9, 0.0), // friction, restitution
 			0 // mass
 		);
 		floor_plane.position.set(gridSize * level.width * 0.5, -0.5, gridSize * level.depth * 0.5);

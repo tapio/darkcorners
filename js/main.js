@@ -131,7 +131,6 @@ function animate(dt) {
 		pl.rhand.translateX(0.2*UNIT);
 		pl.rhand.translateY(0.2*UNIT);
 		pl.rhand.translateZ(-0.5*UNIT);
-
 	}
 }
 
