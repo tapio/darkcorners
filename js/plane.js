@@ -3,15 +3,15 @@
  * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Plane.as
  */
 
-PlaneGeometry = function ( width, height, segmentsWidth, segmentsheight, dir ) {
+PlaneGeometry = function ( width, height, segmentsX, segmentsY, dir, uRepeat, vRepeat ) {
 
 	THREE.Geometry.call( this );
 
 	var ix, iz,
 	width_half = width / 2,
 	height_half = height / 2,
-	gridX = segmentsWidth || 1,
-	gridZ = segmentsheight || 1,
+	gridX = segmentsX || 1,
+	gridZ = segmentsY || 1,
 	gridX1 = gridX + 1,
 	gridZ1 = gridZ + 1,
 	segment_width = width / gridX,
@@ -19,6 +19,9 @@ PlaneGeometry = function ( width, height, segmentsWidth, segmentsheight, dir ) {
 	normal = new THREE.Vector3(),
 	xmul = new THREE.Vector3(),
 	ymul = new THREE.Vector3();
+
+	uRepeat = uRepeat || 1;
+	vRepeat = vRepeat || 1;
 
 	dir = dir || "pz";
 	switch (dir) {
@@ -63,10 +66,10 @@ PlaneGeometry = function ( width, height, segmentsWidth, segmentsheight, dir ) {
 			// Texture coordinate repeating is currently hard-coded so that
 			// 2 units = 1 texture coord
 			this.faceVertexUvs[ 0 ].push([
-				new THREE.UV( ix / gridX * width/2, (1 - iz / gridZ) * height/2 ),
-				new THREE.UV( ix / gridX * width/2, (1 - (iz + 1) / gridZ) * height/2 ),
-				new THREE.UV( (ix + 1) / gridX * width/2, (1 - (iz+ 1) / gridZ) * height/2 ),
-				new THREE.UV( (ix + 1) / gridX * width/2, (1 - iz / gridZ) * height/2 )
+				new THREE.UV( ix / gridX * uRepeat, (1 - iz / gridZ) * vRepeat ),
+				new THREE.UV( ix / gridX * uRepeat, (1 - (iz + 1) / gridZ) * vRepeat ),
+				new THREE.UV( (ix + 1) / gridX * uRepeat, (1 - (iz+ 1) / gridZ) * vRepeat ),
+				new THREE.UV( (ix + 1) / gridX * uRepeat, (1 - iz / gridZ) * vRepeat )
 			]);
 
 		}

@@ -110,7 +110,7 @@ function Dungeon(scene, player) {
 		// Level borders
 		function makeBorder(w, dir, x, z) {
 			var border = new Physijs.PlaneMesh(
-				new PlaneGeometry(gridSize * w, roomHeight, w, roomHeight, dir),
+				new PlaneGeometry(gridSize * w, roomHeight, 1, 1, dir, w, roomHeight / 2),
 				cache.getMaterial(wall_mat), 0);
 			border.position.set(x, roomHeight/2, z);
 			scene.add(border);
@@ -123,7 +123,7 @@ function Dungeon(scene, player) {
 		// Ceiling, no collision needed
 		var ceiling_plane = new THREE.Mesh(
 			new PlaneGeometry(gridSize * level.width, gridSize * level.depth,
-				level.width, level.depth, "ny"),
+				1, 1, "ny", level.width, level.depth),
 			cache.getMaterial(ceiling_mat)
 		);
 		ceiling_plane.position.set(gridSize * level.width * 0.5, roomHeight, gridSize * level.depth * 0.5);
@@ -132,7 +132,7 @@ function Dungeon(scene, player) {
 		// Floor with collision
 		var floor_plane = new Physijs.PlaneMesh(
 			new PlaneGeometry(gridSize * level.width, gridSize * level.depth,
-				level.width, level.depth, "py"),
+				1, 1, "py", level.width, level.depth),
 			Physijs.createMaterial(cache.getMaterial(floor_mat), 0.9, 0.0), // friction, restitution
 			0 // mass
 		);
@@ -300,7 +300,7 @@ function Dungeon(scene, player) {
 			};
 		}
 
-		var nObjects = Math.floor(level.width * level.depth / 20);
+		var nObjects = Math.floor(level.width * level.depth / 10);
 		var pos = new THREE.Vector3();
 		var i = 0;
 		while (i < nObjects) {
