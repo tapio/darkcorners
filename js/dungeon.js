@@ -151,11 +151,89 @@ function Dungeon(scene, player) {
 		scene.add(mesh);
 	};
 
-	this.generateLights = function() {
+	this.generateLights = function(level) {
 		// Ambient
 		scene.add(new THREE.AmbientLight(0xaaaaaa));
+
+		// Particle system initializer for point lights
+		function particleSystemCreator(emitter) {
+			var i, geometry = new THREE.Geometry();
+			// Init vertices
+			for (i = 0; i < emitter.nParticles(); i++)
+				geometry.vertices.push(new THREE.Vector3());
+			// Init colors
+			geometry.colors	= new Array(emitter.nParticles());
+			for (i = 0; i < emitter.nParticles(); i++)
+				geometry.colors[i] = new THREE.Color();
+			// Init material
+			var texture	= Fireworks.ProceduralTextures.buildTexture();
+			var material = new THREE.ParticleBasicMaterial({
+				color: new THREE.Color(0xee8800).getHex(),
+				size: 0.3,
+				sizeAttenuation: true,
+				vertexColors: true,
+				map: texture,
+				blending: THREE.AdditiveBlending,
+				depthWrite: false,
+				transparent: true
+			});
+			// Init particle system
+			var particleSystem = new THREE.ParticleSystem(geometry, material);
+			particleSystem.dynamic = true;
+			particleSystem.sortParticles = true;
+			particleSystem.position = light.position;
+			scene.add(particleSystem);
+			return particleSystem;
+		}
+
 		// Point lights
-		// TODO
+		var nLights = Math.floor(level.width * level.depth / 50);
+		var pos = new THREE.Vector3();
+		var i = 0;
+		while (i < nLights) {
+			pos.x = rand(0, level.width);
+			pos.z = rand(0, level.depth);
+			pos.y = roomHeight * 0.7;
+			if (level.get(pos.x, pos.z) === WALL) continue;
+			// TODO: Pick a dir, travel to nearest wall and rest there
+			pos.x = (pos.x + 0.5) * gridSize;
+			pos.z = (pos.z + 0.5) * gridSize;
+
+			++i;
+			// Actual light
+			var light = new THREE.PointLight(0xffffaa, 1, 1.45 * gridSize);
+			light.position.copy(pos);
+			scene.add(light);
+			lightManager.addLight(light);
+			// Shadow casting light
+			var light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
+			light2.position = light.position;
+			light2.target.position.set(light2.position.x, light2.position.y - 1, light2.position.z);
+			light2.angle = Math.PI / 2;
+			light2.castShadow = true;
+			light2.onlyShadow = true;
+			light2.shadowCameraNear = 0.1 * UNIT;
+			light2.shadowCameraFar = 10 * UNIT;
+			light2.shadowCameraFov = 100;
+			light2.shadowBias = -0.0002;
+			light2.shadowDarkness = 0.3;
+			light2.shadowMapWidth = 256;
+			light2.shadowMapHeight = 256;
+			//light2.shadowCameraVisible = true;
+			scene.add(light2);
+			lightManager.addShadow(light2);
+
+			light.emitter = Fireworks.createEmitter({ nParticles : 30 })
+				.effectsStackBuilder()
+					.spawnerSteadyRate(20)
+					.position(Fireworks.createShapeSphere(0, 0, 0, 0.1))
+					.velocity(Fireworks.createShapePoint(0, 1, 0))
+					.lifeTime(0.3, 0.6)
+					.renderToThreejsParticleSystem({
+						particleSystem: particleSystemCreator
+					}).back()
+				.start();
+		}
 
 		// Player's torch
 		player.light = new THREE.PointLight(0x88bbff, 1, gridSize * 2);
@@ -178,7 +256,7 @@ function Dungeon(scene, player) {
 
 	this.generate();
 	this.generateMesh(this.levels[0]);
-	this.generateLights();
+	this.generateLights(this.levels[0]);
 }
 
 function randProp(obj) {
