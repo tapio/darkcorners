@@ -41,7 +41,7 @@ function Dungeon(scene, player) {
 		// Outline & rooms
 		for (var j = 0; j < depth; ++j) {
 			for (var i = 0; i < width; ++i) {
-				level.set(i, j, Math.random() < 0.15 ? WALL : OPEN);
+				level.set(i, j, Math.random() < 0.2 ? WALL : OPEN);
 			}
 		}
 
@@ -70,6 +70,11 @@ function Dungeon(scene, player) {
 		];
 
 		// Level geometry
+		function getBlockGenerator(sides) {
+			return function() { return new BlockGeometry(
+				gridSize, roomHeight, gridSize, 1, 1, 1, block_materials, sides);
+			};
+		}
 		var geometry = new THREE.Geometry(), mesh;
 		var cell, px, nx, pz, nz, hash;
 		for (var j = 0; j < level.depth; ++j) {
@@ -85,11 +90,7 @@ function Dungeon(scene, player) {
 					hash = px + nx + pz + nz;
 					// If wall completely surrounded by walls, skip
 					if (hash === 0) continue;
-					var cube = cache.getGeometry(hash, function() {
-						return new BlockGeometry(gridSize, roomHeight, gridSize,
-							1, 1, 1, block_materials,
-							{ px: px, nx: nx, py: 0, ny: 0, pz: pz, nz: nz });
-					});
+					var cube = cache.getGeometry(hash, getBlockGenerator({ px: px, nx: nx, py: 0, ny: 0, pz: pz, nz: nz }));
 					mesh = new THREE.Mesh(cube);
 					mesh.position.x = (i + 0.5) * gridSize;
 					mesh.position.y = 0.5 * roomHeight;
