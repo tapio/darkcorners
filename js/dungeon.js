@@ -191,21 +191,33 @@ function Dungeon(scene, player) {
 		var pos = new THREE.Vector3();
 		var i = 0;
 		while (i < nLights) {
+			// Pick a random place
 			pos.x = rand(0, level.width);
 			pos.z = rand(0, level.depth);
-			pos.y = roomHeight * 0.7;
+			// Make sure we are not inside a wall
 			if (level.get(pos.x, pos.z) === WALL) continue;
-			// TODO: Pick a dir, travel to nearest wall and rest there
-			pos.x = (pos.x + 0.5) * gridSize;
-			pos.z = (pos.z + 0.5) * gridSize;
-
+			// Pick a random cardinal direction
+			var dir = rand(0,3) * Math.PI * 0.5;
+			var dx = Math.round(Math.cos(dir));
+			var dz = -Math.round(Math.sin(dir));
+			// Travel until wall found
+			while (level.get(pos.x, pos.z) !== WALL) {
+				pos.x += dx;
+				pos.z += dz;
+			}
+			// Back away to wall face and convert to real units
+			pos.x = (pos.x - 0.6 * dx + 0.5) * gridSize;
+			pos.z = (pos.z - 0.6 * dz + 0.5) * gridSize;
+			pos.y = roomHeight * 0.7;
+			// TODO: Check for too close light positions
 			++i;
 			// Actual light
-			var light = new THREE.PointLight(0xffffaa, 1, 1.45 * gridSize);
+			var light = new THREE.PointLight(0xffffaa, 1, 2 * gridSize);
 			light.position.copy(pos);
 			scene.add(light);
 			lightManager.addLight(light);
 			// Shadow casting light
+			// TODO: Adjust the camera based on placing lights nearer walls
 			var light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
 			light2.position = light.position;
 			light2.target.position.set(light2.position.x, light2.position.y - 1, light2.position.z);
