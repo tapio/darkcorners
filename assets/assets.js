@@ -1,6 +1,9 @@
 var assets = {
 	objects: {
 		"rock-01": { collision: "sphere", mass: 400 },
+		"rock-02": { collision: "box", mass: 400 },
+		"rock-03": { collision: "box", mass: 400 },
+		"rock-04": { collision: "box", mass: 500 },
 		"barrel": { collision: "cylinder", mass: 250 },
 		"box": { collision: "box", mass: 150 },
 		"table-big": { collision: "box", mass: 1000 },
@@ -12,13 +15,13 @@ var assets = {
 			wall: [ "rock-01", "rock-02", "rock-03", "rock-04" ],
 			floor: [ "sand-01", "sand-02", "sand-03", "sand-04" ],
 			ceiling: [ "rock-01", "rock-02", "rock-03", "rock-04" ],
-			objects: [ "rock-01" ]
+			objects: [ "rock-01", "rock-02", "rock-03", "rock-04" ]
 		},
 		"mine": {
 			wall: [ "rock-01", "rock-02", "rock-03", "rock-04" ],
 			floor: [ "rock-01", "rock-02", "rock-03", "rock-04" ],
 			ceiling: [ "rock-01", "rock-02", "rock-03", "rock-04" ],
-			objects: [ "rock-01", "barrel", "box", "table-old" ]
+			objects: [ "rock-01", "rock-02", "rock-03", "rock-04", "barrel", "box", "table-old" ]
 		},
 		"dungeon": {
 			wall: [ "stone-01", "stone-02", "stone-03" ],
