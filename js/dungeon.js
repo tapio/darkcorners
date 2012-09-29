@@ -244,7 +244,7 @@ function Dungeon(scene, player) {
 		}
 
 		// Player's torch
-		player.light = new THREE.PointLight(0x88bbff, 1, gridSize * 2);
+		player.light = new THREE.PointLight(0x88bbff, 1, gridSize * 3);
 		scene.add(player.light);
 		player.shadow = new THREE.SpotLight(player.light.color, player.light.intensity, player.light.distance);
 		player.shadow.angle = Math.PI / 4;
