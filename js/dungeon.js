@@ -314,8 +314,8 @@ function Dungeon(scene, player) {
 			// TODO: Check for too close to other objects
 			++i;
 
-			pos.x *= gridSize;
-			pos.z *= gridSize;
+			pos.x = (pos.x + 0.5) * gridSize;
+			pos.z = (pos.z + 0.5) * gridSize;
 			pos.y = null; // Auto
 
 			var objname = randElem(level.env.objects);
