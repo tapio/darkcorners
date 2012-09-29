@@ -8,6 +8,7 @@ var assets = {
 		"box": { collision: "box", mass: 150 },
 		"table-big": { collision: "box", mass: 1000 },
 		"table-old": { collision: "box", mass: 800 },
+		"chair-01": { collision: "box", mass: 200 },
 		"pillar-greek": { collision: "cylinder", mass: 0 }
 	},
 	environments: {
@@ -27,19 +28,19 @@ var assets = {
 			wall: [ "stone-01", "stone-02", "stone-03" ],
 			floor: [ "stone-floor-02", "stone-floor-05" ],
 			ceiling: [ "stone-01" ],
-			objects: [ "barrel", "box", "table-old" ]
+			objects: [ "barrel", "box", "table-old", "chair-01" ]
 		},
 		"castle": {
 			wall: [ "stone-01", "tiles-01", "tiles-02" ],
 			floor: [ "stone-floor-01", "stone-floor-03", "stone-floor-04", "wood-floor-01" ],
 			ceiling: [ "stone-01" ],
-			objects: [ "barrel", "table-big" ]
+			objects: [ "barrel", "table-big", "chair-01" ]
 		},
 		"temple": {
 			wall: [ "stone-01", "tiles-01", "tiles-02" ],
 			floor: [ "stone-floor-01", "stone-floor-03", "stone-floor-04", "wood-floor-01" ],
 			ceiling: [ "stone-01" ],
-			objects: [ "pillar-greek", "pillar-greek", "table-old" ]
+			objects: [ "pillar-greek", "pillar-greek", "table-old", "chair-01" ]
 		}
 	}
 };
