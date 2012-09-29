@@ -265,22 +265,27 @@ function Dungeon(scene, player) {
 		function objectHandler(pos, def) {
 			return function handleObject(geometry) {
 				if (!def) def = {};
-				var obj;
+				var obj, mass = def.mass || 0;
+				var scale = 1.0;
+				if (def.randScale) {
+					scale += randf(-def.randScale, def.randScale);
+					mass *= scale;
+				}
 				if (def.collision) {
 					var material = Physijs.createMaterial(
 						geometry.materials[0], 0.7, 0.2); // friction, restition
 					if (def.collision == "plane")
-						obj = new Physijs.PlaneMesh(geometry, material, def.mass);
+						obj = new Physijs.PlaneMesh(geometry, material, mass);
 					else if (def.collision == "box")
-						obj = new Physijs.BoxMesh(geometry, material, def.mass);
+						obj = new Physijs.BoxMesh(geometry, material, mass);
 					else if (def.collision == "sphere")
-						obj = new Physijs.SphereMesh(geometry, material, def.mass);
+						obj = new Physijs.SphereMesh(geometry, material, mass);
 					else if (def.collision == "cylinder")
-						obj = new Physijs.CylinderMesh(geometry, material, def.mass);
+						obj = new Physijs.CylinderMesh(geometry, material, mass);
 					else if (def.collision == "cone")
-						obj = new Physijs.ConeMesh(geometry, material, def.mass);
+						obj = new Physijs.ConeMesh(geometry, material, mass);
 					else if (def.collision == "convex")
-						obj = new Physijs.ConvexMesh(geometry, material, def.mass);
+						obj = new Physijs.ConvexMesh(geometry, material, mass);
 					else throw "Unsupported collision mesh type " + def.collision;
 					self.objects.push(obj);
 				} else {
@@ -292,6 +297,7 @@ function Dungeon(scene, player) {
 					pos.y = 0.5 * (geometry.boundingBox.max.y - geometry.boundingBox.min.y) + 0.001;
 				}
 				obj.position.copy(pos);
+				obj.scale.set(scale, scale, scale);
 				if (!def.noShadows) {
 					obj.castShadow = true;
 					obj.receiveShadow = true;
@@ -343,4 +349,8 @@ function randElem(arr) {
 
 function rand(lo, hi) {
 	return lo + Math.floor(Math.random() * (hi - lo + 1));
+}
+
+function randf(lo, hi) {
+	return lo + Math.random() * (hi - lo);
 }
