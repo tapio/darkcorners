@@ -4,7 +4,8 @@ var assets = {
 		"barrel": { collision: "cylinder", mass: 250 },
 		"box": { collision: "box", mass: 150 },
 		"table-big": { collision: "box", mass: 1000 },
-		"table-old": { collision: "box", mass: 800 }
+		"table-old": { collision: "box", mass: 800 },
+		"pillar-greek": { collision: "cylinder", mass: 0 }
 	},
 	environments: {
 		"cave": {
@@ -29,7 +30,7 @@ var assets = {
 			wall: [ "stone-01", "tiles-01", "tiles-02" ],
 			floor: [ "stone-floor-01", "stone-floor-03", "stone-floor-04", "wood-floor-01" ],
 			ceiling: [ "stone-01" ],
-			objects: [ "barrel", "table-01", "table-01" ]
+			objects: [ "pillar-greek", "barrel", "table-big" ]
 		},
 	}
 };
