@@ -77,7 +77,7 @@ Controls = function (object, handlers, domElement) {
 	this.onMouseMove = function (event) {
 		function limit(a, lo, hi) { return a < lo ? lo : (a > hi ? hi : a); }
 		if (this.pointerLockEnabled) {
-			this.mouseX = event.movementX || event.webkitMovementX || event.mozMovementY || 0;
+			this.mouseX = event.movementX || event.webkitMovementX || event.mozMovementX || 0;
 			this.mouseY = event.movementY || event.webkitMovementY || event.mozMovementY || 0;
 			this.mouseX = limit(this.mouseX * 20, -600, 600);
 			this.mouseY = limit(this.mouseY * 20, -600, 600);

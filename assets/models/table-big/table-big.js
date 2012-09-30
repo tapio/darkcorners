@@ -14,7 +14,7 @@
 		"bones"         : 0
 	},
 
-	"scale" : 1.00000,
+	"scale" : 1.1,
 
 	"materials" : [{
 		"DbgColor" : 15658734,

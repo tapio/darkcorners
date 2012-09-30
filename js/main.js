@@ -84,7 +84,7 @@ function init() {
 	lightManager = new LightManager({ maxLights: CONFIG.maxLights, maxShadows: CONFIG.maxShadows });
 
 	// Create level and finalize player
-	dungeon = new Dungeon(scene, pl, maps.test);
+	dungeon = new Dungeon(scene, pl);
 	scene.add(pl);
 	pl.setAngularFactor({ x: 0, y: 0, z: 0 });
 	lightManager.update(pl);
@@ -93,7 +93,8 @@ function init() {
 	initUI();
 
 	var now = new Date().getTime();
-	console.log("Initialization took " + (now - performance.timing.navigationStart) + "ms");
+	if (window.performance)
+		console.log("Initialization took " + (now - window.performance.timing.navigationStart) + "ms");
 }
 
 function mouseHandler(button) {
@@ -114,7 +115,7 @@ function animate(dt) {
 	function fract(num) { return num - (num|0); }
 	var i, v = new THREE.Vector3();
 
-	for (i = 0; i < dungeon.monsters.length; ++i) {
+	/*for (i = 0; i < dungeon.monsters.length; ++i) {
 		var monster = dungeon.monsters[i];
 		monster.mesh.updateAnimation(1000 * dt);
 		// Look at player
@@ -123,22 +124,21 @@ function animate(dt) {
 		v.y = 0;
 		monster.mesh.lookAt(v.normalize());
 		monster.setLinearVelocity(v.multiplyScalar(50 * dt));
-	}
+	}*/
 
 	// Lights
 	var timeNow = new Date().getTime();
 	for (i = 0; i < lightManager.lights.length; ++i) {
+		var light = lightManager.lights[i];
 		var anim = timeNow / (1000.0 + i);
-		lightManager.lights[i].intensity = 0.5 + 0.5 * getAnim(anim);
-		//lightManager.lights[i].position.y = 4 * UNIT + (getAnim(anim) - 0.5) * UNIT;
+		light.intensity = 0.5 + 0.5 * getAnim(anim);
+		if (light.visible && light.emitter)
+			light.emitter.update(dt).render();
 	}
 
 	// Player light
-	var jigglyAng = fract(timeNow / 1000.0) * 2 * Math.PI;
-	var jigglyDist = Math.sin(getAnim(timeNow / 240.0)) * 0.15 * UNIT;
-	var jigglydx = Math.cos(jigglyAng) * jigglyDist;
-	var jigglydz = Math.sin(jigglyAng) * jigglyDist;
-	pl.light.position.set(pl.position.x+jigglydx, pl.position.y + 0.2 * UNIT, pl.position.z+jigglydz);
+	pl.light.intensity = 0.5 + 0.5 * getAnim(timeNow / 1000.0);
+	pl.light.position.set(pl.position.x, pl.position.y + 0.2, pl.position.z);
 	pl.shadow.position.copy(pl.light.position);
 	pl.shadow.target.position.copy(controls.target);
 
@@ -152,8 +152,9 @@ function animate(dt) {
 		pl.rhand.translateX(0.2*UNIT);
 		pl.rhand.translateY(0.2*UNIT);
 		pl.rhand.translateZ(-0.5*UNIT);
-
 	}
+
+	//console.log(pl.position.x, pl.position.z);
 }
 
 function render() {
@@ -186,5 +187,4 @@ function render() {
 	stats.update();
 }
 
-init();
-render();
+$(document).ready(function() { init(); render(); });

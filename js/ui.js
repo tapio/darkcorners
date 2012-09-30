@@ -11,18 +11,36 @@ function initUI() {
 	container.appendChild(stats.domElement);
 
 	container.requestPointerLock = container.requestPointerLock ||
-			container.webkitRequestPointerLock ||
-			container.mozRequestPointerLock;
+			container.mozRequestPointerLock || container.webkitRequestPointerLock;
+
+	container.requestFullscreen = container.requestFullscreen ||
+		container.mozRequestFullscreen || container.mozRequestFullScreen || container.webkitRequestFullscreen;
 
 	$(window).resize(onWindowResize);
 	$(window).blur(pause);
 	$(window).focus(resume);
-	$("#lockmouse").click(function() {
-		if (!controls.pointerLockEnabled) container.requestPointerLock();
+	$("#instructions").click(function() {
+		// Firefox doesn't support fullscreenless pointer lock, so resort to this hack
+		if (/Firefox/i.test(navigator.userAgent)) {
+			var onFullscreenChange = function(event) {
+				if (document.fullscreenElement || document.mozFullscreenElement || document.mozFullScreenElement) {
+					document.removeEventListener('fullscreenchange', onFullscreenChange);
+					document.removeEventListener('mozfullscreenchange', onFullscreenChange);
+					container.requestPointerLock();
+				}
+			};
+			document.addEventListener('fullscreenchange', onFullscreenChange, false);
+			document.addEventListener('mozfullscreenchange', onFullscreenChange, false);
+			container.requestFullscreen();
+		} else {
+			container.requestPointerLock();
+		}
 	});
+
 	document.addEventListener('pointerlockchange', onPointerLockChange, false);
 	document.addEventListener('webkitpointerlockchange', onPointerLockChange, false);
 	document.addEventListener('mozpointerlockchange', onPointerLockChange, false);
+	$("#instructions").show();
 
 	// GUI controls
 	var gui = new dat.GUI();
@@ -55,8 +73,13 @@ function onWindowResize() {
 }
 
 function onPointerLockChange() {
-	controls.pointerLockEnabled = !controls.pointerLockEnabled;
-	document.getElementById("info").className = controls.pointerLockEnabled ? "hidden" : "";
+	if (document.pointerLockElement || document.mozPointerLockElement || document.webkitPointerLockElement) {
+		controls.pointerLockEnabled = true;
+		$("#instructions").hide();
+	} else {
+		controls.pointerLockEnabled = false;
+		$("#instructions").show();
+	}
 }
 
 function pause() {
