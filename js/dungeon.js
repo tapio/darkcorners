@@ -276,9 +276,9 @@ function Dungeon(scene, player) {
 					scale += randf(-def.randScale, def.randScale);
 					mass *= scale;
 				}
+				var mat = geometry.materials.length > 1 ? new THREE.MeshFaceMaterial() : geometry.materials[0];
 				if (def.collision) {
-					var material = Physijs.createMaterial(
-						geometry.materials[0], 0.7, 0.2); // friction, restition
+					var material = Physijs.createMaterial(mat, 0.7, 0.2); // friction, restition
 					if (def.collision == "plane")
 						obj = new Physijs.PlaneMesh(geometry, material, mass);
 					else if (def.collision == "box")
@@ -294,7 +294,7 @@ function Dungeon(scene, player) {
 					else throw "Unsupported collision mesh type " + def.collision;
 					self.objects.push(obj);
 				} else {
-					obj = new THREE.Mesh(geometry, def.faceMaterial ? new THREE.MeshFaceMaterial() : geometry.materials[0]);
+					obj = new THREE.Mesh(geometry, mat);
 				}
 				// Auto-height
 				if (pos.y === null) {
