@@ -68,11 +68,17 @@ function Dungeon(scene, player) {
 			cache.getMaterial(wall_mat), // back
 			cache.getMaterial(wall_mat)  // front
 		];
+		var block_params = {};
+		if (assets.materials[wall_mat] && assets.materials[wall_mat].roughness)
+			block_params.roughness = assets.materials[wall_mat].roughness;
 
 		// Level geometry
 		function getBlockGenerator(sides) {
-			return function() { return new BlockGeometry(
-				gridSize, roomHeight, gridSize, 1, 1, 1, block_materials, sides);
+			return function() {
+				var tess = block_params.roughness ? 10 : 0;
+				return new BlockGeometry(
+					gridSize, roomHeight, gridSize, tess, tess, tess,
+					block_materials, sides, block_params.roughness);
 			};
 		}
 		var geometry = new THREE.Geometry(), mesh;

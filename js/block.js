@@ -3,13 +3,15 @@
  * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Cube.as
  */
 
-BlockGeometry = function (width, height, depth, segmentsWidth, segmentsHeight, segmentsDepth, materials, sides) {
+BlockGeometry = function (width, height, depth, segmentsWidth, segmentsHeight, segmentsDepth, materials, sides, randDisplace) {
 	THREE.Geometry.call(this);
 
 	var scope = this,
 	width_half = width / 2,
 	height_half = height / 2,
 	depth_half = depth / 2;
+
+	randDisplace = randDisplace || 0;
 
 	var mpx, mpy, mpz, mnx, mny, mnz;
 
@@ -77,6 +79,10 @@ BlockGeometry = function (width, height, depth, segmentsWidth, segmentsHeight, s
 				vector[u] = (ix * segment_width - width_half) * udir;
 				vector[v] = (iy * segment_height - height_half) * vdir;
 				vector[w] = depth;
+				// Random displacement?
+				if (randDisplace && ix > 0 && ix < gridX1 - 1)
+					vector[w] += -randDisplace + Math.random() * randDisplace * 2;
+
 				scope.vertices.push(vector);
 			}
 		}
@@ -108,6 +114,8 @@ BlockGeometry = function (width, height, depth, segmentsWidth, segmentsHeight, s
 
 	this.computeCentroids();
 	this.mergeVertices();
+	if (randDisplace)
+		this.computeVertexNormals();
 };
 
 BlockGeometry.prototype = Object.create(THREE.Geometry.prototype);
