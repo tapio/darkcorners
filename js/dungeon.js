@@ -78,7 +78,7 @@ function Dungeon(scene, player) {
 				var tess = block_params.roughness ? 10 : 0;
 				return new BlockGeometry(
 					gridSize, roomHeight, gridSize, tess, tess, tess,
-					block_materials, sides, block_params.roughness);
+					block_materials, sides, gridSize/2, roomHeight/2, block_params.roughness);
 			};
 		}
 		var geometry = new THREE.Geometry(), mesh;

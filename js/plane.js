@@ -63,8 +63,6 @@ PlaneGeometry = function ( width, height, segmentsX, segmentsY, dir, uRepeat, vR
 			face.vertexNormals.push( normal.clone(), normal.clone(), normal.clone(), normal.clone() );
 
 			this.faces.push( face );
-			// Texture coordinate repeating is currently hard-coded so that
-			// 2 units = 1 texture coord
 			this.faceVertexUvs[ 0 ].push([
 				new THREE.UV( ix / gridX * uRepeat, (1 - iz / gridZ) * vRepeat ),
 				new THREE.UV( ix / gridX * uRepeat, (1 - (iz + 1) / gridZ) * vRepeat ),
