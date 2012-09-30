@@ -72,7 +72,7 @@ function init() {
 	composer = new THREE.EffectComposer(renderer, colorTarget);
 	//composer.addPass(passes.scene);
 	composer.addPass(passes.ssao);
-	//if (CONFIG.antialias) composer.addPass(passes.fxaa);
+	composer.addPass(passes.fxaa);
 	composer.addPass(passes.bloom);
 	composer.addPass(passes.adjust);
 	composer.passes[composer.passes.length - 1].renderToScreen = true;

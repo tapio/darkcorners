@@ -63,6 +63,7 @@ function initUI() {
 	var guiPostproc = gui.addFolder("Post-processing");
 	guiPostproc.add(CONFIG, "postprocessing").onChange(updateConfig);
 	guiPostproc.add(CONFIG, "SSAO").onChange(updateConfig);
+	guiPostproc.add(CONFIG, "FXAA").onChange(updateConfig);
 	guiPostproc.add(CONFIG, "bloom").onChange(updateConfig);
 }
 

@@ -23,7 +23,8 @@ var CONFIG = {
 	perPixelLighting: true,
 	linearTextureFilter: true,
 	bloom: true,
-	SSAO: true
+	SSAO: true,
+	FXAA: false
 };
 
 var updateConfig = function() {
@@ -34,6 +35,7 @@ var updateConfig = function() {
 	renderer.physicallyBasedShading = CONFIG.physicalShading;
 	passes.bloom.enabled = CONFIG.bloom;
 	passes.ssao.enabled = CONFIG.SSAO;
+	passes.fxaa.enabled = CONFIG.FXAA;
 	localStorage.setItem("CONFIG", JSON.stringify(CONFIG));
 };
 
