@@ -64,11 +64,12 @@ function initUI() {
 }
 
 function onWindowResize() {
-	// FIXME: Should update fxaaPass (or reset composer)
 	pl.camera.aspect = window.innerWidth / window.innerHeight;
 	pl.camera.updateProjectionMatrix();
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	composer.reset();
+	passes.ssao.uniforms.size.value.set(window.innerWidth, window.innerHeight);
+	passes.fxaa.uniforms.resolution.value.set(1/window.innerWidth, 1/window.innerHeight);
 	controls.handleResize();
 }
 
