@@ -21,7 +21,9 @@ var CONFIG = {
 	normalMapping: true,
 	specularMapping: true,
 	perPixelLighting: true,
-	linearTextureFilter: true
+	linearTextureFilter: true,
+	bloom: true,
+	SSAO: true
 };
 
 var updateConfig = function() {
@@ -30,6 +32,8 @@ var updateConfig = function() {
 	renderer.shadowMapEnabled = CONFIG.shadows;
 	renderer.shadowMapSoft = CONFIG.softShadows;
 	renderer.physicallyBasedShading = CONFIG.physicalShading;
+	passes.bloom.enabled = CONFIG.bloom;
+	passes.ssao.enabled = CONFIG.SSAO;
 	localStorage.setItem("CONFIG", JSON.stringify(CONFIG));
 };
 

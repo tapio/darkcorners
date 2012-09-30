@@ -44,7 +44,6 @@ function initUI() {
 
 	// GUI controls
 	var gui = new dat.GUI();
-	gui.add(CONFIG, "postprocessing").onChange(updateConfig);
 	gui.add(controls, "mouseFallback");
 	var guiRenderer = gui.addFolder("Renderer options (reload required)");
 	guiRenderer.add(CONFIG, "antialias").onChange(updateConfig);
@@ -61,6 +60,10 @@ function initUI() {
 	var guiTextures = gui.addFolder("Texture options");
 	guiTextures.add(CONFIG, "anisotropy", 1, renderer.getMaxAnisotropy()).step(1).onChange(updateTextures);
 	guiTextures.add(CONFIG, "linearTextureFilter").onChange(updateTextures);
+	var guiPostproc = gui.addFolder("Post-processing");
+	guiPostproc.add(CONFIG, "postprocessing").onChange(updateConfig);
+	guiPostproc.add(CONFIG, "SSAO").onChange(updateConfig);
+	guiPostproc.add(CONFIG, "bloom").onChange(updateConfig);
 }
 
 function onWindowResize() {
