@@ -6,6 +6,7 @@ var colorTarget, depthTarget, depthPassPlugin;
 var lightManager, dungeon;
 var clock = new THREE.Clock();
 var cache = new Cache();
+var passes = {};
 
 function init() {
 	scene = new Physijs.Scene();
@@ -51,29 +52,29 @@ function init() {
 	colorTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParametersRGB);
 
 	// Postprocessing effects
-	var scenePass = new THREE.RenderPass(scene, pl.camera);
-	var ssaoPass = new THREE.ShaderPass(THREE.ShaderExtras.ssao);
-	ssaoPass.uniforms.tDepth.value = depthTarget;
-	ssaoPass.uniforms.size.value.set(window.innerWidth, window.innerHeight);
-	ssaoPass.uniforms.cameraNear.value = pl.camera.near;
-	ssaoPass.uniforms.cameraFar.value = pl.camera.far;
-	ssaoPass.uniforms.fogNear.value = scene.fog.near;
-	ssaoPass.uniforms.fogFar.value = scene.fog.far;
-	ssaoPass.uniforms.fogEnabled.value = 0;
-	ssaoPass.uniforms.aoClamp.value = 0.4;
-	ssaoPass.uniforms.onlyAO.value = 0;
-	var fxaaPass = new THREE.ShaderPass(THREE.ShaderExtras.fxaa);
-	fxaaPass.uniforms.resolution.value.set(1/window.innerWidth, 1/window.innerHeight);
-	var bloomPass = new THREE.BloomPass(0.5);
-	var adjustPass = new THREE.ShaderPass(THREE.ShaderExtras.hueSaturation);
-	adjustPass.uniforms.saturation.value = 0.2;
+	passes.scene = new THREE.RenderPass(scene, pl.camera);
+	passes.ssao = new THREE.ShaderPass(THREE.ShaderExtras.ssao);
+	passes.ssao.uniforms.tDepth.value = depthTarget;
+	passes.ssao.uniforms.size.value.set(window.innerWidth, window.innerHeight);
+	passes.ssao.uniforms.cameraNear.value = pl.camera.near;
+	passes.ssao.uniforms.cameraFar.value = pl.camera.far;
+	passes.ssao.uniforms.fogNear.value = scene.fog.near;
+	passes.ssao.uniforms.fogFar.value = scene.fog.far;
+	passes.ssao.uniforms.fogEnabled.value = 0;
+	passes.ssao.uniforms.aoClamp.value = 0.4;
+	passes.ssao.uniforms.onlyAO.value = 0;
+	passes.fxaa = new THREE.ShaderPass(THREE.ShaderExtras.fxaa);
+	passes.fxaa.uniforms.resolution.value.set(1/window.innerWidth, 1/window.innerHeight);
+	passes.bloom = new THREE.BloomPass(0.5);
+	passes.adjust = new THREE.ShaderPass(THREE.ShaderExtras.hueSaturation);
+	passes.adjust.uniforms.saturation.value = 0.2;
 
 	composer = new THREE.EffectComposer(renderer, colorTarget);
-	//composer.addPass(scenePass);
-	composer.addPass(ssaoPass);
-	//if (CONFIG.antialias) composer.addPass(fxaaPass);
-	composer.addPass(bloomPass);
-	composer.addPass(adjustPass);
+	//composer.addPass(passes.scene);
+	composer.addPass(passes.ssao);
+	//if (CONFIG.antialias) composer.addPass(passes.fxaa);
+	composer.addPass(passes.bloom);
+	composer.addPass(passes.adjust);
 	composer.passes[composer.passes.length - 1].renderToScreen = true;
 
 	// Depth pass
