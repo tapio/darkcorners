@@ -227,7 +227,7 @@ function Dungeon(scene, player) {
 			light2.shadowDarkness = 0.3;
 			light2.shadowMapWidth = 256;
 			light2.shadowMapHeight = 256;
-			//light2.shadowCameraVisible = true;
+			light2.shadowCameraVisible = false;
 			scene.add(light2);
 			lightManager.addShadow(light2);
 
