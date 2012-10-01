@@ -20,7 +20,6 @@ var CONFIG = {
 	physicalShading: true,
 	normalMapping: true,
 	specularMapping: true,
-	perPixelLighting: true,
 	linearTextureFilter: true,
 	bloom: true,
 	SSAO: true,

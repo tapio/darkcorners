@@ -35,9 +35,8 @@ function updateTextures() {
 function updateMaterials() {
 	for (var i in cache.materials) {
 		if (!cache.materials.hasOwnProperty(i)) continue;
-		cache.materials[i].perPixel = CONFIG.perPixelLighting;
 		cache.materials[i].needsUpdate = true;
-		// Also affected, shadows, soft shadows, physical shading
+		// Also affected: shadows, soft shadows, physical shading
 	}
 	updateConfig();
 }
@@ -87,7 +86,7 @@ function createMaterial(name) {
 		diffuse: diffuse,
 		specular: specular,
 		shininess: shininess,
-		perPixel: CONFIG.perPixelLighting,
+		perPixel: true,
 		map: loadTexture(texture_path + name + ".jpg"),
 		specularMap: CONFIG.specularMapping ? loadTexture(texture_path  + "specular/" + name + ".jpg") : undefined,
 		normalMap: CONFIG.normalMapping ? loadTexture(texture_path + "normal/" + name + ".jpg") : undefined
