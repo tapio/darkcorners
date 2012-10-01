@@ -178,7 +178,7 @@ function render() {
 	lightManager.update(pl);
 	renderer.clear();
 	if (CONFIG.postprocessing) {
-		renderer.shadowMapEnabled = true;
+		renderer.shadowMapEnabled = CONFIG.shadows;
 		depthPassPlugin.enabled = true;
 		renderer.render(scene, pl.camera, composer.renderTarget2, true);
 		renderer.shadowMapEnabled = false;
