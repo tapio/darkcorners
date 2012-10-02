@@ -90,6 +90,7 @@ function init() {
 	pl.setAngularFactor({ x: 0, y: 0, z: 0 });
 	lightManager.update(pl);
 
+	updateConfig();
 	dumpInfo();
 	initUI();
 
