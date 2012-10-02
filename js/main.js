@@ -39,7 +39,7 @@ function init() {
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.shadowMapEnabled = CONFIG.shadows;
 	renderer.shadowMapSoft = CONFIG.softShadows;
-	//renderer.shadowMapDebug = true;
+	renderer.shadowMapDebug = false;
 	renderer.gammaInput = true;
 	renderer.gammaOutput = true;
 	renderer.physicallyBasedShading = CONFIG.physicalShading;

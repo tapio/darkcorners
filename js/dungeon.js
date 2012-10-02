@@ -143,12 +143,12 @@ function Dungeon(scene, player) {
 			0 // mass
 		);
 		floor_plane.position.set(gridSize * level.width * 0.5, 0.0, gridSize * level.depth * 0.5);
+		floor_plane.receiveShadow = true;
 		scene.add(floor_plane);
 
 		// Level mesh
 		geometry.computeTangents();
 		mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
-		mesh.castShadow = true;
 		mesh.receiveShadow = true;
 		scene.add(mesh);
 	};
@@ -219,15 +219,17 @@ function Dungeon(scene, player) {
 			scene.add(light);
 			lightManager.addLight(light);
 			// Shadow casting light
-			// TODO: Adjust the camera based on placing lights nearer walls
 			var light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
 			light2.position = light.position;
-			light2.target.position.set(light2.position.x, light2.position.y - 1, light2.position.z);
+			light2.target.position.copy(light2.position);
+			light2.target.position.x -= dx * 1.1; // Move target a bit outwards from the wall
+			light2.target.position.y -= 1; // Shadow camera looks down
+			light2.target.position.z -= dz * 1.1; // Move target a bit outwards from the wall
 			light2.angle = Math.PI / 2;
 			light2.castShadow = true;
 			light2.onlyShadow = true;
 			light2.shadowCameraNear = 0.1 * UNIT;
-			light2.shadowCameraFar = 10 * UNIT;
+			light2.shadowCameraFar = light.distance * 1.5 * UNIT;
 			light2.shadowCameraFov = 100;
 			light2.shadowBias = -0.0002;
 			light2.shadowDarkness = 0.3;
