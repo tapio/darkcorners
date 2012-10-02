@@ -19,9 +19,10 @@ function Dungeon(scene, player) {
 	};
 
 	this.generateLevel = function(pos) {
-		var width = rand(15,25), depth = rand(15,25);
+		var width = rand(25,35), depth = rand(25,35);
 		var level = { map: new Array(width * depth) };
 		level.width = width; level.depth = depth;
+		var i, j;
 
 		level.get = function(x, z) {
 			if (x < 0 || x >= width) return WALL;
@@ -38,19 +39,59 @@ function Dungeon(scene, player) {
 		// Materials
 		level.env = randProp(assets.environments);
 
-		// Outline & rooms
-		for (var j = 0; j < depth; ++j) {
-			for (var i = 0; i < width; ++i) {
-				level.set(i, j, Math.random() < 0.2 ? WALL : OPEN);
-			}
+		// Outline
+		for (j = 0; j < depth; ++j)
+			for (i = 0; i < width; ++i)
+				level.set(i, j, WALL);
+
+		// Create rooms
+		var roomsize = rand(3,4);
+		var rooms = Math.floor(width * depth / (roomsize * roomsize * 4));
+		var x = rand(roomsize+1, width-roomsize-1);
+		var z = rand(roomsize+1, depth-roomsize-1);
+		var ox, oz, swapx, swapz;
+
+		for (var room = 0; room < rooms; ++room) {
+			var rw = rand(2, roomsize);
+			var rd = rand(2, roomsize);
+			var xx = x - rand(0, rw-1);
+			var zz = z - rand(0, rd-1);
+
+			// Floor for the room
+			for (j = zz; j < zz + rd; ++j)
+				for (i = xx; i < xx + rw; ++i)
+					level.set(i, j, OPEN);
+
+			ox = x; oz = z;
+
+			// Don't create a dead end corridor
+			if (room == rooms-1) break;
+
+			// Pick new room location
+			do {
+				x = rand(roomsize+1, width-roomsize-1);
+				z = rand(roomsize+1, depth-roomsize-1);
+			} while (level.get(x,z) == WALL && Math.abs(ox-x) + Math.abs(oz-z) >= 30);
+
+			// Do corridors
+			swapx = x < ox;
+			for (i = swapx ? x : ox; i < (swapx ? ox : x); ++i)
+				level.set(i, oz, OPEN);
+			swapz = z < oz;
+			for (j = swapz ? z : oz; j < (swapz ? oz : z); ++j)
+				level.set(x, j, OPEN);
 		}
 
 		// Place player
+		do {
+			x = rand(roomsize+1, width-roomsize-1);
+			z = rand(roomsize+1, depth-roomsize-1);
+		} while (level.get(x,z) == WALL);
 		// TODO: Set player rotation
 		player.geometry.computeBoundingBox();
-		player.position.x = width * 0.5 * gridSize;
+		player.position.x = x * gridSize;
 		player.position.y = 0.5 * (player.geometry.boundingBox.max.y - player.geometry.boundingBox.min.y) + 0.001;
-		player.position.z = depth * 0.5 * gridSize;
+		player.position.z = z * gridSize;
 
 		return level;
 	};
@@ -103,6 +144,16 @@ function Dungeon(scene, player) {
 					mesh.position.z = (j + 0.5) * gridSize;
 					THREE.GeometryUtils.merge(geometry, mesh);
 					// Collision body
+					// Bounding box needs tweaking if there is only one side in the block
+					cube.computeBoundingBox();
+					if (Math.abs(cube.boundingBox.max.x - cube.boundingBox.min.x) <= 0.5) {
+						cube.boundingBox.min.x = -0.5 * gridSize;
+						cube.boundingBox.max.x = 0.5 * gridSize;
+					}
+					if (Math.abs(cube.boundingBox.max.z - cube.boundingBox.min.z) <= 0.5) {
+						cube.boundingBox.min.z = -0.5 * gridSize;
+						cube.boundingBox.max.z = 0.5 * gridSize;
+					}
 					var wallbody = new Physijs.BoxMesh(cube, dummy_material, 0);
 					wallbody.position.copy(mesh.position);
 					wallbody.visible = false;
