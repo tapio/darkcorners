@@ -211,7 +211,7 @@ function Dungeon(scene, player) {
 			pos.x = (pos.x - 0.6 * dx + 0.5) * gridSize;
 			pos.z = (pos.z - 0.6 * dz + 0.5) * gridSize;
 			pos.y = roomHeight * 0.7;
-			// TODO: Check for too close light positions
+			if (testOverlap(pos, lightManager.lights, 2.1 * gridSize)) continue;
 			++i;
 			// Actual light
 			var light = new THREE.PointLight(0xffffaa, 1, 2 * gridSize);
@@ -333,7 +333,7 @@ function Dungeon(scene, player) {
 			if (level.get(pos.x, pos.z) === WALL) continue;
 			// TODO: Place most near walls
 			// TODO: Groups, stacks, etc?
-			// TODO: Check for too close to other objects
+			if (testOverlap(pos, this.objects, 1.1 * gridSize)) continue;
 			++i;
 
 			pos.x = (pos.x + 0.5) * gridSize;
@@ -350,6 +350,16 @@ function Dungeon(scene, player) {
 	this.generateMesh(this.levels[0]);
 	this.generateLights(this.levels[0]);
 	this.generateObjects(this.levels[0]);
+}
+
+function testOverlap(pos, objects, tolerance) {
+	if (!objects.length) return false;
+	tolerance = tolerance ? 0.000001 : (tolerance * tolerance); // Distance squared
+	for (var i = 0; i < objects.length; ++i) {
+		var dx = objects[i].x - pos.x, dz = objects[i].z - pos.z;
+		if (dx * dx + dz * dz <= tolerance) return true;
+	}
+	return false;
 }
 
 function randProp(obj) {
