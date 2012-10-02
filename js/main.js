@@ -159,34 +159,40 @@ function animate(dt) {
 	//console.log(pl.position.x, pl.position.z);
 }
 
-function render() {
-	requestAnimationFrame(render);
 
-	// Player movement, controls and physics
-	var dt = clock.getDelta();
-	var v0 = new THREE.Vector3(pl.camera.position.x, 0, pl.camera.position.z);
-	controls.update(dt);
-	var v1 = new THREE.Vector3(pl.camera.position.x, 0, pl.camera.position.z);
-	v1.subSelf(v0); // Becomes velocity
-	v1.divideScalar(dt * UNIT);
-	v0 = pl.getLinearVelocity();
-	pl.setLinearVelocity({ x: v1.x, y: v0.y < 0 ? v0.y : 0, z: v1.z });
-	scene.simulate(); // Simulate physics
-	// FIXME: 0.5 below is magic number to rise camera
-	controls.object.position.set(pl.position.x, pl.position.y + 0.5, pl.position.z);
+$(document).ready(function() {
+	var v0 = new THREE.Vector3();
+	var v1 = new THREE.Vector3();
+	function render() {
+		requestAnimationFrame(render);
 
-	animate(dt);
-	lightManager.update(pl);
-	renderer.clear();
-	if (CONFIG.postprocessing) {
-		renderer.shadowMapEnabled = CONFIG.shadows;
-		depthPassPlugin.enabled = true;
-		renderer.render(scene, pl.camera, composer.renderTarget2, true);
-		renderer.shadowMapEnabled = false;
-		depthPassPlugin.enabled = false;
-		composer.render(dt);
-	} else renderer.render(scene, pl.camera);
-	stats.update();
-}
+		// Player movement, controls and physics
+		var dt = clock.getDelta();
+		v0.set(pl.camera.position.x, 0, pl.camera.position.z);
+		controls.update(dt);
+		v1.set(pl.camera.position.x, 0, pl.camera.position.z);
+		v1.subSelf(v0); // Becomes velocity
+		v1.divideScalar(dt * UNIT);
+		v0 = pl.getLinearVelocity();
+		pl.setLinearVelocity({ x: v1.x, y: v0.y < 0 ? v0.y : 0, z: v1.z });
+		scene.simulate(); // Simulate physics
+		// FIXME: 0.5 below is magic number to rise camera
+		controls.object.position.set(pl.position.x, pl.position.y + 0.5, pl.position.z);
 
-$(document).ready(function() { init(); render(); });
+		animate(dt);
+		lightManager.update(pl);
+		renderer.clear();
+		if (CONFIG.postprocessing) {
+			renderer.shadowMapEnabled = CONFIG.shadows;
+			depthPassPlugin.enabled = true;
+			renderer.render(scene, pl.camera, composer.renderTarget2, true);
+			renderer.shadowMapEnabled = false;
+			depthPassPlugin.enabled = false;
+			composer.render(dt);
+		} else renderer.render(scene, pl.camera);
+		stats.update();
+	}
+
+	init();
+	render();
+});

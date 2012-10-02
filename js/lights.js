@@ -14,9 +14,14 @@ function LightManager(params) {
 		this.shadows.push(light);
 	};
 
-	// TODO: No need to update this every frame
+	var updateSkip = 0;
+	var v1 = new THREE.Vector2();
+	var v2 = new THREE.Vector2();
+
 	this.update = function(observer) {
-		var v1 = new THREE.Vector2(), v2 = new THREE.Vector2();
+		if (++updateSkip <= 20) return; // Perhaps should also/instead check moved distance?
+		else updateSkip = 0;
+
 		function angleDist(a, b) {
 			v1.set(a.x - observer.position.x, a.z - observer.position.z).normalize();
 			v2.set(b.x - observer.position.x, b.z - observer.position.z).normalize();
