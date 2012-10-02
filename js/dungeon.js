@@ -322,7 +322,14 @@ function Dungeon(scene, player) {
 			};
 		}
 
-		var nObjects = Math.floor(level.width * level.depth / 10);
+		// Count object budget
+		var nObjects = 0;
+		for (var z = 0; z < level.depth; ++z)
+			for (var x = 0; x < level.width; ++x)
+				if (level.get(x,z) == OPEN) nObjects++;
+		nObjects = Math.floor(nObjects / 8);
+
+		// Placement
 		var pos = new THREE.Vector3();
 		var i = 0;
 		while (i < nObjects) {
