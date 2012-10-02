@@ -82,6 +82,12 @@ function Dungeon(scene, player) {
 				level.set(x, j, OPEN);
 		}
 
+		// Count open space
+		level.floorCount = 0;
+		for (z = 0; z < depth; ++z)
+			for (x = 0; x < width; ++x)
+				if (level.get(x,z) == OPEN) level.floorCount++;
+
 		// Place player
 		do {
 			x = rand(roomsize+1, width-roomsize-1);
@@ -240,7 +246,7 @@ function Dungeon(scene, player) {
 		}
 
 		// Point lights
-		var nLights = Math.floor(level.width * level.depth / 50);
+		var nLights = Math.floor(level.floorCount / 20);
 		var pos = new THREE.Vector3();
 		var i = 0;
 		while (i < nLights) {
@@ -373,14 +379,8 @@ function Dungeon(scene, player) {
 			};
 		}
 
-		// Count object budget
-		var nObjects = 0;
-		for (var z = 0; z < level.depth; ++z)
-			for (var x = 0; x < level.width; ++x)
-				if (level.get(x,z) == OPEN) nObjects++;
-		nObjects = Math.floor(nObjects / 8);
-
 		// Placement
+		var nObjects = Math.floor(level.floorCount / 8);
 		var pos = new THREE.Vector3();
 		var i = 0;
 		while (i < nObjects) {
