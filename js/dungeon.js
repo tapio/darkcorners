@@ -9,6 +9,27 @@ function Dungeon(scene, player) {
 	var WALL = "#";
 	var OPEN = ".";
 
+	// Checks if the given position overlaps with the given array of objects
+	function testOverlap(pos, objects, tolerance) {
+		if (!objects.length) return false;
+		tolerance = tolerance ? tolerance * tolerance : 0.000001; // Distance squared
+		for (var i = 0; i < objects.length; ++i) {
+			var dx = objects[i].position.x - pos.x, dz = objects[i].position.z - pos.z;
+			if (dx * dx + dz * dz <= tolerance) return true;
+		}
+		return false;
+	}
+
+	// Checks if the given grid position is a corridor
+	function testCorridor(pos, level) {
+		var count = 0;
+		count += level.get(pos.x-1, pos.z) == WALL ? 1 : 0;
+		count += level.get(pos.x+1, pos.z) == WALL ? 1 : 0;
+		count += level.get(pos.x, pos.z-1) == WALL ? 1 : 0;
+		count += level.get(pos.x, pos.z+1) == WALL ? 1 : 0;
+		return count == 2;
+	}
+
 	this.levels = [];
 
 	this.generate = function() {
@@ -392,6 +413,8 @@ function Dungeon(scene, player) {
 			// TODO: Place most near walls
 			// TODO: Groups, stacks, etc?
 
+			if (testCorridor(pos, level)) continue;
+
 			pos.x = (pos.x + 0.5) * gridSize;
 			pos.z = (pos.z + 0.5) * gridSize;
 			pos.y = null; // Auto
@@ -411,15 +434,8 @@ function Dungeon(scene, player) {
 	this.generateObjects(this.levels[0]);
 }
 
-function testOverlap(pos, objects, tolerance) {
-	if (!objects.length) return false;
-	tolerance = tolerance ? tolerance * tolerance : 0.000001; // Distance squared
-	for (var i = 0; i < objects.length; ++i) {
-		var dx = objects[i].position.x - pos.x, dz = objects[i].position.z - pos.z;
-		if (dx * dx + dz * dz <= tolerance) return true;
-	}
-	return false;
-}
+
+
 
 function randProp(obj) {
 	var result, count = 0;
