@@ -39,13 +39,13 @@ var assets = {
 		},
 		"castle": {
 			wall: [ "stone-01", "tiles-01", "tiles-02" ],
-			floor: [ "stone-floor-01", "stone-floor-03", "stone-floor-04", "wood-floor-01" ],
+			floor: [ "stone-floor-01", "stone-floor-03", "stone-floor-04", "stone-floor-06", "wood-floor-01" ],
 			ceiling: [ "stone-01" ],
 			objects: [ "barrel", "netted-jar", "table-big", "chair-01" ]
 		},
 		"temple": {
 			wall: [ "stone-01", "tiles-01", "tiles-02" ],
-			floor: [ "stone-floor-01", "stone-floor-03", "stone-floor-04", "wood-floor-01" ],
+			floor: [ "stone-floor-01", "stone-floor-03", "stone-floor-04", "stone-floor-06", "wood-floor-01" ],
 			ceiling: [ "stone-01" ],
 			objects: [ "pillar-greek", "pillar-greek", "netted-jar", "table-old", "chair-01" ]
 		}
