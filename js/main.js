@@ -1,5 +1,4 @@
 
-var container, stats;
 var pl, controls, scene, renderer, composer;
 var renderTargetParametersRGBA, renderTargetParametersRGB;
 var colorTarget, depthTarget, depthPassPlugin;
@@ -12,6 +11,9 @@ function init() {
 	scene = new Physijs.Scene();
 	scene.setGravity(new THREE.Vector3(0, -10 * UNIT, 0));
 	scene.fog = new THREE.FogExp2(0x000000, 0.05);
+	scene.addEventListener('update', function() {
+		physicsStats.update();
+	});
 
 	pl = new Physijs.CylinderMesh(
 		new THREE.CylinderGeometry(0.8 * UNIT, 0.8 * UNIT, 2 * UNIT),
@@ -190,7 +192,7 @@ $(document).ready(function() {
 			depthPassPlugin.enabled = false;
 			composer.render(dt);
 		} else renderer.render(scene, pl.camera);
-		stats.update();
+		renderStats.update();
 	}
 
 	init();

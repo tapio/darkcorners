@@ -1,3 +1,4 @@
+var container, renderStats, physicsStats;
 
 function initUI() {
 	container = document.getElementById('container');
@@ -5,10 +6,16 @@ function initUI() {
 	container.innerHTML = "";
 	container.appendChild(renderer.domElement);
 
-	stats = new Stats();
-	stats.domElement.style.position = 'absolute';
-	stats.domElement.style.bottom = '0px';
-	container.appendChild(stats.domElement);
+	renderStats = new Stats();
+	renderStats.domElement.style.position = 'absolute';
+	renderStats.domElement.style.bottom = '0px';
+	container.appendChild(renderStats.domElement);
+
+	physicsStats = new Stats();
+	physicsStats.domElement.style.position = 'absolute';
+	physicsStats.domElement.style.bottom = '0px';
+	physicsStats.domElement.style.left = '85px';
+	container.appendChild(physicsStats.domElement);
 
 	container.requestPointerLock = container.requestPointerLock ||
 			container.mozRequestPointerLock || container.webkitRequestPointerLock;
