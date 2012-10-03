@@ -317,16 +317,18 @@ function Dungeon(scene, player) {
 			scene.add(light2);
 			lightManager.addShadow(light2);
 
-			light.emitter = Fireworks.createEmitter({ nParticles : 30 })
-				.effectsStackBuilder()
-					.spawnerSteadyRate(20)
-					.position(Fireworks.createShapeSphere(0, 0, 0, 0.1))
-					.velocity(Fireworks.createShapePoint(0, 1, 0))
-					.lifeTime(0.3, 0.6)
-					.renderToThreejsParticleSystem({
-						particleSystem: particleSystemCreator
-					}).back()
-				.start();
+			if (CONFIG.particles) {
+				light.emitter = Fireworks.createEmitter({ nParticles : 30 })
+					.effectsStackBuilder()
+						.spawnerSteadyRate(20)
+						.position(Fireworks.createShapeSphere(0, 0, 0, 0.1))
+						.velocity(Fireworks.createShapePoint(0, 1, 0))
+						.lifeTime(0.3, 0.6)
+						.renderToThreejsParticleSystem({
+							particleSystem: particleSystemCreator
+						}).back()
+					.start();
+			}
 		}
 
 		// Player's torch

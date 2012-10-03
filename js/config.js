@@ -11,6 +11,7 @@ Physijs.scripts.ammo = '../libs/ammo.js';
 
 var CONFIG = {
 	postprocessing: true,
+	particles: true,
 	maxLights: 4,
 	maxShadows: 2,
 	antialias: true,

@@ -50,6 +50,7 @@ function initUI() {
 	guiRenderer.add(CONFIG, "physicalShading").onChange(updateConfig);
 	guiRenderer.add(CONFIG, "normalMapping").onChange(updateConfig);
 	guiRenderer.add(CONFIG, "specularMapping").onChange(updateConfig);
+	guiRenderer.add(CONFIG, "particles").onChange(updateConfig);
 	guiRenderer.add(window, "reload");
 	var guiLighting = gui.addFolder("Light and shadow");
 	guiLighting.add(CONFIG, "maxLights", 0, 6).step(1).onChange(updateConfig);
