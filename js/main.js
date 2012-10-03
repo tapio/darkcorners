@@ -21,7 +21,7 @@ function init() {
 	pl.visible = false;
 	// Add pl later to the scene
 
-	pl.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1 * UNIT, 100 * UNIT);
+	pl.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1 * UNIT, 30 * UNIT);
 
 	controls = new Controls(pl.camera, { mouse: mouseHandler });
 	controls.movementSpeed = 10 * UNIT;
