@@ -1,4 +1,6 @@
 
+all: build
+
 server:
 	python -m SimpleHTTPServer
 
@@ -15,5 +17,5 @@ minify: concat
 	cat build/libs.js | uglifyjs > build/libs.min.js
 	cat build/game.js | uglifyjs > build/game.min.js
 
-.PHONY: server chrome build
+.PHONY: all server chrome build
 
