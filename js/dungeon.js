@@ -235,37 +235,6 @@ function Dungeon(scene, player) {
 		// Ambient
 		scene.add(new THREE.AmbientLight(0xaaaaaa));
 
-		// Particle system initializer for point lights
-		function particleSystemCreator(emitter) {
-			var i, geometry = new THREE.Geometry();
-			// Init vertices
-			for (i = 0; i < emitter.nParticles(); i++)
-				geometry.vertices.push(new THREE.Vector3());
-			// Init colors
-			geometry.colors	= new Array(emitter.nParticles());
-			for (i = 0; i < emitter.nParticles(); i++)
-				geometry.colors[i] = new THREE.Color();
-			// Init material
-			var texture	= Fireworks.ProceduralTextures.buildTexture();
-			var material = new THREE.ParticleBasicMaterial({
-				color: new THREE.Color(0xee8800).getHex(),
-				size: 0.3,
-				sizeAttenuation: true,
-				vertexColors: true,
-				map: texture,
-				blending: THREE.AdditiveBlending,
-				depthWrite: false,
-				transparent: true
-			});
-			// Init particle system
-			var particleSystem = new THREE.ParticleSystem(geometry, material);
-			particleSystem.dynamic = true;
-			particleSystem.sortParticles = true;
-			particleSystem.position = light.position;
-			scene.add(particleSystem);
-			return particleSystem;
-		}
-
 		// Point lights
 		var nLights = Math.floor(level.floorCount / 20);
 		var pos = new THREE.Vector3();
@@ -317,18 +286,8 @@ function Dungeon(scene, player) {
 			scene.add(light2);
 			lightManager.addShadow(light2);
 
-			if (CONFIG.particles) {
-				light.emitter = Fireworks.createEmitter({ nParticles : 30 })
-					.effectsStackBuilder()
-						.spawnerSteadyRate(20)
-						.position(Fireworks.createShapeSphere(0, 0, 0, 0.1))
-						.velocity(Fireworks.createShapePoint(0, 1, 0))
-						.lifeTime(0.3, 0.6)
-						.renderToThreejsParticleSystem({
-							particleSystem: particleSystemCreator
-						}).back()
-					.start();
-			}
+			if (CONFIG.particles)
+				light.emitter = createSimpleFire(light.position);
 		}
 
 		// Player's torch
