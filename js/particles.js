@@ -1,5 +1,8 @@
+// Most of the contents from this file is adapted from examples of firework.js
+// http://jeromeetienne.github.com/fireworks.js/
 
-// Particle system initializer for point lights
+
+// Particle system initializer for simple particle flames
 function particleSystemCreator(emitter, position) {
 	var i, geometry = new THREE.Geometry();
 	// Init vertices
@@ -30,6 +33,7 @@ function particleSystemCreator(emitter, position) {
 	return particleSystem;
 }
 
+// Create an emitter
 function createSimpleFire(position) {
 	var emitter = Fireworks.createEmitter({ nParticles: 30 });
 	emitter.effectsStackBuilder()
