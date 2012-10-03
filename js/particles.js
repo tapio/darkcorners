@@ -47,3 +47,74 @@ function createSimpleFire(position) {
 	.start();
 	return emitter;
 }
+
+function initFireTextures() {
+	var urls = [];
+	for (var i = 17; i <= 24; ++i)
+		urls.push("assets/particles/fire/flame" + i + ".jpg");
+}
+
+function createTexturedFire(position) {
+	var emitter	= Fireworks.createEmitter({ nParticles: 30 });
+	emitter.bindTriggerDomEvents()
+		.effectsStackBuilder()
+			.spawnerSteadyRate(20)
+			.position(Fireworks.createShapeBox(0, 0, 0, 2, 0.1, 0.1))
+			.velocity(Fireworks.createShapeSphere(0, 20, 0, 1))
+			.lifeTime(0.8, 1.2)
+			.friction(0.99)
+			.randomVelocityDrift(Fireworks.createVector(10,100,0))
+			.createEffect('scale', {
+					origin: 1/30,
+					factor: 1.02
+				}).onBirth(function(particle){
+					var object3d = particle.get('threejsObject3D').object3d;
+					var scale = this.opts.origin;
+					object3d.scale.set(scale*1.5, scale*4)
+				}).onUpdate(function(particle, deltaTime){
+					var object3d = particle.get('threejsObject3D').object3d;
+					object3d.scale.multiplyScalar(this.opts.factor);
+				}).back()
+			.createEffect('rotation')
+				.onBirth(function(particle){
+					var object3d = particle.get('threejsObject3D').object3d;
+					object3d.rotation = Math.random()*Math.PI*2;
+				}).back()
+			.createEffect('opacity', {
+					gradient: Fireworks.createLinearGradient()
+							.push(0.00, 0.00)
+							.push(0.05, 1.00)
+							.push(0.99, 1.00)
+							.push(1.00, 0.00)
+				}).onUpdate(function(particle){
+					var object3d = particle.get('threejsObject3D').object3d;
+					var canonAge = particle.get('lifeTime').normalizedAge();
+					object3d.opacity = this.opts.gradient.get(canonAge);
+				}).back()
+			.renderToThreejsObject3D({
+				container: container,
+				create: function(){
+					var object3d = new THREE.Sprite({
+						//color: 0xaa66ee,
+						useScreenCoordinates: false,
+						map: texture,
+						blending: THREE.AdditiveBlending,
+						transparent: true
+					});
+					//object3d.opacity= 0.8;
+					object3d.uvScale.set(1, 1/urls.length)
+					return object3d;
+				}
+			})
+			.createEffect("updateSpritesheet")
+				.onUpdate(function(particle, deltaTime){
+					var object3d = particle.get('threejsObject3D').object3d;
+					var canonAge = particle.get('lifeTime').normalizedAge();
+					var imageIdx = Math.floor(canonAge * (urls.length));
+					var uvOffsetY = imageIdx * 1/urls.length;
+					object3d.uvOffset.set(0, uvOffsetY)
+				}).back()
+			.back()
+		.start();
+	return emitter;
+}
