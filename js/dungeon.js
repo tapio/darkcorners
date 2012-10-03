@@ -299,7 +299,7 @@ function Dungeon(scene, player) {
 		player.shadow.castShadow = true;
 		player.shadow.shadowCameraNear = 0.1 * UNIT;
 		player.shadow.shadowCameraFar = 10 * UNIT;
-		player.shadow.shadowCameraFov = 60;
+		player.shadow.shadowCameraFov = 90;
 		player.shadow.shadowBias = -0.0002;
 		player.shadow.shadowDarkness = 0.3;
 		player.shadow.shadowMapWidth = 1024;
