@@ -141,16 +141,8 @@ function Dungeon(scene, player) {
 			block_params.roughness = assets.materials[wall_mat].roughness;
 
 		// Level geometry
-		function getBlockGenerator(sides) {
-			return function() {
-				var tess = block_params.roughness ? 10 : 0;
-				return new BlockGeometry(
-					gridSize, roomHeight, gridSize, tess, tess, tess,
-					block_materials, sides, gridSize/2, roomHeight/2, block_params.roughness);
-			};
-		}
 		var geometry = new THREE.Geometry(), mesh;
-		var cell, px, nx, pz, nz, hash;
+		var cell, px, nx, pz, nz, tess, cube;
 		for (var j = 0; j < level.depth; ++j) {
 			for (var i = 0; i < level.width; ++i) {
 				px = nx = pz = nz = py = ny = 0;
@@ -161,10 +153,12 @@ function Dungeon(scene, player) {
 					nx = level.get(i - 1, j) == WALL ? 0 : 2;
 					pz = level.get(i, j + 1) == WALL ? 0 : 4;
 					nz = level.get(i, j - 1) == WALL ? 0 : 8;
-					hash = px + nx + pz + nz;
 					// If wall completely surrounded by walls, skip
-					if (hash === 0) continue;
-					var cube = cache.getGeometry(hash, getBlockGenerator({ px: px, nx: nx, py: 0, ny: 0, pz: pz, nz: nz }));
+					if (px + nx + pz + nz === 0) continue;
+					tess = block_params.roughness ? 10 : 0;
+					cube = new BlockGeometry(gridSize, roomHeight, gridSize, tess, tess, tess,
+						block_materials, { px: px, nx: nx, py: 0, ny: 0, pz: pz, nz: nz },
+						gridSize/2, roomHeight/2, block_params.roughness);
 					mesh = new THREE.Mesh(cube);
 					mesh.position.x = (i + 0.5) * gridSize;
 					mesh.position.y = 0.5 * roomHeight;
