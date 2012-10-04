@@ -304,11 +304,7 @@ function Dungeon(scene, player) {
 
 	this.generateObjects = function(level) {
 		function objectHandler(pos, def) {
-			function fixAnisotropy(tex) {
-				if (!tex) return;
-				tex.anisotropy = CONFIG.anisotropy;
-				tex.needsUpdate = true;
-			}
+
 			return function handleObject(geometry) {
 				if (!def) def = {};
 				var obj, mass = def.mass || 0;
@@ -317,6 +313,8 @@ function Dungeon(scene, player) {
 					scale += randf(-def.randScale, def.randScale);
 					mass *= scale;
 				}
+				for (var m = 0; m < geometry.materials.length; ++m)
+					fixAnisotropy(geometry.materials[m]);
 				var mat = geometry.materials.length > 1 ? new THREE.MeshFaceMaterial() : geometry.materials[0];
 				if (def.collision) {
 					var material = Physijs.createMaterial(mat, 0.7, 0.2); // friction, restition
@@ -348,9 +346,6 @@ function Dungeon(scene, player) {
 					obj.castShadow = true;
 					obj.receiveShadow = true;
 				}
-				fixAnisotropy(obj.material.map);
-				fixAnisotropy(obj.material.normalMap);
-				fixAnisotropy(obj.material.specularMap);
 				scene.add(obj);
 			};
 		}

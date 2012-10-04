@@ -32,6 +32,31 @@ function updateTextures() {
 }
 
 
+function fixAnisotropy(mat) {
+	if (!mat) return;
+
+	function fixAnisotropyTex(tex) {
+		if (!tex) return;
+		tex.anisotropy = CONFIG.anisotropy;
+		tex.needsUpdate = true;
+	}
+
+	if (mat instanceof THREE.ShaderMaterial) {
+		fixAnisotropyTex(mat.uniforms.tDiffuse.value);
+		fixAnisotropyTex(mat.uniforms.tNormal.value);
+		fixAnisotropyTex(mat.uniforms.tSpecular.value);
+		fixAnisotropyTex(mat.uniforms.tAO.value);
+		fixAnisotropyTex(mat.uniforms.tCube.value);
+		fixAnisotropyTex(mat.uniforms.tDisplacement.value);
+	} else {
+		fixAnisotropyTex(mat.map);
+		fixAnisotropyTex(mat.normalMap);
+		fixAnisotropyTex(mat.specularMap);
+		fixAnisotropyTex(mat.lightMap);
+	}
+}
+
+
 function updateMaterials() {
 	for (var i in cache.materials) {
 		if (!cache.materials.hasOwnProperty(i)) continue;
