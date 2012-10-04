@@ -1,9 +1,9 @@
 var assets = {
 	objects: {
-		"rock-01": { collision: "sphere", mass: 400, randScale: 0.3 },
-		"rock-02": { collision: "box", mass: 400, randScale: 0.3 },
-		"rock-03": { collision: "box", mass: 400, randScale: 0.3 },
-		"rock-04": { collision: "box", mass: 500, randScale: 0.3 },
+		"rock-01": { collision: "sphere", mass: 400, randScale: 0.4 },
+		"rock-02": { collision: "box", mass: 400, randScale: 0.4 },
+		"rock-03": { collision: "box", mass: 400, randScale: 0.4 },
+		"rock-04": { collision: "box", mass: 500, randScale: 0.4 },
 		"barrel": { collision: "cylinder", mass: 250 },
 		"box": { collision: "box", mass: 150 },
 		"netted-jar": { collision: "cylinder", mass: 100 },
