@@ -66,19 +66,6 @@ function Dungeon(scene, player) {
 			}
 		}
 
-		// Level borders
-		function makeBorder(w, dir, x, z) {
-			var border = new Physijs.PlaneMesh(
-				new PlaneGeometry(level.gridSize * w, level.roomHeight, 1, 1, dir, w, level.roomHeight / 2),
-				cache.getMaterial(level.materials.wall), 0);
-			border.position.set(x, level.roomHeight/2, z);
-			scene.add(border);
-		}
-		makeBorder(level.depth, "px", 0, level.gridSize * level.depth / 2); // neg x
-		makeBorder(level.depth, "nx", level.gridSize * level.width, level.gridSize * level.depth / 2); // pos x
-		makeBorder(level.width, "pz", level.gridSize * level.width / 2, 0); // neg z
-		makeBorder(level.width, "nz", level.gridSize * level.width / 2, level.gridSize * level.depth); // pos z
-
 		// Ceiling, no collision needed
 		var ceiling_plane = new THREE.Mesh(
 			new PlaneGeometry(level.gridSize * level.width, level.gridSize * level.depth,
