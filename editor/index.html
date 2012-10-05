@@ -26,6 +26,7 @@
 		var canvas = document.getElementById("canvas");
 		var ctx = canvas.getContext("2d");
 
+		var i;
 		var w = 40, h = 40;
 		var s = canvas.width / w;
 		var WALL = "#";
@@ -48,8 +49,11 @@
 			map: new Array(w * h)
 		};
 
-		for (var i = 0; i < w * h; ++i) level.map[i] = OPEN;
+		for (i = 0; i < w * h; ++i) level.map[i] = OPEN;
 
+		var materials = [ "rock-01", "rock-02", "rock-03", "rock-04", "sand-01", "sand-02", "sand-03", "sand-04", "stone-01", "stone-02", "stone-03", "stone-floor-01", "stone-floor-02", "stone-floor-03", "stone-floor-04", "stone-floor-05", "stone-floor-06", "tiles-01", "tiles-02", "wood-floor-01" ];
+		var objects = [];
+		for (i in assets.objects) objects.push(i);
 		var tools = {};
 
 		tools.walls = {
@@ -96,7 +100,7 @@
 			addLight: function() { currentTool = tools.light; },
 			mousedown: function(e) {
 				if (e.button == 0) {
-					level.lights.push({ x: e._x / s, y: 0.7, z: e._y / s });
+					level.lights.push({ position: { x: e._x / s, y: 0.7, z: e._y / s } });
 				} else if (e.button == 2) {
 					console.log("TODO: remove light");
 				}
@@ -104,13 +108,13 @@
 		};
 
 		tools.object = {
-			object: "rock-01",
+			object: "barrel",
 			addObject: function() { currentTool = tools.object; },
 			mousedown: function(e) {
 				if (e.button == 0) {
 					level.objects.push({
 						name: tools.object.object,
-						x: e._x / s, y: null, z: e._y / s
+						position: { x: e._x / s, y: null, z: e._y / s }
 					});
 				} else if (e.button == 2) {
 					console.log("TODO: remove object");
@@ -142,14 +146,14 @@
 			ctx.fillStyle = "#880";
 			for (i = 0; i < level.lights.length; ++i) {
 				ctx.beginPath();
-				ctx.arc(level.lights[i].x * s, level.lights[i].z * s, s * 0.25, 0, Math.PI * 2);
+				ctx.arc(level.lights[i].position.x * s, level.lights[i].position.z * s, s * 0.25, 0, Math.PI * 2);
 				ctx.fill();
 			}
 			// Objects
 			ctx.fillStyle = "#006";
 			for (i = 0; i < level.objects.length; ++i) {
 				ctx.beginPath();
-				ctx.arc(level.objects[i].x * s, level.objects[i].z * s, s * 0.4, 0, Math.PI * 2);
+				ctx.arc(level.objects[i].position.x * s, level.objects[i].position.z * s, s * 0.4, 0, Math.PI * 2);
 				ctx.fill();
 			}
 			// Start
@@ -166,8 +170,6 @@
 			document.getElementById("exported").style.display = "block";
 		}
 
-		var materials = [ "rock-01", "rock-02", "rock-03", "rock-04", "sand-01", "sand-02", "sand-03", "sand-04", "stone-01", "stone-02", "stone-03", "stone-floor-01", "stone-floor-02", "stone-floor-03", "stone-floor-04", "stone-floor-05", "stone-floor-06", "tiles-01", "tiles-02", "wood-floor-01" ];
-
 		var gui = new dat.GUI();
 		gui.add(tools.walls, "drawWalls");
 		var guiMap = gui.addFolder("Map properties");
@@ -181,7 +183,7 @@
 		var guiLights = gui.addFolder("Lights");
 		guiLights.add(tools.light, "addLight");
 		var guiObjects = gui.addFolder("Objects");
-		guiObjects.add(tools.object, "object", assets.objects);
+		guiObjects.add(tools.object, "object", objects);
 		guiObjects.add(tools.object, "addObject");
 		gui.add(window, "exportLevel");
 
