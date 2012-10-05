@@ -220,9 +220,9 @@ function Dungeon(scene, player) {
 	};
 
 
-	var gen = new MapGen();
-	this.level = gen.generate();
-	//this.level = testLevel;
+	//var gen = new MapGen();
+	//this.level = gen.generate();
+	this.level = testLevel;
 
 	this.level.get = this.level.get || function(x, z) {
 		if (x < 0 || x >= this.width) return WALL;
