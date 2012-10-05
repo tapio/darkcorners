@@ -33,6 +33,11 @@
 		var OPEN = ".";
 
 		var level = {
+			materials: {
+				ceiling: "rock-01",
+				wall: "stone-01",
+				floor: "stone-floor-01"
+			},
 			roomHeight: 3,
 			gridSize: 2,
 			objects: [],
@@ -96,7 +101,12 @@
 			document.getElementById("exported").style.display = "block";
 		}
 
+		var materials = [ "rock-01", "rock-02", "rock-03", "rock-04", "sand-01", "sand-02", "sand-03", "sand-04", "stone-01", "stone-02", "stone-03", "stone-floor-01", "stone-floor-02", "stone-floor-03", "stone-floor-04", "stone-floor-05", "stone-floor-06", "tiles-01", "tiles-02", "wood-floor-01" ];
+
 		var gui = new dat.GUI();
+		gui.add(level.materials, "ceiling", materials);
+		gui.add(level.materials, "wall", materials);
+		gui.add(level.materials, "floor", materials);
 		gui.add(level, "roomHeight", 2, 10).step(0.5);
 		gui.add(level, "gridSize", 1, 4).step(1);
 		gui.add(window, "exportLevel");
