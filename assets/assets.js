@@ -10,7 +10,8 @@ var assets = {
 		"table-big": { collision: "box", mass: 1000 },
 		"table-old": { collision: "box", mass: 800 },
 		"chair-01": { collision: "box", mass: 200 },
-		"pillar-greek": { collision: "cylinder", mass: 0 }
+		"pillar-greek": { collision: "cylinder", mass: 0 },
+		"teleporter": { collision: "cylinder", mass: 0 }
 	},
 	materials: {
 		"rock-01": { roughness: 0.15 },
