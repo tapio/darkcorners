@@ -14,7 +14,7 @@
 </head>
 <body>
 	<p>Level editor</p>
-	<canvas id="canvas" width="500", height="500">
+	<canvas id="canvas" width="640", height="640">
 		<p>Oh noes, no &lt;canvas&gt;!</p>
 	</canvas>
 
@@ -26,7 +26,7 @@
 		var canvas = document.getElementById("canvas");
 		var ctx = canvas.getContext("2d");
 
-		var w = 25, h = 25;
+		var w = 40, h = 40;
 		var s = canvas.width / w;
 		var start = { x: Math.floor(w/2), y: Math.floor(h/2) };
 		var drawing = 0;
