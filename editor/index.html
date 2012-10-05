@@ -8,8 +8,8 @@
 		body { background-color: #333; }
 		canvas { background-color: #ccc; }
 		#exported { display: none; width: 500px; height: 300px; }
-		#export { float: right; }
 	</style>
+	<script src="../libs/dat.gui.min.js"></script>
 </head>
 <body>
 	<p>Level editor</p>
@@ -17,7 +17,6 @@
 		<p>Oh noes, no &lt;canvas&gt;!</p>
 	</canvas>
 
-	<button id="export">Export map</button>
 	<textarea id="exported">
 	</textarea>
 
@@ -33,14 +32,24 @@
 		var WALL = "#";
 		var OPEN = ".";
 
-		var map = new Array(w * h);
-		for (var i = 0; i < w * h; ++i) map[i] = OPEN;
+		var level = {
+			roomHeight: 3,
+			gridSize: 2,
+			objects: [],
+			lights: [],
+			start: [ start.x, start.y ],
+			width: w,
+			depth: h,
+			map: new Array(w * h)
+		};
+
+		for (var i = 0; i < w * h; ++i) level.map[i] = OPEN;
 
 		function put(x, y, what) {
 			x = Math.floor(x / s);
 			y = Math.floor(y / s);
 			if (x < 0 || x > w-1 || y < 0 || y > h-1) return;
-			map[y * w + x] = what;
+			level.map[y * w + x] = what;
 		}
 
 		function render() {
@@ -51,7 +60,7 @@
 			for (var j = 0; j < h; ++j) {
 				for (var i = 0; i < w; ++i) {
 					ctx.strokeRect(i * s, j * s, s, s);
-					if (map[j * w + i] == WALL)
+					if (level.map[j * w + i] == WALL)
 						ctx.fillRect(i * s + 1, j * s + 1, s - 2, s - 2);
 				}
 			}
@@ -82,24 +91,20 @@
 		}
 
 		function exportLevel() {
-			var level = {
-				roomHeight: 3,
-				gridSize: 2,
-				objects: [],
-				lights: [],
-				start: [ start.x, start.y ],
-				map: map
-			};
 			var json = JSON.stringify(level, null, '\t');
 			document.getElementById("exported").value = json;
 			document.getElementById("exported").style.display = "block";
 		}
 
+		var gui = new dat.GUI();
+		gui.add(level, "roomHeight", 2, 10).step(0.5);
+		gui.add(level, "gridSize", 1, 4).step(1);
+		gui.add(window, "exportLevel");
+
 		canvas.addEventListener("mousedown", mouseHandler, false);
 		canvas.addEventListener("mouseup", mouseHandler, false);
 		canvas.addEventListener("mousemove", mouseHandler, false);
 		document.oncontextmenu = function() { return false; }
-		document.getElementById("export").addEventListener("click", exportLevel);
 		window.addEventListener("load", render);
 
 	</script>
