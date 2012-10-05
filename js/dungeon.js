@@ -115,26 +115,30 @@ function Dungeon(scene, player) {
 			// Actual light
 			var light = new THREE.PointLight(0xffffaa, 1, 2 * level.gridSize);
 			light.position.copy(level.lights[i].position);
+			light.position.x *= level.gridSize;
+			light.position.z *= level.gridSize;
 			scene.add(light);
 			lightManager.addLight(light);
 
 			// Shadow casting light
-			var light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
-			light2.position = light.position;
-			light2.target.position.copy(level.lights[i].target);
-			light2.angle = Math.PI / 2;
-			light2.castShadow = true;
-			light2.onlyShadow = true;
-			light2.shadowCameraNear = 0.1 * UNIT;
-			light2.shadowCameraFar = light.distance * 1.5 * UNIT;
-			light2.shadowCameraFov = 100;
-			light2.shadowBias = -0.0002;
-			light2.shadowDarkness = 0.3;
-			light2.shadowMapWidth = 256;
-			light2.shadowMapHeight = 256;
-			light2.shadowCameraVisible = false;
-			scene.add(light2);
-			lightManager.addShadow(light2);
+			if (level.lights[i].target) {
+				var light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
+				light2.position = light.position;
+				light2.target.position.copy(level.lights[i].target);
+				light2.angle = Math.PI / 2;
+				light2.castShadow = true;
+				light2.onlyShadow = true;
+				light2.shadowCameraNear = 0.1 * UNIT;
+				light2.shadowCameraFar = light.distance * 1.5 * UNIT;
+				light2.shadowCameraFov = 100;
+				light2.shadowBias = -0.0002;
+				light2.shadowDarkness = 0.3;
+				light2.shadowMapWidth = 256;
+				light2.shadowMapHeight = 256;
+				light2.shadowCameraVisible = false;
+				scene.add(light2);
+				lightManager.addShadow(light2);
+			}
 
 			// Flame
 			if (CONFIG.particles)
@@ -191,6 +195,8 @@ function Dungeon(scene, player) {
 				} else {
 					obj = new THREE.Mesh(geometry, mat);
 				}
+				pos.x *= level.gridSize;
+				pos.z *= level.gridSize;
 				// Auto-height
 				if (pos.y === null) {
 					if (!geometry.boundingBox) geometry.computeBoundingBox();
@@ -216,6 +222,19 @@ function Dungeon(scene, player) {
 
 	var gen = new MapGen();
 	this.level = gen.generate();
+	//this.level = testLevel;
+
+	this.level.get = this.level.get || function(x, z) {
+		if (x < 0 || x >= this.width) return WALL;
+		else if (z < 0 || z >= this.depth) return WALL;
+		return this.map[z * this.width + x];
+	};
+
+	this.level.set = this.level.set || function(x, z, obj) {
+		if (x < 0 || x >= this.width) return;
+		else if (z < 0 || z >= this.depth) return;
+		this.map[z * this.width + x] = obj;
+	};
 
 	// TODO: Set player rotation
 	player.geometry.computeBoundingBox();

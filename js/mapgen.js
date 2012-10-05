@@ -126,11 +126,11 @@ function MapGen() {
 				pos.x += dx;
 				pos.z += dz;
 			}
-			// Back away to wall face and convert to real units
-			pos.x = (pos.x - 0.6 * dx + 0.5) * level.gridSize;
-			pos.z = (pos.z - 0.6 * dz + 0.5) * level.gridSize;
+			// Back away to wall face
+			pos.x = pos.x - 0.6 * dx + 0.5;
+			pos.z = pos.z - 0.6 * dz + 0.5;
 			pos.y = level.roomHeight * 0.7;
-			if (testOverlap(pos, level.lights, 4.1 * level.gridSize)) continue;
+			if (testOverlap(pos, level.lights, 4.1)) continue;
 			++i;
 			// Actual light
 			level.lights.push({
@@ -156,11 +156,11 @@ function MapGen() {
 
 			if (testCorridor(pos, level)) continue;
 
-			pos.x = (pos.x + 0.5) * level.gridSize;
-			pos.z = (pos.z + 0.5) * level.gridSize;
+			pos.x += 0.5;
+			pos.z += 0.5;
 			pos.y = null; // Auto
 
-			if (testOverlap(pos, level.objects, 1.4 * level.gridSize)) continue;
+			if (testOverlap(pos, level.objects, 1.4)) continue;
 			++i;
 
 			var objname = randElem(level.env.objects);
