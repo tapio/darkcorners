@@ -40,7 +40,9 @@
 
 		var editor = {
 			drawGrid: true,
-			drawTextures: false
+			drawTextures: false,
+			hideLights: false,
+			hideObjects: false
 		};
 
 		var level = {
@@ -187,18 +189,22 @@
 				}
 			}
 			// Lights
-			ctx.fillStyle = "#880";
-			for (i = 0; i < level.lights.length; ++i) {
-				ctx.beginPath();
-				ctx.arc(level.lights[i].position.x * s, level.lights[i].position.z * s, s * 0.25, 0, Math.PI * 2);
-				ctx.fill();
+			if (!editor.hideLights) {
+				ctx.fillStyle = "#880";
+				for (i = 0; i < level.lights.length; ++i) {
+					ctx.beginPath();
+					ctx.arc(level.lights[i].position.x * s, level.lights[i].position.z * s, s * 0.25, 0, Math.PI * 2);
+					ctx.fill();
+				}
 			}
 			// Objects
-			ctx.fillStyle = "#006";
-			for (i = 0; i < level.objects.length; ++i) {
-				ctx.beginPath();
-				ctx.arc(level.objects[i].position.x * s, level.objects[i].position.z * s, s * 0.4, 0, Math.PI * 2);
-				ctx.fill();
+			if (!editor.hideObjects) {
+				ctx.fillStyle = "#006";
+				for (i = 0; i < level.objects.length; ++i) {
+					ctx.beginPath();
+					ctx.arc(level.objects[i].position.x * s, level.objects[i].position.z * s, s * 0.4, 0, Math.PI * 2);
+					ctx.fill();
+				}
 			}
 			// Start
 			ctx.fillStyle = "#229";
@@ -266,6 +272,8 @@
 		var guiEditor = gui.addFolder("Editor options");
 		guiEditor.add(editor, "drawGrid");
 		guiEditor.add(editor, "drawTextures");
+		guiEditor.add(editor, "hideLights");
+		guiEditor.add(editor, "hideObjects");
 		gui.add(window, "importLevel");
 		gui.add(window, "exportBase64");
 		gui.add(window, "exportJSON");
