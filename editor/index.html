@@ -10,6 +10,7 @@
 		#exported { display: none; width: 500px; height: 300px; }
 	</style>
 	<script src="../libs/dat.gui.min.js"></script>
+	<script src="../assets/assets.js"></script>
 </head>
 <body>
 	<p>Level editor</p>
@@ -95,6 +96,14 @@
 			return false;
 		}
 
+		function addLight() {
+
+		}
+
+		function addObject() {
+
+		}
+
 		function exportLevel() {
 			var json = JSON.stringify(level, null, '\t');
 			document.getElementById("exported").value = json;
@@ -102,13 +111,20 @@
 		}
 
 		var materials = [ "rock-01", "rock-02", "rock-03", "rock-04", "sand-01", "sand-02", "sand-03", "sand-04", "stone-01", "stone-02", "stone-03", "stone-floor-01", "stone-floor-02", "stone-floor-03", "stone-floor-04", "stone-floor-05", "stone-floor-06", "tiles-01", "tiles-02", "wood-floor-01" ];
+		var placerProps = { object: "barrel" };
 
 		var gui = new dat.GUI();
-		gui.add(level.materials, "ceiling", materials);
-		gui.add(level.materials, "wall", materials);
-		gui.add(level.materials, "floor", materials);
-		gui.add(level, "roomHeight", 2, 10).step(0.5);
-		gui.add(level, "gridSize", 1, 4).step(1);
+		var guiMap = gui.addFolder("Map properties");
+		guiMap.add(level.materials, "ceiling", materials);
+		guiMap.add(level.materials, "wall", materials);
+		guiMap.add(level.materials, "floor", materials);
+		guiMap.add(level, "roomHeight", 2, 10).step(0.5);
+		guiMap.add(level, "gridSize", 1, 4).step(1);
+		var guiLights = gui.addFolder("Lights");
+		guiLights.add(window, "addLight");
+		var guiObjects = gui.addFolder("Objects");
+		guiObjects.add(placerProps, "object", assets.objects);
+		guiObjects.add(window, "addObject");
 		gui.add(window, "exportLevel");
 
 		canvas.addEventListener("mousedown", mouseHandler, false);
