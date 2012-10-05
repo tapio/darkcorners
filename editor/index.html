@@ -20,7 +20,8 @@
 	</canvas>
 	<p>Left click to draw walls or place selected thing. Right click to erase.</p>
 	<textarea id="exported"></textarea>
-	<p>Material reference: hover over the image to see the name to put to the map properties.</p>
+	<p>Material reference: hover over the image to see the name to put to the map properties.<p>
+	<p>Currently you can't click them and the material cannot be set for individual tiles.</p>
 	<table id="thumbs"></table>
 
 	<script>
@@ -49,8 +50,8 @@
 			gridSize: 2,
 			objects: [],
 			lights: [],
-			start: [ Math.floor(w/2)-1, Math.floor(h*0.25) ],
-			exit: [ Math.floor(w/2)-1, Math.floor(h*0.75) ],
+			start: [ Math.floor(w/2)-0.5, Math.floor(h*0.25)-0.5 ],
+			exit: [ Math.floor(w/2)-0.5, Math.floor(h*0.75)-0.5 ],
 			width: w,
 			depth: h,
 			map: new Array(w * h)
@@ -198,10 +199,14 @@
 			}
 			// Start
 			ctx.fillStyle = "#88f";
-			ctx.fillRect(level.start[0] * s + 1, level.start[1] * s + 1, s - 2, s - 2);
+			ctx.beginPath();
+			ctx.arc(level.start[0] * s, level.start[1] * s, s/2, 0, Math.PI * 2);
+			ctx.fill();
 			// Exit
 			ctx.fillStyle = "#8f8";
-			ctx.fillRect(level.exit[0] * s + 1, level.exit[1] * s + 1, s - 2, s - 2);
+			ctx.beginPath();
+			ctx.arc(level.exit[0] * s, level.exit[1] * s, s/2, 0, Math.PI * 2);
+			ctx.fill();
 		}
 
 		function check() {
