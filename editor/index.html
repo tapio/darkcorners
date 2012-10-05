@@ -51,6 +51,49 @@
 
 		for (var i = 0; i < w * h; ++i) level.map[i] = OPEN;
 
+		var tools = {};
+
+		tools.walls = {
+			drawing: null,
+			drawWalls: function() { currentTool = tools.walls; },
+			mousedown: function(e) {
+				if (e.button == 0) tools.walls.drawing = WALL;
+				else if (e.button == 2) tools.walls.drawing = OPEN;
+				else return;
+				put(e._x, e._y, tools.walls.drawing);
+			},
+			mousemove: function(e) {
+				if (tools.walls.drawing) put(e._x, e._y, tools.walls.drawing);
+			},
+			mouseup: function(e) {
+				tools.walls.drawing = null;
+			}
+		};
+		var currentTool = tools.walls;
+
+		tools.light = {
+			addLight: function() { currentTool = tools.light; },
+			mousedown: function(e) {
+				if (e.button == 0) {
+					console.log("TODO: place light");
+				} else if (e.button == 2) {
+					console.log("TODO: remove light");
+				}
+			}
+		};
+
+		tools.object = {
+			object: "barrel",
+			addObject: function() { currentTool = tools.object; },
+			mousedown: function(e) {
+				if (e.button == 0) {
+					console.log("TODO: place object");
+				} else if (e.button == 2) {
+					console.log("TODO: remove object");
+				}
+			}
+		};
+
 		function put(x, y, what) {
 			x = Math.floor(x / s);
 			y = Math.floor(y / s);
@@ -72,38 +115,6 @@
 			}
 		}
 
-		function mouseHandler(e) {
-			var x = e.layerX || e.offsetX || 0;
-			var y = e.layerY || e.offsetY || 0;
-			switch (e.type) {
-				case "mousedown":
-					if (e.button == 0) {
-						drawing = 1;
-						put(x, y, WALL);
-					} else if (e.button == 2) {
-						drawing = -1;
-						put(x, y, OPEN);
-					}
-					break;
-				case "mousemove":
-					if (drawing)
-						put(x, y, drawing == 1 ? WALL : OPEN);
-					break;
-				case "mouseup":
-					drawing = 0;
-					break;
-			}
-			return false;
-		}
-
-		function addLight() {
-
-		}
-
-		function addObject() {
-
-		}
-
 		function exportLevel() {
 			var json = JSON.stringify(level, null, '\t');
 			document.getElementById("exported").value = json;
@@ -114,6 +125,7 @@
 		var placerProps = { object: "barrel" };
 
 		var gui = new dat.GUI();
+		gui.add(tools.walls, "drawWalls");
 		var guiMap = gui.addFolder("Map properties");
 		guiMap.add(level.materials, "ceiling", materials);
 		guiMap.add(level.materials, "wall", materials);
@@ -121,11 +133,18 @@
 		guiMap.add(level, "roomHeight", 2, 10).step(0.5);
 		guiMap.add(level, "gridSize", 1, 4).step(1);
 		var guiLights = gui.addFolder("Lights");
-		guiLights.add(window, "addLight");
+		guiLights.add(tools.light, "addLight");
 		var guiObjects = gui.addFolder("Objects");
 		guiObjects.add(placerProps, "object", assets.objects);
-		guiObjects.add(window, "addObject");
+		guiObjects.add(tools.object, "addObject");
 		gui.add(window, "exportLevel");
+
+		function mouseHandler(e) {
+			e._x = e.layerX || e.offsetX || 0;
+			e._y = e.layerY || e.offsetY || 0;
+			if (currentTool[e.type]) currentTool[e.type](e);
+			return false;
+		}
 
 		canvas.addEventListener("mousedown", mouseHandler, false);
 		canvas.addEventListener("mouseup", mouseHandler, false);
