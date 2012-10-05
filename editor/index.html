@@ -183,6 +183,20 @@
 			document.getElementById("exported").style.display = "block";
 		}
 
+		function importLevel() {
+			var json = prompt("Paste here the level JSON to import");
+			if (!json || !json.length) return;
+			try {
+				json = JSON.parse(json);
+			} catch (err) {
+				alert("Import error: " + err);
+				return;
+			}
+			level = json;
+			document.getElementById("exported").value = "";
+			document.getElementById("exported").style.display = "none";
+		}
+
 		var gui = new dat.GUI();
 		gui.add(tools.walls, "drawWalls");
 		var guiMap = gui.addFolder("Map properties");
@@ -199,6 +213,7 @@
 		guiObjects.add(tools.object, "object", objects);
 		guiObjects.add(tools.object, "addObject");
 		gui.add(window, "exportLevel");
+		gui.add(window, "importLevel");
 
 		function mouseHandler(e) {
 			e._x = e.layerX || e.offsetX || 0;
