@@ -100,9 +100,16 @@
 			addLight: function() { currentTool = tools.light; },
 			mousedown: function(e) {
 				if (e.button == 0) {
-					level.lights.push({ position: { x: e._x / s, y: 0.7, z: e._y / s } });
+					level.lights.push({ position: { x: e._x / s, y: 2, z: e._y / s } });
 				} else if (e.button == 2) {
-					console.log("TODO: remove light");
+					for (var i = 0; i < level.lights.length; ++i) {
+						if (Math.abs(level.lights[i].position.x - e._x / s) < 0.75 &&
+							Math.abs(level.lights[i].position.z - e._y / s) < 0.75) {
+								level.lights.splice(i, 1);
+								console.log("hit");
+								break;
+						}
+					}
 				}
 			}
 		};
@@ -117,7 +124,13 @@
 						position: { x: e._x / s, y: null, z: e._y / s }
 					});
 				} else if (e.button == 2) {
-					console.log("TODO: remove object");
+					for (var i = 0; i < level.objects.length; ++i) {
+						if (Math.abs(level.objects[i].position.x - e._x / s) < 0.75 &&
+							Math.abs(level.objects[i].position.z - e._y / s) < 0.75) {
+								level.objects.splice(i, 1);
+								break;
+						}
+					}
 				}
 			}
 		};
