@@ -27,11 +27,14 @@
 	<script>
 		window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
 		var canvas = document.getElementById("canvas");
-		var ctx = canvas.getContext("2d");
-
-		var i;
 		var w = 40, h = 40;
 		var s = canvas.width / w;
+		var ctx = canvas.getContext("2d");
+		ctx.font = "bolder " + ((s*0.9)|0) + "px monospace";
+		ctx.textBaseline = "middle";
+		ctx.textAlign = "center";
+
+		var i;
 		var WALL = "#";
 		var OPEN = ".";
 
@@ -198,15 +201,15 @@
 				ctx.fill();
 			}
 			// Start
-			ctx.fillStyle = "#88f";
-			ctx.beginPath();
-			ctx.arc(level.start[0] * s, level.start[1] * s, s/2, 0, Math.PI * 2);
-			ctx.fill();
+			ctx.fillStyle = "#229";
+			ctx.fillRect(level.start[0] * s + 1 - s/2, level.start[1] * s + 1 - s/2, s - 2, s - 2);
+			ctx.fillStyle = "#66f";
+			ctx.fillText("S", level.start[0] * s, level.start[1] * s);
 			// Exit
-			ctx.fillStyle = "#8f8";
-			ctx.beginPath();
-			ctx.arc(level.exit[0] * s, level.exit[1] * s, s/2, 0, Math.PI * 2);
-			ctx.fill();
+			ctx.fillStyle = "#922";
+			ctx.fillRect(level.exit[0] * s + 1 - s/2, level.exit[1] * s + 1 - s/2, s - 2, s - 2);
+			ctx.fillStyle = "#f66";
+			ctx.fillText("E", level.exit[0] * s, level.exit[1] * s);
 		}
 
 		function check() {
