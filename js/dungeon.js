@@ -206,10 +206,17 @@ function Dungeon(scene, player) {
 		}
 	};
 
-
-	//var gen = new MapGen();
-	//this.level = gen.generate();
-	this.level = testLevel;
+	if (queryParams.level) {
+		if (queryParams.level == "rand") {
+			var gen = new MapGen();
+			this.level = gen.generate();
+		} else if (queryParams.level.length > 24) {
+			var json = window.atob(queryParams.level);
+			this.level = JSON.parse(json);
+		} else {
+			// TODO: Load the level named in the parameter
+		}
+	} else this.level = testLevel;
 
 	this.level.get = this.level.get || function(x, z) {
 		if (x < 0 || x >= this.width) return WALL;
