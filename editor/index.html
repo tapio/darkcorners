@@ -28,8 +28,6 @@
 
 		var w = 40, h = 40;
 		var s = canvas.width / w;
-		var start = { x: Math.floor(w/2), y: Math.floor(h/2) };
-		var drawing = 0;
 		var WALL = "#";
 		var OPEN = ".";
 
@@ -43,7 +41,8 @@
 			gridSize: 2,
 			objects: [],
 			lights: [],
-			start: [ start.x, start.y ],
+			start: [ Math.floor(w/2), Math.floor(h*0.25) ],
+			exit: [ Math.floor(w/2), Math.floor(h*0.75) ],
 			width: w,
 			depth: h,
 			map: new Array(w * h)
@@ -70,6 +69,28 @@
 			}
 		};
 		var currentTool = tools.walls;
+
+		tools.start = {
+			placeStart: function() { currentTool = tools.start; },
+			mousedown: function(e) {
+				if (e.button == 0) {
+					put(e._x, e._y, OPEN);
+					level.start[0] = Math.floor(e._x / s);
+					level.start[1] = Math.floor(e._y / s);
+				}
+			}
+		};
+
+		tools.exit = {
+			placeExit: function() { currentTool = tools.exit; },
+			mousedown: function(e) {
+				if (e.button == 0) {
+					put(e._x, e._y, OPEN);
+					level.exit[0] = Math.floor(e._x / s);
+					level.exit[1] = Math.floor(e._y / s);
+				}
+			}
+		};
 
 		tools.light = {
 			addLight: function() { currentTool = tools.light; },
@@ -107,6 +128,7 @@
 		function render() {
 			requestAnimationFrame(render);
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			// Grid and walls
 			ctx.strokeStyle = "#999";
 			ctx.fillStyle = "#640";
 			for (var j = 0; j < h; ++j) {
@@ -116,18 +138,26 @@
 						ctx.fillRect(i * s + 1, j * s + 1, s - 2, s - 2);
 				}
 			}
+			// Lights
 			ctx.fillStyle = "#880";
 			for (i = 0; i < level.lights.length; ++i) {
 				ctx.beginPath();
 				ctx.arc(level.lights[i].x * s, level.lights[i].z * s, s * 0.25, 0, Math.PI * 2);
 				ctx.fill();
 			}
+			// Objects
 			ctx.fillStyle = "#006";
 			for (i = 0; i < level.objects.length; ++i) {
 				ctx.beginPath();
 				ctx.arc(level.objects[i].x * s, level.objects[i].z * s, s * 0.4, 0, Math.PI * 2);
 				ctx.fill();
 			}
+			// Start
+			ctx.fillStyle = "#88f";
+			ctx.fillRect(level.start[0] * s + 1, level.start[1] * s + 1, s - 2, s - 2);
+			// Exit
+			ctx.fillStyle = "#8f8";
+			ctx.fillRect(level.exit[0] * s + 1, level.exit[1] * s + 1, s - 2, s - 2);
 		}
 
 		function exportLevel() {
@@ -146,6 +176,8 @@
 		guiMap.add(level.materials, "floor", materials);
 		guiMap.add(level, "roomHeight", 2, 10).step(0.5);
 		guiMap.add(level, "gridSize", 1, 4).step(1);
+		guiMap.add(tools.start, "placeStart");
+		guiMap.add(tools.exit, "placeExit");
 		var guiLights = gui.addFolder("Lights");
 		guiLights.add(tools.light, "addLight");
 		var guiObjects = gui.addFolder("Objects");
