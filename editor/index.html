@@ -177,6 +177,7 @@
 		}
 
 		function exportLevel() {
+			if (!level.lights.length) alert("Warning: There are no lights in the level.");
 			var json = JSON.stringify(level, null, '\t');
 			document.getElementById("exported").value = json;
 			document.getElementById("exported").style.display = "block";
