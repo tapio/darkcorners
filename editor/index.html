@@ -34,6 +34,11 @@
 		var WALL = "#";
 		var OPEN = ".";
 
+		var editor = {
+			drawGrid: true,
+			drawTextures: false
+		};
+
 		var level = {
 			materials: {
 				ceiling: "rock-01",
@@ -54,7 +59,7 @@
 		for (i = 0; i < w * h; ++i) level.map[i] = OPEN;
 
 		var materials = [ "rock-01", "rock-02", "rock-03", "rock-04", "sand-01", "sand-02", "sand-03", "sand-04", "stone-01", "stone-02", "stone-03", "stone-floor-01", "stone-floor-02", "stone-floor-03", "stone-floor-04", "stone-floor-05", "stone-floor-06", "tiles-01", "tiles-02", "wood-floor-01" ];
-		var gtemplate = '<td><img src="../assets/textures/thumbs/%1.jpg" alt="%1" title="%1"></img></td>';
+		var gtemplate = '<td><img id="%1" src="../assets/textures/thumbs/%1.jpg" alt="%1" title="%1"></img></td>';
 		var gcols = 10;
 		var gallery = "";
 		for (i = 0; i < materials.length; ++i) {
@@ -63,6 +68,9 @@
 			if (i % gcols == gcols-1) gallery += '</tr>';
 		}
 		document.getElementById("thumbs").innerHTML = gallery;
+		var images = {};
+		for (i = 0; i < materials.length; ++i)
+			images[materials[i]] = document.getElementById(materials[i]);
 
 		var objects = [];
 		for (i in assets.objects) objects.push(i);
@@ -162,9 +170,16 @@
 			ctx.fillStyle = "#640";
 			for (var j = 0; j < h; ++j) {
 				for (var i = 0; i < w; ++i) {
-					ctx.strokeRect(i * s, j * s, s, s);
-					if (level.map[j * w + i] == WALL)
-						ctx.fillRect(i * s + 1, j * s + 1, s - 2, s - 2);
+					if (editor.drawTextures) {
+						if (level.map[j * w + i] == WALL)
+							ctx.drawImage(images[level.materials.wall], i * s, j * s, s, s);
+						else ctx.drawImage(images[level.materials.floor], i * s, j * s, s, s);
+					} else {
+						if (level.map[j * w + i] == WALL)
+							ctx.fillRect(i * s, j * s, s, s);
+					}
+					if (editor.drawGrid)
+						ctx.strokeRect(i * s, j * s, s, s);
 				}
 			}
 			// Lights
@@ -240,6 +255,9 @@
 		var guiObjects = gui.addFolder("Objects");
 		guiObjects.add(tools.object, "object", objects);
 		guiObjects.add(tools.object, "addObject");
+		var guiEditor = gui.addFolder("Editor options");
+		guiEditor.add(editor, "drawGrid");
+		guiEditor.add(editor, "drawTextures");
 		gui.add(window, "importLevel");
 		gui.add(window, "exportBase64");
 		gui.add(window, "exportJSON");
