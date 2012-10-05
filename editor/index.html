@@ -176,10 +176,20 @@
 			ctx.fillRect(level.exit[0] * s + 1, level.exit[1] * s + 1, s - 2, s - 2);
 		}
 
-		function exportLevel() {
+		function check() {
 			if (!level.lights.length) alert("Warning: There are no lights in the level.");
-			var json = JSON.stringify(level, null, '\t');
-			document.getElementById("exported").value = json;
+		}
+
+		function exportBase64() {
+			check();
+			var b64 = window.btoa(JSON.stringify(level, null, '\t'));
+			document.getElementById("exported").value = b64;
+			document.getElementById("exported").style.display = "block";
+		}
+
+		function exportJSON() {
+			check();
+			document.getElementById("exported").value = JSON.stringify(level, null, '\t');
 			document.getElementById("exported").style.display = "block";
 		}
 
@@ -212,8 +222,9 @@
 		var guiObjects = gui.addFolder("Objects");
 		guiObjects.add(tools.object, "object", objects);
 		guiObjects.add(tools.object, "addObject");
-		gui.add(window, "exportLevel");
 		gui.add(window, "importLevel");
+		gui.add(window, "exportBase64");
+		gui.add(window, "exportJSON");
 
 		function mouseHandler(e) {
 			e._x = e.layerX || e.offsetX || 0;
