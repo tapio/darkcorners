@@ -78,8 +78,8 @@
 			mousedown: function(e) {
 				if (e.button == 0) {
 					put(e._x, e._y, OPEN);
-					level.start[0] = Math.floor(e._x / s);
-					level.start[1] = Math.floor(e._y / s);
+					level.start[0] = e._x / s;
+					level.start[1] = e._y / s;
 				}
 			}
 		};
@@ -89,8 +89,8 @@
 			mousedown: function(e) {
 				if (e.button == 0) {
 					put(e._x, e._y, OPEN);
-					level.exit[0] = Math.floor(e._x / s);
-					level.exit[1] = Math.floor(e._y / s);
+					level.exit[0] = e._x / s;
+					level.exit[1] = e._y / s;
 				}
 			}
 		};
