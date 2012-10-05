@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Dungeon map editor</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<style>
+		body { background-color: #333; }
+		canvas { background-color: #ccc; }
+		#exported { display: none; width: 500px; height: 300px; }
+		#export { float: right; }
+	</style>
+</head>
+<body>
+	<p>Level editor</p>
+	<canvas id="canvas" width="500", height="500">
+		<p>Oh noes, no &lt;canvas&gt;!</p>
+	</canvas>
+
+	<button id="export">Export map</button>
+	<textarea id="exported">
+	</textarea>
+
+	<script>
+		window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
+		var canvas = document.getElementById("canvas");
+		var ctx = canvas.getContext("2d");
+
+		var w = 25, h = 25;
+		var s = canvas.width / w;
+		var start = { x: Math.floor(w/2), y: Math.floor(h/2) };
+		var drawing = 0;
+		var WALL = "#";
+		var OPEN = ".";
+
+		var map = new Array(w * h);
+		for (var i = 0; i < w * h; ++i) map[i] = OPEN;
+
+		function put(x, y, what) {
+			x = Math.floor(x / s);
+			y = Math.floor(y / s);
+			if (x < 0 || x > w-1 || y < 0 || y > h-1) return;
+			map[y * w + x] = what;
+		}
+
+		function render() {
+			requestAnimationFrame(render);
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			ctx.strokeStyle = "#999";
+			ctx.fillStyle = "#640";
+			for (var j = 0; j < h; ++j) {
+				for (var i = 0; i < w; ++i) {
+					ctx.strokeRect(i * s, j * s, s, s);
+					if (map[j * w + i] == WALL)
+						ctx.fillRect(i * s + 1, j * s + 1, s - 2, s - 2);
+				}
+			}
+		}
+
+		function mouseHandler(e) {
+			var x = e.layerX || e.offsetX || 0;
+			var y = e.layerY || e.offsetY || 0;
+			switch (e.type) {
+				case "mousedown":
+					if (e.button == 0) {
+						drawing = 1;
+						put(x, y, WALL);
+					} else if (e.button == 2) {
+						drawing = -1;
+						put(x, y, OPEN);
+					}
+					break;
+				case "mousemove":
+					if (drawing)
+						put(x, y, drawing == 1 ? WALL : OPEN);
+					break;
+				case "mouseup":
+					drawing = 0;
+					break;
+			}
+			return false;
+		}
+
+		function exportLevel() {
+			var level = {
+				roomHeight: 3,
+				gridSize: 2,
+				objects: [],
+				lights: [],
+				start: [ start.x, start.y ],
+				map: map
+			};
+			var json = JSON.stringify(level, null, '\t');
+			document.getElementById("exported").value = json;
+			document.getElementById("exported").style.display = "block";
+		}
+
+		canvas.addEventListener("mousedown", mouseHandler, false);
+		canvas.addEventListener("mouseup", mouseHandler, false);
+		canvas.addEventListener("mousemove", mouseHandler, false);
+		document.oncontextmenu = function() { return false; }
+		document.getElementById("export").addEventListener("click", exportLevel);
+		window.addEventListener("load", render);
+
+	</script>
+</body>
+</html>
