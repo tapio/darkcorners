@@ -207,6 +207,11 @@
 			document.getElementById("exported").style.display = "none";
 		}
 
+		function test() {
+			var url = "../game_dev.html?level=" + window.btoa(JSON.stringify(level, null, '\t'));
+			window.open(url, "_blank");
+		}
+
 		var gui = new dat.GUI();
 		gui.add(tools.walls, "drawWalls");
 		var guiMap = gui.addFolder("Map properties");
@@ -225,6 +230,7 @@
 		gui.add(window, "importLevel");
 		gui.add(window, "exportBase64");
 		gui.add(window, "exportJSON");
+		gui.add(window, "test");
 
 		function mouseHandler(e) {
 			e._x = e.layerX || e.offsetX || 0;
