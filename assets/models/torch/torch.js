@@ -27,6 +27,8 @@
 		"depthWrite" : true,
 		"mapDiffuse" : "diffuse.jpg",
 		"mapDiffuseWrap" : ["repeat", "repeat"],
+		"mapSpecular" : "specular.jpg",
+		"mapSpecularWrap" : ["repeat", "repeat"],
 		"mapNormal" : "normal.jpg",
 		"mapNormalWrap" : ["repeat", "repeat"],
 		"shading" : "Phong",
