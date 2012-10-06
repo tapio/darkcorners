@@ -1,8 +1,19 @@
 Dungeon
 =======
 
-This is 3d first person game prototype.
+This is 3d first person game prototype with a level editor.
 The main design guideline is sacrificing artistic liberties for quickness of content creation.
+
+It works on Chrome and Firefox (be sure to use latest versions), but Firefox has
+bad performance. You probably have bad performance anyway, unless you have a good GPU.
+
+Here's a list of required browser features:
+
+* WebGL for graphics
+	* Various extensions offer improvements
+* WebWorkers for physics
+* PointerLock for FPS controls (fallback available)
+* `requestAnimationFrame` for best animation (fallbackl available)
 
 This is based on several JS libraries, most prominently:
 
