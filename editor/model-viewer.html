@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - materials - bump map [Lee Perry-Smith]</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background:#000;
+				color:#fff;
+				padding:0;
+				margin:0;
+				font-weight: bold;
+				overflow:hidden;
+			}
+		</style>
+	</head>
+
+	<body>
+		<script src="../libs/three.min.js"></script>
+		<script>
+
+			var container, loader;
+			var camera, scene, renderer;
+			var mesh;
+			var directionalLight, directionalLight2, pointLight, ambientLight, spotLight;
+			var mouseX = 0;
+			var mouseY = 0;
+			var targetX = 0;
+			var targetY = 0;
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+			init();
+			render();
+
+			function init() {
+
+				container = document.createElement('div');
+				document.body.appendChild(container);
+
+				camera = new THREE.PerspectiveCamera(27, window.innerWidth / window.innerHeight, 0.1, 50);
+				camera.position.z = 3;
+
+				scene = new THREE.Scene();
+
+				ambientLight = new THREE.AmbientLight(0x444444);
+				scene.add(ambientLight);
+
+				pointLight = new THREE.PointLight(0xffffff, 1.5, 10);
+				pointLight.color.setHSV(0.05, 0.05, 1);
+				pointLight.position.set(3, 0, 3);
+				scene.add(pointLight);
+
+				var objname = "box";
+
+				loader = new THREE.JSONLoader(true);
+				document.body.appendChild(loader.statusDomElement);
+				loader.load("../assets/models/" + objname + "/" + objname + ".js", createScene);
+
+				renderer = new THREE.WebGLRenderer({ antialias: true, clearColor: 0x060708, clearAlpha: 1, alpha: false });
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				container.appendChild(renderer.domElement);
+
+				renderer.gammaInput = true;
+				renderer.gammaOutput = true;
+				renderer.physicallyBasedShading = true;
+
+				document.addEventListener('mousemove', onDocumentMouseMove, false);
+				window.addEventListener('resize', onWindowResize, false);
+
+			}
+
+			function createScene(geometry) {
+				mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
+				mesh.castShadow = true;
+				mesh.receiveShadow = true;
+				scene.add(mesh);
+				loader.statusDomElement.style.display = "none";
+			}
+
+			function onWindowResize(event) {
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+			}
+
+			function onDocumentMouseMove(event) {
+				mouseX = (event.clientX - windowHalfX);
+				mouseY = (event.clientY - windowHalfY);
+			}
+
+			function render() {
+				requestAnimationFrame(render);
+
+				targetX = mouseX * .01;
+				targetY = mouseY * .01;
+
+				if (mesh) {
+					mesh.rotation.y += targetX - mesh.rotation.y;
+					mesh.rotation.x += targetY - mesh.rotation.x;
+				}
+
+				renderer.render(scene, camera);
+			}
+
+		</script>
+
+	</body>
+</html>
