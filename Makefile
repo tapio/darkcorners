@@ -7,6 +7,9 @@ server:
 chrome:
 	google-chrome --allow-file-access-from-files
 
+hint:
+	jshint js/*.js assets/*.js
+
 build: concat minify
 
 concat:
