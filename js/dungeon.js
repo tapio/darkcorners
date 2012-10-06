@@ -94,14 +94,56 @@ function Dungeon(scene, player) {
 	};
 
 	this.addLights = function(level) {
+		// Torch model load callback
+		function torchHandler(pos, rot) {
+			return function(geometry) {
+				for (var m = 0; m < geometry.materials.length; ++m)
+					fixAnisotropy(geometry.materials[m]);
+				var mat = geometry.materials.length > 1 ? new THREE.MeshFaceMaterial() : geometry.materials[0];
+				var obj = new THREE.Mesh(geometry, mat);
+				obj.position.copy(pos);
+				obj.rotation.y = rot;
+				obj.castShadow = true;
+				obj.receiveShadow = true;
+				scene.add(obj);
+			};
+		}
+
 		// Ambient
 		scene.add(new THREE.AmbientLight(0xaaaaaa));
 
 		// Point lights
+		var vec = new THREE.Vector2();
 		for (var i = 0; i < level.lights.length; ++i) {
 			// Actual light
 			var light = new THREE.PointLight(0xffffaa, 1, 2 * level.gridSize);
 			light.position.copy(level.lights[i].position);
+
+			// Snap to wall
+			// Create wall candidates for checking which wall is closest to the light
+			vec.set(level.lights[i].position.x|0, level.lights[i].position.z|0);
+			var candidates = [
+				{ x: vec.x + 0.5, y: vec.y, a: Math.PI },
+				{ x: vec.x + 1.0, y: vec.y + 0.5, a: Math.PI/2 },
+				{ x: vec.x + 0.5, y: vec.y + 1.0, a: 0 },
+				{ x: vec.x, y: vec.y + 0.5, a: -Math.PI/2 }
+			];
+			vec.set(level.lights[i].position.x, level.lights[i].position.z);
+			// Find the closest
+			var snapped = { d: 1000 };
+			for (var j = 0; j < candidates.length; ++j) {
+				candidates[j].d = vec.distanceToSquared(candidates[j]);
+				if (candidates[j].d < snapped.d) snapped = candidates[j];
+			}
+			// Position the light to the wall
+			light.position.x = snapped.x;
+			light.position.z = snapped.y;
+			// Move out the wall
+			vec.set((level.lights[i].position.x|0) + 0.5, (level.lights[i].position.z|0) + 0.5);
+			vec.subSelf(snapped).multiplyScalar(2);
+			light.position.x += vec.x * 0.08;
+			light.position.z += vec.y * 0.08;
+
 			light.position.x *= level.gridSize;
 			light.position.z *= level.gridSize;
 			scene.add(light);
@@ -126,6 +168,10 @@ function Dungeon(scene, player) {
 				scene.add(light2);
 				lightManager.addShadow(light2);
 			}
+
+			// Mesh
+			cache.loadModel("assets/models/torch/torch.js",
+				torchHandler(new THREE.Vector3().copy(light.position), snapped.a));
 
 			// Flame
 			if (CONFIG.particles)
@@ -152,7 +198,7 @@ function Dungeon(scene, player) {
 
 	this.addObjects = function(level) {
 		function objectHandler(pos, def) {
-			return function handleObject(geometry) {
+			return function(geometry) {
 				if (!def) def = {};
 				var obj, mass = def.mass || 0;
 				var scale = 1.0;
