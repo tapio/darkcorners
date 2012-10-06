@@ -78,7 +78,11 @@ function onWindowResize() {
 	pl.camera.aspect = window.innerWidth / window.innerHeight;
 	pl.camera.updateProjectionMatrix();
 	renderer.setSize(window.innerWidth, window.innerHeight);
-	composer.reset();
+	colorTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParametersRGB);
+	composer.reset(colorTarget);
+	depthTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParametersRGBA);
+	depthPassPlugin.renderTarget = depthTarget;
+	passes.ssao.uniforms.tDepth.value = depthTarget;
 	passes.ssao.uniforms.size.value.set(window.innerWidth, window.innerHeight);
 	passes.fxaa.uniforms.resolution.value.set(1/window.innerWidth, 1/window.innerHeight);
 	controls.handleResize();
