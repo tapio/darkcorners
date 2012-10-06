@@ -115,6 +115,7 @@ function Dungeon(scene, player) {
 			// Actual light
 			var light = new THREE.PointLight(0xffffaa, 1, 2 * level.gridSize);
 			light.position.copy(level.lights[i].position);
+			var torch = "assets/models/torch/torch.js";
 
 			// Snap to wall
 			// Create wall candidates for checking which wall is closest to the light
@@ -135,11 +136,21 @@ function Dungeon(scene, player) {
 			// Position the light to the wall
 			light.position.x = snapped.x;
 			light.position.z = snapped.y;
-			// Move out the wall
+			// Get wall normal vector
 			vec.set((level.lights[i].position.x|0) + 0.5, (level.lights[i].position.z|0) + 0.5);
 			vec.subSelf(snapped).multiplyScalar(2);
-			light.position.x += vec.x * 0.08;
-			light.position.z += vec.y * 0.08;
+			// Check if there actually is a wall
+			if (level.map.get((light.position.x - vec.x * 0.5)|0, (light.position.z - vec.y * 0.5)|0) == WALL) {
+				// Move out of the wall
+				light.position.x += vec.x * 0.08;
+				light.position.z += vec.y * 0.08;
+			} else {
+				// Switch to ceiling hanging light
+				torch = "assets/models/torch-hanging/torch-hanging.js";
+				light.position.x = (level.lights[i].position.x|0) + 0.5;
+				light.position.y = level.roomHeight - 0.9;
+				light.position.z = (level.lights[i].position.z|0) + 0.5;
+			}
 
 			light.position.x *= level.gridSize;
 			light.position.z *= level.gridSize;
@@ -167,8 +178,7 @@ function Dungeon(scene, player) {
 			}
 
 			// Mesh
-			cache.loadModel("assets/models/torch/torch.js",
-				torchHandler(new THREE.Vector3().copy(light.position), snapped.a));
+			cache.loadModel(torch, torchHandler(new THREE.Vector3().copy(light.position), snapped.a));
 
 			// Flame
 			if (CONFIG.particles)
