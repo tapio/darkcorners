@@ -4,6 +4,54 @@ function Dungeon(scene, player) {
 	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
 	var debug_material = new THREE.MeshBasicMaterial({color: 0xff00ff});
 
+	function objectHandler(level, pos, def) {
+		return function(geometry) {
+			if (!def) def = {};
+			var obj, mass = def.mass || 0;
+			var scale = 1.0;
+			if (def.randScale) {
+				scale += randf(-def.randScale, def.randScale);
+				mass *= scale;
+			}
+			for (var m = 0; m < geometry.materials.length; ++m)
+				fixAnisotropy(geometry.materials[m]);
+			var mat = geometry.materials.length > 1 ? new THREE.MeshFaceMaterial() : geometry.materials[0];
+			if (def.collision) {
+				var material = Physijs.createMaterial(mat, 0.7, 0.2); // friction, restition
+				if (def.collision == "plane")
+					obj = new Physijs.PlaneMesh(geometry, material, mass);
+				else if (def.collision == "box")
+					obj = new Physijs.BoxMesh(geometry, material, mass);
+				else if (def.collision == "sphere")
+					obj = new Physijs.SphereMesh(geometry, material, mass);
+				else if (def.collision == "cylinder")
+					obj = new Physijs.CylinderMesh(geometry, material, mass);
+				else if (def.collision == "cone")
+					obj = new Physijs.ConeMesh(geometry, material, mass);
+				else if (def.collision == "convex")
+					obj = new Physijs.ConvexMesh(geometry, material, mass);
+				else throw "Unsupported collision mesh type " + def.collision;
+				self.objects.push(obj);
+			} else {
+				obj = new THREE.Mesh(geometry, mat);
+			}
+			pos.x *= level.gridSize;
+			pos.z *= level.gridSize;
+			// Auto-height
+			if (pos.y === null) {
+				if (!geometry.boundingBox) geometry.computeBoundingBox();
+				pos.y = 0.5 * (geometry.boundingBox.max.y - geometry.boundingBox.min.y) + 0.001;
+			}
+			obj.position.copy(pos);
+			obj.scale.set(scale, scale, scale);
+			if (!def.noShadows) {
+				obj.castShadow = true;
+				obj.receiveShadow = true;
+			}
+			scene.add(obj);
+		};
+	}
+
 	this.generateMesh = function(level) {
 		var block_materials = [
 			cache.getMaterial(level.materials.wall), // right
@@ -88,6 +136,10 @@ function Dungeon(scene, player) {
 		mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
 		mesh.receiveShadow = true;
 		scene.add(mesh);
+
+		// Exit
+		cache.loadModel("assets/models/teleporter/teleporter.js",
+			objectHandler(level, new THREE.Vector3().set(level.exit[0], null, level.exit[1]), assets.objects.teleporter));
 	};
 
 	this.addLights = function(level) {
@@ -204,58 +256,10 @@ function Dungeon(scene, player) {
 	};
 
 	this.addObjects = function(level) {
-		function objectHandler(pos, def) {
-			return function(geometry) {
-				if (!def) def = {};
-				var obj, mass = def.mass || 0;
-				var scale = 1.0;
-				if (def.randScale) {
-					scale += randf(-def.randScale, def.randScale);
-					mass *= scale;
-				}
-				for (var m = 0; m < geometry.materials.length; ++m)
-					fixAnisotropy(geometry.materials[m]);
-				var mat = geometry.materials.length > 1 ? new THREE.MeshFaceMaterial() : geometry.materials[0];
-				if (def.collision) {
-					var material = Physijs.createMaterial(mat, 0.7, 0.2); // friction, restition
-					if (def.collision == "plane")
-						obj = new Physijs.PlaneMesh(geometry, material, mass);
-					else if (def.collision == "box")
-						obj = new Physijs.BoxMesh(geometry, material, mass);
-					else if (def.collision == "sphere")
-						obj = new Physijs.SphereMesh(geometry, material, mass);
-					else if (def.collision == "cylinder")
-						obj = new Physijs.CylinderMesh(geometry, material, mass);
-					else if (def.collision == "cone")
-						obj = new Physijs.ConeMesh(geometry, material, mass);
-					else if (def.collision == "convex")
-						obj = new Physijs.ConvexMesh(geometry, material, mass);
-					else throw "Unsupported collision mesh type " + def.collision;
-					self.objects.push(obj);
-				} else {
-					obj = new THREE.Mesh(geometry, mat);
-				}
-				pos.x *= level.gridSize;
-				pos.z *= level.gridSize;
-				// Auto-height
-				if (pos.y === null) {
-					if (!geometry.boundingBox) geometry.computeBoundingBox();
-					pos.y = 0.5 * (geometry.boundingBox.max.y - geometry.boundingBox.min.y) + 0.001;
-				}
-				obj.position.copy(pos);
-				obj.scale.set(scale, scale, scale);
-				if (!def.noShadows) {
-					obj.castShadow = true;
-					obj.receiveShadow = true;
-				}
-				scene.add(obj);
-			};
-		}
-
 		for (var i = 0; i < level.objects.length; ++i) {
 			var objname = level.objects[i].name;
 			var obj = cache.loadModel("assets/models/" + objname + "/" + objname + ".js",
-				objectHandler(new THREE.Vector3().copy(level.objects[i].position), assets.objects[objname]));
+				objectHandler(level, new THREE.Vector3().copy(level.objects[i].position), assets.objects[objname]));
 		}
 	};
 
