@@ -77,6 +77,7 @@ Controls = function (object, handlers, domElement) {
 	this.onMouseMove = function (event) {
 		function limit(a, lo, hi) { return a < lo ? lo : (a > hi ? hi : a); }
 		if (this.pointerLockEnabled) {
+			if (event.mozMovementX === 0 && event.mozMovementY === 0) return; // Firefox fires 0-movement event right after real one
 			this.mouseX = event.movementX || event.webkitMovementX || event.mozMovementX || 0;
 			this.mouseY = event.movementY || event.webkitMovementY || event.mozMovementY || 0;
 			this.mouseX = limit(this.mouseX * 20, -600, 600);
