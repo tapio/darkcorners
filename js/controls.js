@@ -102,6 +102,7 @@ Controls = function (object, handlers, domElement) {
 			case 39: /*right*/
 			case 68: /*D*/ moveRight = true; break;
 			case 81: /*Q*/ this.active = !this.active; break;
+			case 123: /*F12*/ screenshot(); break;
 		}
 	};
 

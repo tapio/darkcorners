@@ -141,3 +141,8 @@ function dumpInfo() {
 	};
 	console.log("WebGL info: ", gl_info);
 }
+
+function screenshot() {
+	var dataUrl	= renderer.domElement.toDataURL("image/png");
+	window.open(dataUrl, "_blank");
+}

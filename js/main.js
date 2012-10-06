@@ -36,7 +36,8 @@ function init() {
 	renderer = new THREE.WebGLRenderer({
 		clearColor: 0x000000,
 		maxLights: CONFIG.maxLights + 2, // Player light is separate
-		antialias: CONFIG.antialias
+		antialias: CONFIG.antialias,
+		preserveDrawingBuffer: true
 	});
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.shadowMapEnabled = CONFIG.shadows;
