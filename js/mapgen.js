@@ -1,7 +1,5 @@
 function MapGen() {
 	var self = this;
-	var WALL = "#";
-	var OPEN = ".";
 
 	// Checks if the given position overlaps with the given array of objects
 	function testOverlap(pos, objects, tolerance) {
@@ -15,32 +13,20 @@ function MapGen() {
 	}
 
 	// Checks if the given grid position is a corridor
-	function testCorridor(pos, level) {
+	function testCorridor(pos, map) {
 		var count = 0;
-		count += level.get(pos.x-1, pos.z) == WALL ? 1 : 0;
-		count += level.get(pos.x+1, pos.z) == WALL ? 1 : 0;
-		count += level.get(pos.x, pos.z-1) == WALL ? 1 : 0;
-		count += level.get(pos.x, pos.z+1) == WALL ? 1 : 0;
+		count += map.get(pos.x-1, pos.z) == WALL ? 1 : 0;
+		count += map.get(pos.x+1, pos.z) == WALL ? 1 : 0;
+		count += map.get(pos.x, pos.z-1) == WALL ? 1 : 0;
+		count += map.get(pos.x, pos.z+1) == WALL ? 1 : 0;
 		return count == 2;
 	}
 
 	this.generateMap = function(level) {
 		var width = level.width = rand(25,35);
 		var depth = level.depth = rand(25,35);
-		level.map = new Array(width * depth);
+		level.map = new Map(width, depth, WALL);
 		var i, j;
-
-		level.get = function(x, z) {
-			if (x < 0 || x >= this.width) return WALL;
-			else if (z < 0 || z >= this.depth) return WALL;
-			return this.map[z * this.width + x];
-		};
-
-		level.set = function(x, z, obj) {
-			if (x < 0 || x >= this.width) return;
-			else if (z < 0 || z >= this.depth) return;
-			this.map[z * this.width + x] = obj;
-		};
 
 		// Materials
 		level.env = randProp(assets.environments);
@@ -49,11 +35,6 @@ function MapGen() {
 			ceiling: randElem(level.env.ceiling),
 			wall: randElem(level.env.wall)
 		};
-
-		// Outline
-		for (j = 0; j < depth; ++j)
-			for (i = 0; i < width; ++i)
-				level.set(i, j, WALL);
 
 		// Create rooms
 		var roomsize = rand(3,4);
@@ -71,7 +52,7 @@ function MapGen() {
 			// Floor for the room
 			for (j = zz; j < zz + rd; ++j)
 				for (i = xx; i < xx + rw; ++i)
-					level.set(i, j, OPEN);
+					level.map.put(i, j, OPEN);
 
 			ox = x; oz = z;
 
@@ -82,28 +63,28 @@ function MapGen() {
 			do {
 				x = rand(roomsize+1, width-roomsize-1);
 				z = rand(roomsize+1, depth-roomsize-1);
-			} while (level.get(x,z) == WALL && Math.abs(ox-x) + Math.abs(oz-z) >= 30);
+			} while (level.map.get(x,z) == WALL && Math.abs(ox-x) + Math.abs(oz-z) >= 30);
 
 			// Do corridors
 			swapx = x < ox;
 			for (i = swapx ? x : ox; i < (swapx ? ox : x); ++i)
-				level.set(i, oz, OPEN);
+				level.map.put(i, oz, OPEN);
 			swapz = z < oz;
 			for (j = swapz ? z : oz; j < (swapz ? oz : z); ++j)
-				level.set(x, j, OPEN);
+				level.map.put(x, j, OPEN);
 		}
 
 		// Count open space
 		level.floorCount = 0;
 		for (z = 0; z < depth; ++z)
 			for (x = 0; x < width; ++x)
-				if (level.get(x,z) == OPEN) level.floorCount++;
+				if (level.map.get(x,z) == OPEN) level.floorCount++;
 
 		// Place player
 		do {
 			level.start[0] = rand(roomsize+1, width-roomsize-1);
 			level.start[1] = rand(roomsize+1, depth-roomsize-1);
-		} while (level.get(level.start[0], level.start[1]) == WALL);
+		} while (level.map.get(level.start[0], level.start[1]) == WALL);
 	};
 
 	this.generateLights = function(level) {
@@ -113,16 +94,16 @@ function MapGen() {
 		var i = 0;
 		while (i < nLights) {
 			// Pick a random place
-			pos.x = rand(0, level.width);
-			pos.z = rand(0, level.depth);
+			pos.x = rand(0, level.width-1);
+			pos.z = rand(0, level.depth-1);
 			// Make sure we are not inside a wall
-			if (level.get(pos.x, pos.z) === WALL) continue;
+			if (level.map.get(pos.x, pos.z) == WALL) continue;
 			// Pick a random cardinal direction
 			var dir = rand(0,3) * Math.PI * 0.5;
 			var dx = Math.round(Math.cos(dir));
 			var dz = -Math.round(Math.sin(dir));
 			// Travel until wall found
-			while (level.get(pos.x, pos.z) !== WALL) {
+			while (level.map.get(pos.x, pos.z, WALL) != WALL) {
 				pos.x += dx;
 				pos.z += dz;
 			}
@@ -147,14 +128,14 @@ function MapGen() {
 		var i = 0;
 		while (i < nObjects) {
 			// Pick a random place
-			pos.x = rand(0, level.width);
-			pos.z = rand(0, level.depth);
+			pos.x = rand(0, level.width-1);
+			pos.z = rand(0, level.depth-1);
 			// Make sure we are not inside a wall
-			if (level.get(pos.x, pos.z) === WALL) continue;
+			if (level.map.get(pos.x, pos.z) == WALL) continue;
 			// TODO: Place most near walls
 			// TODO: Groups, stacks, etc?
 
-			if (testCorridor(pos, level)) continue;
+			if (testCorridor(pos, level.map)) continue;
 
 			pos.x += 0.5;
 			pos.z += 0.5;

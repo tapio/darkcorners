@@ -12,6 +12,7 @@
 	</style>
 	<script src="../libs/dat.gui.min.js"></script>
 	<script src="../assets/assets.js"></script>
+	<script src="../js/map.js"></script>
 </head>
 <body>
 	<h3>Level editor</h3>
@@ -35,8 +36,6 @@
 		ctx.textAlign = "center";
 
 		var i;
-		var WALL = "#";
-		var OPEN = ".";
 
 		var editor = {
 			drawGrid: true,
@@ -59,10 +58,8 @@
 			exit: [ Math.floor(w/2)-0.5, Math.floor(h*0.75)-0.5 ],
 			width: w,
 			depth: h,
-			map: new Array(w * h)
+			map: new Map(w, h, OPEN)
 		};
-
-		for (i = 0; i < w * h; ++i) level.map[i] = OPEN;
 
 		var materials = [ "rock-01", "rock-02", "rock-03", "rock-04", "sand-01", "sand-02", "sand-03", "sand-04", "stone-01", "stone-02", "stone-03", "stone-floor-01", "stone-floor-02", "stone-floor-03", "stone-floor-04", "stone-floor-05", "stone-floor-06", "tiles-01", "tiles-02", "wood-floor-01" ];
 		var gtemplate = '<td><img id="%1" src="../assets/textures/thumbs/%1.jpg" alt="%1" title="%1"></img></td>';
@@ -89,10 +86,10 @@
 				if (e.button == 0) tools.walls.drawing = WALL;
 				else if (e.button == 2) tools.walls.drawing = OPEN;
 				else return;
-				put(e._x, e._y, tools.walls.drawing);
+				putMouse(e._x, e._y, tools.walls.drawing);
 			},
 			mousemove: function(e) {
-				if (tools.walls.drawing) put(e._x, e._y, tools.walls.drawing);
+				if (tools.walls.drawing) putMouse(e._x, e._y, tools.walls.drawing);
 			},
 			mouseup: function(e) {
 				tools.walls.drawing = null;
@@ -104,7 +101,7 @@
 			placeStart: function() { currentTool = tools.start; },
 			mousedown: function(e) {
 				if (e.button == 0) {
-					put(e._x, e._y, OPEN);
+					putMouse(e._x, e._y, OPEN);
 					level.start[0] = e._x / s;
 					level.start[1] = e._y / s;
 				}
@@ -115,7 +112,7 @@
 			placeExit: function() { currentTool = tools.exit; },
 			mousedown: function(e) {
 				if (e.button == 0) {
-					put(e._x, e._y, OPEN);
+					putMouse(e._x, e._y, OPEN);
 					level.exit[0] = e._x / s;
 					level.exit[1] = e._y / s;
 				}
@@ -161,11 +158,10 @@
 			}
 		};
 
-		function put(x, y, what) {
+		function putMouse(x, y, what) {
 			x = Math.floor(x / s);
 			y = Math.floor(y / s);
-			if (x < 0 || x > w-1 || y < 0 || y > h-1) return;
-			level.map[y * w + x] = what;
+			level.map.put(x, y, what);
 		}
 
 		function render() {
@@ -177,11 +173,11 @@
 			for (var j = 0; j < h; ++j) {
 				for (var i = 0; i < w; ++i) {
 					if (editor.drawTextures) {
-						if (level.map[j * w + i] == WALL)
+						if (level.map.get(i, j) == WALL)
 							ctx.drawImage(images[level.materials.wall], i * s, j * s, s, s);
 						else ctx.drawImage(images[level.materials.floor], i * s, j * s, s, s);
 					} else {
-						if (level.map[j * w + i] == WALL)
+						if (level.map.get(i, j) == WALL)
 							ctx.fillRect(i * s, j * s, s, s);
 					}
 					if (editor.drawGrid)

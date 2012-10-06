@@ -4,9 +4,6 @@ function Dungeon(scene, player) {
 	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
 	var debug_material = new THREE.MeshBasicMaterial({color: 0xff00ff});
 
-	var WALL = "#";
-	var OPEN = ".";
-
 	this.generateMesh = function(level) {
 		var block_materials = [
 			cache.getMaterial(level.materials.wall), // right
@@ -26,13 +23,13 @@ function Dungeon(scene, player) {
 		for (var j = 0; j < level.depth; ++j) {
 			for (var i = 0; i < level.width; ++i) {
 				px = nx = pz = nz = py = ny = 0;
-				cell = level.get(i, j);
+				cell = level.map.get(i, j, OPEN);
 				if (cell === OPEN) continue;
 				if (cell === WALL) {
-					px = level.get(i + 1, j) == WALL ? 0 : 1;
-					nx = level.get(i - 1, j) == WALL ? 0 : 2;
-					pz = level.get(i, j + 1) == WALL ? 0 : 4;
-					nz = level.get(i, j - 1) == WALL ? 0 : 8;
+					px = level.map.get(i + 1, j) == WALL ? 0 : 1;
+					nx = level.map.get(i - 1, j) == WALL ? 0 : 2;
+					pz = level.map.get(i, j + 1) == WALL ? 0 : 4;
+					nz = level.map.get(i, j - 1) == WALL ? 0 : 8;
 					// If wall completely surrounded by walls, skip
 					if (px + nx + pz + nz === 0) continue;
 					tess = block_params.roughness ? 10 : 0;
@@ -264,17 +261,8 @@ function Dungeon(scene, player) {
 		}
 	} else this.level = testLevel;
 
-	this.level.get = this.level.get || function(x, z) {
-		if (x < 0 || x >= this.width) return WALL;
-		else if (z < 0 || z >= this.depth) return WALL;
-		return this.map[z * this.width + x];
-	};
-
-	this.level.set = this.level.set || function(x, z, obj) {
-		if (x < 0 || x >= this.width) return;
-		else if (z < 0 || z >= this.depth) return;
-		this.map[z * this.width + x] = obj;
-	};
+	if (this.level.map instanceof Array)
+		this.level.map = new Map(this.level.width, this.level.depth, this.level.map);
 
 	// TODO: Set player rotation
 	player.geometry.computeBoundingBox();
