@@ -72,6 +72,7 @@ function initUI() {
 	guiPostproc.add(CONFIG, "SSAO").onChange(updateConfig);
 	guiPostproc.add(CONFIG, "FXAA").onChange(updateConfig);
 	guiPostproc.add(CONFIG, "bloom").onChange(updateConfig);
+	gui.close();
 }
 
 function onWindowResize() {
