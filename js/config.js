@@ -9,9 +9,9 @@ if (!Detector.webgl) {
 Physijs.scripts.worker = 'libs/physijs_worker.js';
 Physijs.scripts.ammo = '../libs/ammo.js';
 
-var queryParams = (function() {
+var hashParams = (function() {
 	var params = {}, param;
-	var q = window.location.search.replace('?', '').split('&');
+	var q = window.location.hash.replace('#', '').split('&');
 	for (var i = 0; i < q.length; ++i) {
 		param = q[i].split('=');
 		params[param[0]] = param[1];

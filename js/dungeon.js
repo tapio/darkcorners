@@ -264,12 +264,12 @@ function Dungeon(scene, player) {
 		}
 	};
 
-	if (queryParams.level) {
-		if (queryParams.level == "rand") {
+	if (hashParams.level) {
+		if (hashParams.level == "rand") {
 			var gen = new MapGen();
 			this.level = gen.generate();
-		} else if (queryParams.level.length > 24) {
-			var json = window.atob(queryParams.level);
+		} else if (hashParams.level.length > 24) {
+			var json = window.atob(hashParams.level);
 			this.level = JSON.parse(json);
 		} else {
 			// TODO: Load the level named in the parameter
