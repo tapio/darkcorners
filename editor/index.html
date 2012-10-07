@@ -220,7 +220,7 @@
 
 		function exportBase64() {
 			check();
-			var b64 = window.btoa(JSON.stringify(level, null, '\t'));
+			var b64 = window.btoa(JSON.stringify(level, null));
 			document.getElementById("exported").value = b64;
 			document.getElementById("exported").style.display = "block";
 		}
@@ -246,7 +246,7 @@
 		}
 
 		function test() {
-			var url = "../game_dev.html#level=" + window.btoa(JSON.stringify(level, null, '\t'));
+			var url = "../game_dev.html#level=" + window.btoa(JSON.stringify(level, null));
 			window.open(url, "_blank");
 		}
 
