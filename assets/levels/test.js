@@ -11,7 +11,6 @@ var testLevel = {
 			"name": "rock-01",
 			"position": {
 				"x": 21.3125,
-				"y": null,
 				"z": 9.8125
 			}
 		},
@@ -19,7 +18,6 @@ var testLevel = {
 			"name": "rock-02",
 			"position": {
 				"x": 20.625,
-				"y": null,
 				"z": 12.1875
 			}
 		},
@@ -27,7 +25,6 @@ var testLevel = {
 			"name": "rock-02",
 			"position": {
 				"x": 16.75,
-				"y": null,
 				"z": 30.0625
 			}
 		},
@@ -35,7 +32,6 @@ var testLevel = {
 			"name": "rock-02",
 			"position": {
 				"x": 13.4375,
-				"y": null,
 				"z": 22.1875
 			}
 		},
@@ -43,7 +39,6 @@ var testLevel = {
 			"name": "rock-01",
 			"position": {
 				"x": 22.25,
-				"y": null,
 				"z": 18.0625
 			}
 		},
@@ -51,7 +46,6 @@ var testLevel = {
 			"name": "rock-01",
 			"position": {
 				"x": 19.25,
-				"y": null,
 				"z": 20.25
 			}
 		},
@@ -59,7 +53,6 @@ var testLevel = {
 			"name": "rock-01",
 			"position": {
 				"x": 21.5,
-				"y": null,
 				"z": 27.9375
 			}
 		},
@@ -67,7 +60,6 @@ var testLevel = {
 			"name": "rock-03",
 			"position": {
 				"x": 10.8125,
-				"y": null,
 				"z": 20.4375
 			}
 		},
@@ -75,7 +67,6 @@ var testLevel = {
 			"name": "rock-03",
 			"position": {
 				"x": 17.4375,
-				"y": null,
 				"z": 13.25
 			}
 		},
@@ -83,7 +74,6 @@ var testLevel = {
 			"name": "rock-03",
 			"position": {
 				"x": 21.125,
-				"y": null,
 				"z": 31.5625
 			}
 		},
@@ -91,7 +81,6 @@ var testLevel = {
 			"name": "rock-04",
 			"position": {
 				"x": 17.5625,
-				"y": null,
 				"z": 27.9375
 			}
 		},
@@ -99,7 +88,6 @@ var testLevel = {
 			"name": "rock-04",
 			"position": {
 				"x": 11.75,
-				"y": null,
 				"z": 22.6875
 			}
 		},
@@ -107,7 +95,6 @@ var testLevel = {
 			"name": "rock-04",
 			"position": {
 				"x": 22.125,
-				"y": null,
 				"z": 15.375
 			}
 		},
@@ -115,7 +102,6 @@ var testLevel = {
 			"name": "rock-04",
 			"position": {
 				"x": 19.4375,
-				"y": null,
 				"z": 13.5
 			}
 		},
@@ -123,7 +109,6 @@ var testLevel = {
 			"name": "barrel",
 			"position": {
 				"x": 9.5,
-				"y": null,
 				"z": 23.4375
 			}
 		},
@@ -131,7 +116,6 @@ var testLevel = {
 			"name": "barrel",
 			"position": {
 				"x": 9.5625,
-				"y": null,
 				"z": 24.4375
 			}
 		},
@@ -139,7 +123,6 @@ var testLevel = {
 			"name": "barrel",
 			"position": {
 				"x": 21.4375,
-				"y": null,
 				"z": 28.9375
 			}
 		},
@@ -147,7 +130,6 @@ var testLevel = {
 			"name": "barrel",
 			"position": {
 				"x": 21.5,
-				"y": null,
 				"z": 29.9375
 			}
 		},
@@ -155,7 +137,6 @@ var testLevel = {
 			"name": "barrel",
 			"position": {
 				"x": 18.25,
-				"y": null,
 				"z": 26.5
 			}
 		},
@@ -163,7 +144,6 @@ var testLevel = {
 			"name": "barrel",
 			"position": {
 				"x": 19.125,
-				"y": null,
 				"z": 26.4375
 			}
 		},
@@ -171,7 +151,6 @@ var testLevel = {
 			"name": "box",
 			"position": {
 				"x": 18.875,
-				"y": null,
 				"z": 32.375
 			}
 		},
@@ -179,7 +158,6 @@ var testLevel = {
 			"name": "box",
 			"position": {
 				"x": 20.5,
-				"y": null,
 				"z": 15.8125
 			}
 		},
@@ -187,7 +165,6 @@ var testLevel = {
 			"name": "box",
 			"position": {
 				"x": 20.5625,
-				"y": null,
 				"z": 17.25
 			}
 		}
@@ -196,56 +173,48 @@ var testLevel = {
 		{
 			"position": {
 				"x": 18.1875,
-				"y": 2,
 				"z": 11.4375
 			}
 		},
 		{
 			"position": {
 				"x": 22.9375,
-				"y": 2,
 				"z": 16.5625
 			}
 		},
 		{
 			"position": {
 				"x": 14.25,
-				"y": 2,
 				"z": 16.4375
 			}
 		},
 		{
 			"position": {
 				"x": 14.5,
-				"y": 2,
 				"z": 26.25
 			}
 		},
 		{
 			"position": {
 				"x": 18.5625,
-				"y": 2,
 				"z": 27.5
 			}
 		},
 		{
 			"position": {
 				"x": 18.5625,
-				"y": 2,
 				"z": 31.4375
 			}
 		},
 		{
 			"position": {
 				"x": 20.5,
-				"y": 2,
 				"z": 18.5625
 			}
 		},
 		{
 			"position": {
 				"x": 12.5625,
-				"y": 2,
 				"z": 21.5
 			}
 		}

@@ -38,7 +38,7 @@ function Dungeon(scene, player) {
 			pos.x *= level.gridSize;
 			pos.z *= level.gridSize;
 			// Auto-height
-			if (pos.y === null) {
+			if (!pos.y && pos.y !== 0) {
 				if (!geometry.boundingBox) geometry.computeBoundingBox();
 				pos.y = 0.5 * (geometry.boundingBox.max.y - geometry.boundingBox.min.y) + 0.001;
 			}
@@ -167,6 +167,8 @@ function Dungeon(scene, player) {
 		// Point lights
 		var vec = new THREE.Vector2();
 		for (var i = 0; i < level.lights.length; ++i) {
+			if (level.lights[i].position.y === undefined)
+				level.lights[i].position.y = 2;
 			// Actual light
 			var light = new THREE.PointLight(0xffffaa, 1, 2 * level.gridSize);
 			light.position.copy(level.lights[i].position);
