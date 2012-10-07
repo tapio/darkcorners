@@ -241,6 +241,7 @@
 				return;
 			}
 			level = json;
+			level.map = new Map(level.width, level.depth, level.map);
 			document.getElementById("exported").value = "";
 			document.getElementById("exported").style.display = "none";
 		}
