@@ -10,6 +10,7 @@ var assets = {
 		"table-big": { collision: "box", mass: 1000 },
 		"table-old": { collision: "box", mass: 800 },
 		"chair-01": { collision: "box", mass: 200 },
+		"torch-standing": { collision: "cylinder", mass: 150 },
 		"pillar-greek": { collision: "cylinder", mass: 0 },
 		"teleporter": { collision: "cylinder", mass: 0 }
 	},
