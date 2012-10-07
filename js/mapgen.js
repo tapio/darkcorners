@@ -80,11 +80,19 @@ function MapGen() {
 			for (x = 0; x < width; ++x)
 				if (level.map.get(x,z) == OPEN) level.floorCount++;
 
-		// Place player
+		// Place start
 		do {
-			level.start[0] = rand(roomsize+1, width-roomsize-1);
-			level.start[1] = rand(roomsize+1, depth-roomsize-1);
+			level.start[0] = rand(1, width-2);
+			level.start[1] = rand(1, depth-2);
 		} while (level.map.get(level.start[0], level.start[1]) == WALL);
+
+		// Place exit
+		do {
+			level.exit[0] = rand(1, width-2);
+			level.exit[1] = rand(1, depth-2);
+		} while (level.map.get(level.exit[0], level.exit[1]) == WALL);
+		level.exit[0] += 0.5;
+		level.exit[1] += 0.5;
 	};
 
 	this.generateLights = function(level) {
@@ -159,7 +167,8 @@ function MapGen() {
 			lights: [],
 			gridSize: 2,
 			roomHeight: 3,
-			start: [ 0, 0 ]
+			start: [ 0, 0 ],
+			exit: [ 0, 0 ]
 		};
 		this.generateMap(level);
 		this.generateLights(level);
