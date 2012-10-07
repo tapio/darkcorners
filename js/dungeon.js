@@ -1,5 +1,6 @@
 function Dungeon(scene, player) {
 	var self = this;
+	this.loaded = false;
 	this.objects = [];
 	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
 	var debug_material = new THREE.MeshBasicMaterial({color: 0xff00ff});
@@ -269,29 +270,39 @@ function Dungeon(scene, player) {
 		}
 	};
 
+	var level;
+
+	function processLevel(level) {
+		if (typeof(level) == "string")
+			level = JSON.parse(level);
+		if (level.map instanceof Array)
+			level.map = new Map(level.width, level.depth, level.map);
+
+		player.geometry.computeBoundingBox();
+		player.position.x = level.start[0] * level.gridSize;
+		player.position.y = 0.5 * (player.geometry.boundingBox.max.y - player.geometry.boundingBox.min.y) + 0.001;
+		player.position.z = level.start[1] * level.gridSize;
+		if (level.startAngle)
+			controls.setYAngle(level.startAngle);
+		scene.add(pl);
+		pl.setAngularFactor({ x: 0, y: 0, z: 0 });
+
+		self.generateMesh(level);
+		self.addLights(level);
+		self.addObjects(level);
+		self.loaded = true;
+	}
+
 	if (hashParams.level) {
 		if (hashParams.level == "rand") {
 			var gen = new MapGen();
-			this.level = gen.generate();
+			processLevel(gen.generate());
 		} else if (hashParams.level.length > 24) {
 			var json = window.atob(hashParams.level);
-			this.level = JSON.parse(json);
+			processLevel(JSON.parse(json));
 		} else {
-			// TODO: Load the level named in the parameter
+			$.get("assets/levels/" + hashParams.level + ".json", processLevel);
 		}
-	} else this.level = testLevel;
+	} else processLevel(testLevel);
 
-	if (this.level.map instanceof Array)
-		this.level.map = new Map(this.level.width, this.level.depth, this.level.map);
-
-	player.geometry.computeBoundingBox();
-	player.position.x = this.level.start[0] * this.level.gridSize;
-	player.position.y = 0.5 * (player.geometry.boundingBox.max.y - player.geometry.boundingBox.min.y) + 0.001;
-	player.position.z = this.level.start[1] * this.level.gridSize;
-	if (this.level.startAngle)
-		controls.setYAngle(this.level.startAngle);
-
-	this.generateMesh(this.level);
-	this.addLights(this.level);
-	this.addObjects(this.level);
 }

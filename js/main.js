@@ -89,8 +89,6 @@ function init() {
 
 	// Create level and finalize player
 	dungeon = new Dungeon(scene, pl);
-	scene.add(pl);
-	pl.setAngularFactor({ x: 0, y: 0, z: 0 });
 	lightManager.update(pl);
 
 	updateConfig();
@@ -116,6 +114,7 @@ function mouseHandler(button) {
 }
 
 function animate(dt) {
+	if (!dungeon.loaded) return;
 	function getAnim(time) { return Math.abs(time - (time|0) - 0.5) * 2.0; }
 	function fract(num) { return num - (num|0); }
 	var i, v = new THREE.Vector3();
@@ -169,6 +168,7 @@ $(document).ready(function() {
 	var v1 = new THREE.Vector3();
 	function render() {
 		requestAnimationFrame(render);
+		if (!dungeon.loaded) return;
 
 		// Player movement, controls and physics
 		var dt = clock.getDelta();
