@@ -1,7 +1,8 @@
 
 var _textures = [];
 
-function loadTexture(path) {
+function loadTexture(path, opts) {
+	opts = opts || {};
 	var image = new Image();
 	image.onload = function() { texture.needsUpdate = true; };
 	image.src = path;
@@ -12,7 +13,7 @@ function loadTexture(path) {
 		THREE.RepeatWrapping,
 		CONFIG.linearTextureFilter ? THREE.LinearFilter : THREE.NearestFilter,
 		CONFIG.linearTextureFilter ? THREE.LinearMipMapLinearFilter : THREE.NearestFilter,
-		THREE.RGBFormat,
+		opts.alpha ? THREE.RGBAFormat : THREE.RGBFormat,
 		THREE.UnsignedByteType,
 		CONFIG.anisotropy
 	);

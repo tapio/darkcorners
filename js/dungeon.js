@@ -235,7 +235,7 @@ function Dungeon(scene, player) {
 
 			// Flame
 			if (CONFIG.particles)
-				light.emitter = createSimpleFire(light.position);
+				light.emitter = createTexturedFire(light);
 		}
 
 		// Player's torch
