@@ -232,9 +232,10 @@
 		}
 
 		function importLevel() {
-			var json = prompt("Paste here the level JSON to import");
+			var json = prompt("Paste here the level JSON (can be base64) to import:");
 			if (!json || !json.length) return;
 			try {
+				if (json[0] !== '{') json = window.atob(json);
 				json = JSON.parse(json);
 			} catch (err) {
 				alert("Import error: " + err);
