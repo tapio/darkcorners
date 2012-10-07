@@ -1,3 +1,4 @@
+.SUFFIXES: .md .html
 
 all: build
 
@@ -10,6 +11,11 @@ chrome:
 hint:
 	jshint js/*.js assets/*.js
 
+help: readme.html
+
+.md.html:
+	markdown $< > $@
+
 build: concat minify
 
 concat:
@@ -20,5 +26,8 @@ minify: concat
 	cat build/libs.js | uglifyjs > build/libs.min.js
 	cat build/game.js | uglifyjs > build/game.min.js
 
-.PHONY: all server chrome build
+clean:
+	rm readme.html
+
+.PHONY: all server chrome hint help build clean
 

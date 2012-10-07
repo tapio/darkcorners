@@ -4,16 +4,19 @@ Dungeon
 This is 3d first person game prototype with a level editor.
 The main design guideline is sacrificing artistic liberties for quickness of content creation.
 
-It works on Chrome and Firefox (be sure to use latest versions), but Firefox has
-bad performance. You probably have bad performance anyway, unless you have a good GPU.
 
-Here's a list of required browser features:
+System Requirements
+-------------------
 
-* WebGL for graphics
-	* Various extensions offer improvements
-* WebWorkers for physics
-* PointerLock for FPS controls (fallback available)
-* `requestAnimationFrame` for best animation (fallbackl available)
+* Latest version of Chrome or Firefox
+	* Chrome offers noticeable better performance
+	* IE does not support WebGL and Opera has issues
+* Good dedicated GPU and drivers (both must not be blacklisted for WebGL by the browser vendors)
+* Decent CPU so that JavaScript runs well
+
+
+Acknowledgements
+----------------
 
 This is based on several JS libraries, most prominently:
 
@@ -21,11 +24,17 @@ This is based on several JS libraries, most prominently:
 	* Graphics engine
 * Physijs - http://chandlerprall.github.com/Physijs/
 	* Physics engine
+* Fireworks.js - http://jeromeetienne.github.com/fireworks.js/
+	* Particle engine
 * dat.GUI - http://code.google.com/p/dat-gui/
-	* Settings GUI
+	* Settings and editor GUI
+
+With art assets, Blendswap (http://www.blendswap.com/) and especially
+Open Game Art (http://opengameart.org/) have been invaluable.
+
 
 Copyright
-=========
+---------
 
 Unless otherwise stated, code in `js/` is mine:
 
