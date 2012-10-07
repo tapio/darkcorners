@@ -16,6 +16,12 @@ help: readme.html
 .md.html:
 	markdown $< > $@
 
+deploy:
+	git checkout gh-pages
+	git merge master
+	git push origin gh-pages
+	git checkout master
+
 build: concat minify
 
 concat:
@@ -29,5 +35,5 @@ minify: concat
 clean:
 	rm readme.html
 
-.PHONY: all server chrome hint help build clean
+.PHONY: all server chrome hint help deploy build clean
 
