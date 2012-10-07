@@ -1,5 +1,5 @@
-Dungeon
-=======
+Dark Corners
+============
 
 This is 3d first person game prototype with a level editor.
 The main design guideline is sacrificing artistic liberties for quickness of content creation.
