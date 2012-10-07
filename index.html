@@ -17,6 +17,7 @@
 		}
 		.hero-unit h1 { color: #422; }
 		.hero-unit { background-color: #444; }
+		#carousel { width: 300px; }
 	</style>
 	<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
 
@@ -31,10 +32,52 @@
 	<div class="container">
 
 		<div class="hero-unit">
-			<h1>Dungeon</h1>
-			<p>This is a 3D first-person game prototype, which runs in the web browser thanks to WebGL.
-			It's in early stages of development, so don't expect much more than walking around in a dungeon.</p>
-			<p><a class="btn btn-inverse btn-large" href="game.html">Try demo!</a></p>
+			<div class="row">
+				<div class="span5">
+					<h1>Dungeon</h1>
+					<p>This is a 3D first-person game prototype, which runs in the web browser thanks to WebGL.
+					It's in <strong>early stages of development</strong>, so don't expect much more than walking around in a dungeon.</p>
+					<p><a class="btn btn-inverse btn-large" href="game.html">Try demo!</a></p>
+				</div>
+				<div class="span5">
+					<div id="carousel" class="carousel slide">
+						<div class="carousel-inner">
+							<div class="active item">
+								<a href="img/carousel/temple.jpg"><img src="img/carousel/temple.jpg" alt=""></a>
+								<div class="carousel-caption">
+									<h4>3D environments with dynamic lighting</h4>
+								</div>
+							</div>
+							<div class="item">
+								<a href="img/carousel/fallen.jpg"><img src="img/carousel/fallen.jpg" alt=""></a>
+								<div class="carousel-caption">
+									<h4>Enhanced immersion with physics engine</h4>
+								</div>
+							</div>
+							<div class="item">
+								<a href="img/carousel/editor.jpg"><img src="img/carousel/editor.jpg" alt=""></a>
+								<div class="carousel-caption">
+									<h4>Create your own levels with a simple editor</h4>
+								</div>
+							</div>
+							<div class="item">
+								<a href="img/carousel/room.jpg"><img src="img/carousel/room.jpg" alt=""></a>
+								<div class="carousel-caption">
+									<h4>High quality, yet freely licensed assets</h4>
+								</div>
+							</div>
+							<div class="item">
+								<a href="img/carousel/portal.jpg"><img src="img/carousel/portal.jpg" alt=""></a>
+								<div class="carousel-caption">
+									<h4>Varying locations from caves to temples</h4>
+								</div>
+							</div>
+						</div>
+						<a class="carousel-control left" href="#carousel" data-slide="prev">&lsaquo;</a>
+						<a class="carousel-control right" href="#carousel" data-slide="next">&rsaquo;</a>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<div class="row">
