@@ -267,7 +267,8 @@
 		var guiLights = gui.addFolder("Lights");
 		guiLights.add(tools.light, "addLight");
 		var guiObjects = gui.addFolder("Objects");
-		guiObjects.add(tools.object, "object", objects);
+		guiObjects.add(tools.object, "object", objects).onChange(
+			function() { currentTool = tools.object; });
 		guiObjects.add(tools.object, "addObject");
 		var guiEditor = gui.addFolder("Editor options");
 		guiEditor.add(editor, "drawGrid");
