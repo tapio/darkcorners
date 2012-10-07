@@ -48,8 +48,9 @@ function createSimpleFire(position) {
 	return emitter;
 }
 
+var _fireTexture = loadTexture("assets/particles/flame.png", { alpha: true });
+
 function createTexturedFire(parent) {
-	var texture = loadTexture("assets/particles/flame.png", { alpha: true });
 	var numSprites = 8;
 	var emitter = Fireworks.createEmitter({ nParticles: 20 });
 	emitter.effectsStackBuilder()
@@ -91,7 +92,7 @@ function createTexturedFire(parent) {
 			create: function() {
 				var object3d = new THREE.Sprite({
 					useScreenCoordinates: false,
-					map: texture,
+					map: _fireTexture,
 					blending: THREE.AdditiveBlending,
 					transparent: true
 				});
