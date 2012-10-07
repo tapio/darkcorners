@@ -23,7 +23,7 @@
 		"blending" : "NormalBlending",
 		"colorAmbient" : [0.4, 0.4, 0.4],
 		"colorDiffuse" : [0.4, 0.4, 0.4],
-		"colorSpecular" : [0.1, 0.08, 0.08],
+		"colorSpecular" : [0.1, 0.1, 0.1],
 		"depthTest" : true,
 		"depthWrite" : true,
 		"mapDiffuse" : "diffuse.png",

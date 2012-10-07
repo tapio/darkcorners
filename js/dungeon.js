@@ -198,7 +198,8 @@ function Dungeon(scene, player) {
 				light.position.z += vec.y * 0.08;
 			} else {
 				// Switch to ceiling hanging light
-				torch = "assets/models/torch-hanging/torch-hanging.js";
+				torch = Math.random() < 0.5 ? "assets/models/torch-hanging-01/torch-hanging-01.js"
+					: "assets/models/torch-hanging-02/torch-hanging-02.js";
 				light.position.x = (level.lights[i].position.x|0) + 0.5;
 				light.position.y = level.roomHeight - 0.9;
 				light.position.z = (level.lights[i].position.z|0) + 0.5;
