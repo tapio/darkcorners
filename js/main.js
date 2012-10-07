@@ -109,7 +109,7 @@ function mouseHandler(button) {
 	if (intersections.length > 0) {
 		var target = intersections[0].object;
 		if (target.position.distanceToSquared(pl.position) < 9)
-			target.applyCentralImpulse(_vector.multiplyScalar(1000));
+			target.applyCentralImpulse(_vector.multiplyScalar(10000));
 	}
 }
 
