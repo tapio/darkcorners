@@ -293,16 +293,16 @@ function Dungeon(scene, player) {
 		self.loaded = true;
 	}
 
-	if (hashParams.level) {
-		if (hashParams.level == "rand") {
-			var gen = new MapGen();
-			processLevel(gen.generate());
-		} else if (hashParams.level.length > 24) {
-			var json = window.atob(hashParams.level);
-			processLevel(JSON.parse(json));
-		} else {
-			$.get("assets/levels/" + hashParams.level + ".json", processLevel);
-		}
-	} else processLevel(testLevel);
+	if (!hashParams.level)
+		hashParams.level = "cave-test";
+	if (hashParams.level == "rand") {
+		var gen = new MapGen();
+		processLevel(gen.generate());
+	} else if (hashParams.level.length > 24) {
+		var json = window.atob(hashParams.level);
+		processLevel(JSON.parse(json));
+	} else {
+		$.get("assets/levels/" + hashParams.level + ".json", processLevel);
+	}
 
 }
