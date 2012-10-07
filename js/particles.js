@@ -3,7 +3,7 @@
 
 
 // Particle system initializer for simple particle flames
-function particleSystemCreator(emitter, position) {
+function particleSystemCreator(emitter, position, color) {
 	var i, geometry = new THREE.Geometry();
 	// Init vertices
 	for (i = 0; i < emitter.nParticles(); i++)
@@ -15,7 +15,7 @@ function particleSystemCreator(emitter, position) {
 	// Init material
 	var texture = Fireworks.ProceduralTextures.buildTexture();
 	var material = new THREE.ParticleBasicMaterial({
-		color: new THREE.Color(0xee8800).getHex(),
+		color: new THREE.Color(color).getHex(),
 		size: 0.3,
 		sizeAttenuation: true,
 		vertexColors: true,
@@ -33,7 +33,7 @@ function particleSystemCreator(emitter, position) {
 	return particleSystem;
 }
 
-// Create an emitter
+// Create a simple fire emitter
 function createSimpleFire(position) {
 	var emitter = Fireworks.createEmitter({ nParticles: 30 });
 	emitter.effectsStackBuilder()
@@ -42,11 +42,28 @@ function createSimpleFire(position) {
 		.velocity(Fireworks.createShapePoint(0, 1, 0))
 		.lifeTime(0.3, 0.6)
 		.renderToThreejsParticleSystem({
-			particleSystem: particleSystemCreator(emitter, position)
+			particleSystem: particleSystemCreator(emitter, position, 0xee8800)
 		}).back()
 	.start();
 	return emitter;
 }
+
+
+// Create a teleporter emitter
+function createTeleporterParticles(position) {
+	var emitter = Fireworks.createEmitter({ nParticles: 30 });
+	emitter.effectsStackBuilder()
+		.spawnerSteadyRate(20)
+		.position(Fireworks.createShapeSphere(0, 0, 0, 0.3))
+		.velocity(Fireworks.createShapePoint(0, 1, 0))
+		.lifeTime(0.6, 1.2)
+		.renderToThreejsParticleSystem({
+			particleSystem: particleSystemCreator(emitter, position, 0x0088ee)
+		}).back()
+	.start();
+	return emitter;
+}
+
 
 var _fireTexture = loadTexture("assets/particles/flame.png", { alpha: true });
 

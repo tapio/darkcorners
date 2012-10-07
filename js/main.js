@@ -140,6 +140,7 @@ function animate(dt) {
 		if (light.visible && light.emitter)
 			light.emitter.update(dt).render();
 	}
+	if (dungeon.exitParticles) dungeon.exitParticles.update(dt).render();
 
 	// Player light
 	pl.light.intensity = 0.5 + 0.5 * getAnim(timeNow / 1000.0);
