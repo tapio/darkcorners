@@ -17,6 +17,7 @@
 		}
 		.hero-unit h1 { color: #422; }
 		.hero-unit { background-color: #444; }
+		#webgl-error { display: none; }
 		#carousel { width: 300px; }
 	</style>
 	<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
@@ -38,6 +39,10 @@
 					<p>This is a 3D first-person game prototype, which runs in the web browser thanks to WebGL.
 					It's in <strong>early stages of development</strong>, so don't expect much more than walking around in a dungeon.</p>
 					<p><a class="btn btn-inverse btn-large" href="game.html">Try demo!</a></p>
+					<div id="webgl-error" class="alert alert-error">
+						Oh no! Your browser or GPU doesn't seem to support <a href="http://get.webgl.org/">WebGL</a>.
+						Unfortunately you can't play the game without it.
+					</div>
 				</div>
 				<div class="span5">
 					<div id="carousel" class="carousel slide">
@@ -84,10 +89,9 @@
 			<div class="span4">
 				<h2>Requirements</h2>
 				<ul>
-					<li>Latest version of Chrome or Firefox
+					<li>Latest version of Chrome (best performance and features) or Firefox
 						<ul>
-						<li>Chrome offers noticeable better performance and more features</li>
-						<li>IE does not support WebGL and Opera has issues</li>
+							<li>IE does not support WebGL and Opera has issues</li>
 						</ul>
 					</li>
 					<li>Good dedicated GPU and drivers (both must not be blacklisted for WebGL by the browser vendors)</li>
@@ -124,6 +128,13 @@
 
 	<script src="libs/jquery-1.8.1.min.js"></script>
 	<script src="libs/bootstrap.min.js"></script>
+	<script>
+		var hasWebGL;
+		try {
+			hasWebGL = !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');
+		} catch( e ) { hasWebGL = false; }
+		if (!hasWebGL) $("#webgl-error").show();
+	</script>
 
 </body>
 </html>
