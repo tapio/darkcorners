@@ -27,6 +27,8 @@
 		"depthTest" : true,
 		"depthWrite" : true,
 		"mapDiffuse" : "diffuse.png",
+		"mapBump" : "diffuse.png",
+		"mapBumpScale" : 0.04,
 		"mapSpecular" : "specular.png",
 		"shading" : "Phong",
 		"specularCoef" : 70,
