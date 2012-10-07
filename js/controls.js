@@ -41,6 +41,10 @@ Controls = function (object, handlers, domElement) {
 
 	//
 
+	this.setYAngle = function(angle) {
+		lon = angle;
+	}
+
 	this.reset = function() {
 		lat = 0; lon = 0;
 	};

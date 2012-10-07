@@ -284,11 +284,12 @@ function Dungeon(scene, player) {
 	if (this.level.map instanceof Array)
 		this.level.map = new Map(this.level.width, this.level.depth, this.level.map);
 
-	// TODO: Set player rotation
 	player.geometry.computeBoundingBox();
 	player.position.x = this.level.start[0] * this.level.gridSize;
 	player.position.y = 0.5 * (player.geometry.boundingBox.max.y - player.geometry.boundingBox.min.y) + 0.001;
 	player.position.z = this.level.start[1] * this.level.gridSize;
+	if (this.level.startAngle)
+		controls.setYAngle(this.level.startAngle);
 
 	this.generateMesh(this.level);
 	this.addLights(this.level);

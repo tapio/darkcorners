@@ -55,6 +55,7 @@
 			objects: [],
 			lights: [],
 			start: [ Math.floor(w/2)-0.5, Math.floor(h*0.25)-0.5 ],
+			startAngle: 0,
 			exit: [ Math.floor(w/2)-0.5, Math.floor(h*0.75)-0.5 ],
 			width: w,
 			depth: h,
@@ -260,6 +261,7 @@
 		guiMap.add(level.materials, "floor", materials);
 		guiMap.add(level, "roomHeight", 2, 10).step(0.5);
 		guiMap.add(level, "gridSize", 1, 4).step(1);
+		guiMap.add(level, "startAngle", -135, 180).step(45);
 		guiMap.add(tools.start, "placeStart");
 		guiMap.add(tools.exit, "placeExit");
 		var guiLights = gui.addFolder("Lights");

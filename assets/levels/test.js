@@ -223,6 +223,7 @@ var testLevel = {
 		19.5,
 		9.5
 	],
+	"startAngle": 90,
 	"exit": [
 		19.5,
 		29.5
