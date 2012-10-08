@@ -252,19 +252,21 @@
 			ctx.fillText("E", level.exit[0] * s, level.exit[1] * s);
 		}
 
-		function check() {
+		function prepareExport() {
 			if (!level.lights.length) alert("Warning: There are no lights in the level.");
+			level.map.replace(OPEN, VOID);
+			level.map.fill(Math.floor(level.start[0]), Math.floor(level.start[1]), VOID, OPEN, DIAG);
 		}
 
 		function exportBase64() {
-			check();
+			prepareExport();
 			var b64 = window.btoa(JSON.stringify(level, null));
 			document.getElementById("exported").value = b64;
 			document.getElementById("exported").style.display = "block";
 		}
 
 		function exportJSON() {
-			check();
+			prepareExport();
 			document.getElementById("exported").value = JSON.stringify(level, null, '\t');
 			document.getElementById("exported").style.display = "block";
 		}

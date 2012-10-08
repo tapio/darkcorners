@@ -1,3 +1,4 @@
+var VOID = " ";
 var OPEN = ".";
 var WALL = "#";
 var DIAG = "%";
@@ -35,4 +36,29 @@ function Map(w, h, data) {
 		}
 		return res;
 	};
+
+	this.replace = function(oldval, newval) {
+		for (var j = 0; j < h; ++j) {
+			for (var i = 0; i < w; ++i) {
+				if (this.map[j * w + i] == oldval)
+					this.map[j * w + i] = newval;
+			}
+		}
+	};
+
+	function floodFill(map, x, y, target, filler, skip) {
+		var cell = map.get(x, y);
+		if (cell != target && cell != skip) return;
+		if (cell != skip)
+			map.map[y * w + x] = filler;
+		floodFill(map, x-1, y, target, filler, skip);
+		floodFill(map, x+1, y, target, filler, skip);
+		floodFill(map, x, y-1, target, filler, skip);
+		floodFill(map, x, y+1, target, filler, skip);
+	};
+
+	this.fill = function(x, y, target, filler, skip) {
+		floodFill(this, x, y, target, filler, skip);
+	};
+
 }

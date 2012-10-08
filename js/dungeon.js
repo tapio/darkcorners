@@ -69,10 +69,10 @@ function Dungeon(scene, player) {
 				cell = level.map.get(i, j, OPEN);
 				if (cell === OPEN) continue;
 				if (cell === WALL || cell === DIAG) {
-					px = level.map.get(i + 1, j) != OPEN ? 0 : 1;
-					nx = level.map.get(i - 1, j) != OPEN ? 0 : 2;
-					pz = level.map.get(i, j + 1) != OPEN ? 0 : 4;
-					nz = level.map.get(i, j - 1) != OPEN ? 0 : 8;
+					px = level.map.get(i + 1, j) == OPEN ? 1 : 0;
+					nx = level.map.get(i - 1, j) == OPEN ? 2 : 0;
+					pz = level.map.get(i, j + 1) == OPEN ? 4 : 0;
+					nz = level.map.get(i, j - 1) == OPEN ? 8 : 0;
 					// If wall completely surrounded by walls, skip
 					hash = px + nx + pz + nz;
 					if (hash === 0) continue;
@@ -98,6 +98,7 @@ function Dungeon(scene, player) {
 					mesh.position.z = (j + 0.5) * level.gridSize;
 					mesh.rotation.y = rot;
 					THREE.GeometryUtils.merge(geometry, mesh);
+					continue;
 					// Collision body
 					if (cell === DIAG) {
 						cube = new THREE.CubeGeometry(0.01, level.roomHeight, level.gridSize * sqrt2);
