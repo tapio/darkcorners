@@ -1,4 +1,4 @@
-function Dungeon(scene, player) {
+function Dungeon(scene, player, levelName) {
 	var self = this;
 	this.loaded = false;
 	this.objects = [];
@@ -284,6 +284,12 @@ function Dungeon(scene, player) {
 		}
 	};
 
+	this.isAtExit = function(pos) {
+		return this.level &&
+			Math.abs(pos.x - this.level.exit[0] * this.level.gridSize) < 0.5 &&
+			Math.abs(pos.z - this.level.exit[1] * this.level.gridSize) < 0.5;
+	};
+
 	function processLevel(level) {
 		if (typeof(level) == "string")
 			level = JSON.parse(level);
@@ -302,20 +308,20 @@ function Dungeon(scene, player) {
 		self.generateMesh(level);
 		self.addLights(level);
 		self.addObjects(level);
+		lightManager.update(pl);
 		self.level = level;
 		self.loaded = true;
 	}
 
-	if (!hashParams.level)
-		hashParams.level = "cave-test";
-	if (hashParams.level == "rand") {
+	levelName = levelName || hashParams.level || "cave-test";
+	if (levelName == "rand") {
 		var gen = new MapGen();
 		processLevel(gen.generate());
-	} else if (hashParams.level.length > 24) {
-		var json = window.atob(hashParams.level);
+	} else if (levelName.length > 24) {
+		var json = window.atob(levelName);
 		processLevel(JSON.parse(json));
 	} else {
-		$.get("assets/levels/" + hashParams.level + ".json", processLevel);
+		$.get("assets/levels/" + levelName + ".json", processLevel);
 	}
 
 	this.serialize = function() {

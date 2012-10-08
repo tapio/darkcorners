@@ -85,12 +85,7 @@ function init() {
 	depthPassPlugin.renderTarget = depthTarget;
 	renderer.addPrePlugin(depthPassPlugin);
 
-	lightManager = new LightManager({ maxLights: CONFIG.maxLights, maxShadows: CONFIG.maxShadows });
-
-	// Create level and finalize player
-	dungeon = new Dungeon(scene, pl);
-	lightManager.update(pl);
-
+	resetLevel();
 	updateConfig();
 	dumpInfo();
 	initUI();
@@ -98,6 +93,16 @@ function init() {
 	var now = new Date().getTime();
 	if (window.performance)
 		console.log("Initialization took " + (now - window.performance.timing.navigationStart) + "ms");
+}
+
+function resetLevel(levelName) {
+	// TODO: Reloadless reset?
+	if (dungeon) {
+		window.location.hash = "#level=" + levelName;
+		window.location.reload(true);
+	}
+	lightManager = new LightManager({ maxLights: CONFIG.maxLights, maxShadows: CONFIG.maxShadows });
+	dungeon = new Dungeon(scene, pl, levelName);
 }
 
 function mouseHandler(button) {
@@ -159,7 +164,8 @@ function animate(dt) {
 		pl.rhand.translateZ(-0.5*UNIT);
 	}
 
-	//console.log(pl.position.x, pl.position.z);
+	if (dungeon.isAtExit(pl.position))
+		resetLevel(dungeon.level.next);
 }
 
 
