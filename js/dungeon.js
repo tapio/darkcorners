@@ -79,9 +79,8 @@ function Dungeon(scene, player) {
 					tess = block_params.roughness ? 10 : 0;
 					rot = 0;
 					if (cell === DIAG && (hash == 5 || hash == 6 || hash == 9 || hash == 10)) {
-						// TODO: Implement roughness in plane
-						cube = new PlaneGeometry(level.gridSize * sqrt2, level.roomHeight,
-							1, 1, "px", level.gridSize * sqrt2 / 2, level.roomHeight / 2);
+						cube = new PlaneGeometry(level.gridSize * sqrt2, level.roomHeight, tess, tess,
+							"px", level.gridSize * sqrt2 / 2, level.roomHeight / 2, block_params.roughness);
 						if (hash == 5) rot = -45 / 180 * Math.PI;
 						else if (hash == 6) rot = -135 / 180 * Math.PI;
 						else if (hash == 9) rot = 45 / 180 * Math.PI;
