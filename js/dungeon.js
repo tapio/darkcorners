@@ -54,6 +54,7 @@ function Dungeon(scene, player) {
 	}
 
 	this.generateMesh = function(level) {
+		var sqrt2 = Math.sqrt(2);
 		var block_mat = cache.getMaterial(level.materials.wall);
 		var block_params = {};
 		if (assets.materials[level.materials.wall] && assets.materials[level.materials.wall].roughness)
@@ -61,29 +62,44 @@ function Dungeon(scene, player) {
 
 		// Level geometry
 		var geometry = new THREE.Geometry(), mesh;
-		var cell, px, nx, pz, nz, tess, cube;
+		var cell, px, nx, pz, nz, tess, cube, hash, rot;
 		for (var j = 0; j < level.depth; ++j) {
 			for (var i = 0; i < level.width; ++i) {
 				px = nx = pz = nz = py = ny = 0;
 				cell = level.map.get(i, j, OPEN);
 				if (cell === OPEN) continue;
-				if (cell === WALL) {
-					px = level.map.get(i + 1, j) == WALL ? 0 : 1;
-					nx = level.map.get(i - 1, j) == WALL ? 0 : 2;
-					pz = level.map.get(i, j + 1) == WALL ? 0 : 4;
-					nz = level.map.get(i, j - 1) == WALL ? 0 : 8;
+				if (cell === WALL || cell === DIAG) {
+					px = level.map.get(i + 1, j) != OPEN ? 0 : 1;
+					nx = level.map.get(i - 1, j) != OPEN ? 0 : 2;
+					pz = level.map.get(i, j + 1) != OPEN ? 0 : 4;
+					nz = level.map.get(i, j - 1) != OPEN ? 0 : 8;
 					// If wall completely surrounded by walls, skip
-					if (px + nx + pz + nz === 0) continue;
+					hash = px + nx + pz + nz;
+					if (hash === 0) continue;
 					tess = block_params.roughness ? 10 : 0;
-					cube = new BlockGeometry(level.gridSize, level.roomHeight, level.gridSize,
-						tess, tess, tess, block_mat,
-						{ px: px, nx: nx, py: 0, ny: 0, pz: pz, nz: nz },
-						level.gridSize/2, level.roomHeight/2, block_params.roughness);
+					rot = 0;
+					if (cell === DIAG && (hash == 5 || hash == 6 || hash == 9 || hash == 10)) {
+						// TODO: Implement roughness in plane
+						cube = new PlaneGeometry(level.gridSize * sqrt2, level.roomHeight,
+							1, 1, "px", level.gridSize * sqrt2 / 2, level.roomHeight / 2);
+						if (hash == 5) rot = -45 / 180 * Math.PI;
+						else if (hash == 6) rot = -135 / 180 * Math.PI;
+						else if (hash == 9) rot = 45 / 180 * Math.PI;
+						else if (hash == 10) rot = 135 / 180 * Math.PI;
+						cube.materials = [ block_mat ];
+					} else {
+						cube = new BlockGeometry(level.gridSize, level.roomHeight, level.gridSize,
+							tess, tess, tess, block_mat,
+							{ px: px, nx: nx, py: 0, ny: 0, pz: pz, nz: nz },
+							level.gridSize/2, level.roomHeight/2, block_params.roughness);
+					}
 					mesh = new THREE.Mesh(cube);
 					mesh.position.x = (i + 0.5) * level.gridSize;
 					mesh.position.y = 0.5 * level.roomHeight;
 					mesh.position.z = (j + 0.5) * level.gridSize;
+					mesh.rotation.y = rot;
 					THREE.GeometryUtils.merge(geometry, mesh);
+					if (cell === DIAG) continue; // FIXME;
 					// Collision body
 					// Bounding box needs tweaking if there is only one side in the block
 					cube.computeBoundingBox();

@@ -61,6 +61,7 @@ PlaneGeometry = function ( width, height, segmentsX, segmentsY, dir, uRepeat, vR
 			var face = new THREE.Face4( a, b, c, d );
 			face.normal.copy( normal );
 			face.vertexNormals.push( normal.clone(), normal.clone(), normal.clone(), normal.clone() );
+			face.materialIndex = 0;
 
 			this.faces.push( face );
 			this.faceVertexUvs[ 0 ].push([
