@@ -54,14 +54,7 @@ function Dungeon(scene, player) {
 	}
 
 	this.generateMesh = function(level) {
-		var block_materials = [
-			cache.getMaterial(level.materials.wall), // right
-			cache.getMaterial(level.materials.wall), // left
-			dummy_material, // top
-			dummy_material, // bottom
-			cache.getMaterial(level.materials.wall), // back
-			cache.getMaterial(level.materials.wall)  // front
-		];
+		var block_mat = cache.getMaterial(level.materials.wall);
 		var block_params = {};
 		if (assets.materials[level.materials.wall] && assets.materials[level.materials.wall].roughness)
 			block_params.roughness = assets.materials[level.materials.wall].roughness;
@@ -83,7 +76,7 @@ function Dungeon(scene, player) {
 					if (px + nx + pz + nz === 0) continue;
 					tess = block_params.roughness ? 10 : 0;
 					cube = new BlockGeometry(level.gridSize, level.roomHeight, level.gridSize,
-						tess, tess, tess, block_materials,
+						tess, tess, tess, block_mat,
 						{ px: px, nx: nx, py: 0, ny: 0, pz: pz, nz: nz },
 						level.gridSize/2, level.roomHeight/2, block_params.roughness);
 					mesh = new THREE.Mesh(cube);
