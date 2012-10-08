@@ -11,7 +11,7 @@ chrome:
 hint:
 	jshint js/*.js assets/*.js
 
-help: readme.html
+help: readme.html CONTRIBUTING.html
 
 .md.html:
 	markdown $< > $@
