@@ -11,6 +11,7 @@ var assets = {
 		"table-old": { collision: "box", mass: 800 },
 		"chair-01": { collision: "box", mass: 200 },
 		"torch-standing": { collision: "cylinder", mass: 150 },
+		"mine-cart": { collision: "box", mass: 900 },
 		"pillar-greek": { collision: "cylinder", mass: 0 },
 		"teleporter": { collision: "cylinder", mass: 0 }
 	},
@@ -31,7 +32,7 @@ var assets = {
 			wall: [ "rock-01", "rock-02", "rock-03", "rock-04" ],
 			floor: [ "rock-01", "rock-02", "rock-03", "rock-04" ],
 			ceiling: [ "rock-01", "rock-02", "rock-03", "rock-04" ],
-			objects: [ "rock-01", "rock-02", "rock-03", "rock-04", "barrel", "box", "netted-jar", "table-old" ]
+			objects: [ "mine-cart", "rock-01", "rock-02", "rock-03", "rock-04", "barrel", "box", "netted-jar", "table-old" ]
 		},
 		"dungeon": {
 			wall: [ "stone-01", "stone-02", "stone-03" ],
