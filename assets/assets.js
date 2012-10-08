@@ -12,6 +12,10 @@ var assets = {
 		"chair-01": { collision: "box", mass: 200 },
 		"torch-standing": { collision: "cylinder", mass: 150 },
 		"mine-cart": { collision: "box", mass: 900 },
+		"obelisk-01": { collision: "box", mass: 0 },
+		"obelisk-02": { collision: "box", mass: 0 },
+		"pillar-broken-01": { collision: "cylinder", mass: 0 },
+		"pillar-broken-02": { collision: "cylinder", mass: 0 },
 		"pillar-greek": { collision: "cylinder", mass: 0 },
 		"teleporter": { collision: "cylinder", mass: 0 }
 	},
