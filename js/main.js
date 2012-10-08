@@ -15,7 +15,7 @@ function init() {
 		physicsStats.update();
 	});
 
-	pl = new Physijs.CylinderMesh(
+	pl = new Physijs.CapsuleMesh(
 		new THREE.CylinderGeometry(0.8 * UNIT, 0.8 * UNIT, 2 * UNIT),
 		new THREE.MeshBasicMaterial({ color: 0xff00ff }),
 		100

@@ -24,7 +24,7 @@ window.Physijs = (function() {
 			COLLISIONREPORT: 1,
             VEHICLEREPORT: 2
 		},
-		REPORT_ITEMSIZE = 14,
+		REPORT_ITEMSIZE = 17,
         VEHICLEREPORT_ITEMSIZE = 9;
 	
 	Physijs.scripts = {};
@@ -516,6 +516,12 @@ window.Physijs = (function() {
                 data[ offset + 13 ]
             );
 
+            object._physijs.totalForce.set(
+                data[ offset + 14 ],
+                data[ offset + 15 ],
+                data[ offset + 16 ]
+            );
+
         }
 
         if ( this._worker.webkitPostMessage ) {
@@ -883,7 +889,8 @@ window.Physijs = (function() {
 			mass: mass || 0,
 			touches: [],
 			linearVelocity: new THREE.Vector3,
-			angularVelocity: new THREE.Vector3
+			angularVelocity: new THREE.Vector3,
+			totalForce: new THREE.Vector3
 		};
 	};
 	Physijs.Mesh.prototype = new THREE.Mesh;
@@ -939,6 +946,11 @@ window.Physijs = (function() {
 		if ( this.world ) {
 			this.world.execute( 'setAngularVelocity', { id: this._physijs.id, x: velocity.x, y: velocity.y, z: velocity.z } );
 		}
+	};
+
+	// Physijs.Mesh.getTotalForce
+	Physijs.Mesh.prototype.getTotalForce = function () {
+		return this._physijs.totalForce;
 	};
 	
 	// Physijs.Mesh.getLinearVelocity
@@ -1025,9 +1037,12 @@ window.Physijs = (function() {
 
 		var a, b;
 		for ( var i = 0; i < geometry.vertices.length; i++ ) {
+			
 			a = i % this._physijs.xpts;
 			b = Math.round( ( i / this._physijs.xpts ) - ( (i % this._physijs.xpts) / this._physijs.xpts ) );
 			points[i] = geometry.vertices[ a + ( ( this._physijs.ypts - b - 1 ) * this._physijs.ypts ) ].z;
+			
+			//points[i] = geometry.vertices[i];
 		}
 
 		this._physijs.points = points;
@@ -1097,6 +1112,29 @@ window.Physijs = (function() {
 	};
 	Physijs.CylinderMesh.prototype = new Physijs.Mesh;
 	Physijs.CylinderMesh.prototype.constructor = Physijs.CylinderMesh;
+	
+	
+	// Physijs.CapsuleMesh
+	Physijs.CapsuleMesh = function( geometry, material, mass ) {
+		var width, height, depth;
+		
+		Physijs.Mesh.call( this, geometry, material, mass );
+		
+		if ( !geometry.boundingBox ) {
+			geometry.computeBoundingBox();
+		}
+		
+		width = geometry.boundingBox.max.x - geometry.boundingBox.min.x;
+		height = geometry.boundingBox.max.y - geometry.boundingBox.min.y;
+		depth = geometry.boundingBox.max.z - geometry.boundingBox.min.z;
+		
+		this._physijs.type = 'capsule';
+		this._physijs.radius = Math.max(width / 2, depth / 2);
+		this._physijs.height = height;
+		this._physijs.mass = (typeof mass === 'undefined') ? width * height * depth : mass;
+	};
+	Physijs.CapsuleMesh.prototype = new Physijs.Mesh;
+	Physijs.CapsuleMesh.prototype.constructor = Physijs.CapsuleMesh;
 	
 	
 	// Physijs.ConeMesh
