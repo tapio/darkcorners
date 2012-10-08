@@ -98,7 +98,7 @@ function Dungeon(scene, player) {
 					mesh.position.z = (j + 0.5) * level.gridSize;
 					mesh.rotation.y = rot;
 					THREE.GeometryUtils.merge(geometry, mesh);
-					continue;
+
 					// Collision body
 					if (cell === DIAG) {
 						cube = new THREE.CubeGeometry(0.01, level.roomHeight, level.gridSize * sqrt2);
