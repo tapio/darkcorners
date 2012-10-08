@@ -98,24 +98,29 @@ function Dungeon(scene, player) {
 					mesh.position.z = (j + 0.5) * level.gridSize;
 					mesh.rotation.y = rot;
 					THREE.GeometryUtils.merge(geometry, mesh);
-					if (cell === DIAG) continue; // FIXME;
 					// Collision body
-					// Bounding box needs tweaking if there is only one side in the block
-					cube.computeBoundingBox();
-					if (Math.abs(cube.boundingBox.max.x - cube.boundingBox.min.x) <= 0.5) {
-						cube.boundingBox.min.x = -0.5 * level.gridSize;
-						cube.boundingBox.max.x = 0.5 * level.gridSize;
-					}
-					if (Math.abs(cube.boundingBox.max.z - cube.boundingBox.min.z) <= 0.5) {
-						cube.boundingBox.min.z = -0.5 * level.gridSize;
-						cube.boundingBox.max.z = 0.5 * level.gridSize;
+					if (cell === DIAG) {
+						cube = new THREE.CubeGeometry(0.01, level.roomHeight, level.gridSize * sqrt2);
+					} else {
+						// Bounding box needs tweaking if there is only one side in the block
+						cube.computeBoundingBox();
+						if (Math.abs(cube.boundingBox.max.x - cube.boundingBox.min.x) <= 0.5) {
+							cube.boundingBox.min.x = -0.5 * level.gridSize;
+							cube.boundingBox.max.x = 0.5 * level.gridSize;
+						}
+						if (Math.abs(cube.boundingBox.max.z - cube.boundingBox.min.z) <= 0.5) {
+							cube.boundingBox.min.z = -0.5 * level.gridSize;
+							cube.boundingBox.max.z = 0.5 * level.gridSize;
+						}
 					}
 					var wallbody = new Physijs.BoxMesh(cube, dummy_material, 0);
 					wallbody.position.copy(mesh.position);
 					wallbody.visible = false;
 					scene.add(wallbody);
-				} else {
-
+					if (cell === DIAG) {
+						wallbody.rotation.y = rot;
+						wallbody.__dirtyRotation = true;
+					}
 				}
 			}
 		}
