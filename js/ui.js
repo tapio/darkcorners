@@ -77,7 +77,7 @@ function initUI() {
 }
 
 function editLevel() {
-	var url = "../editor/index.html#level=" + window.btoa(dungeon.serialize());
+	var url = "editor/index.html#level=" + window.btoa(dungeon.serialize());
 	window.open(url, "_blank");
 }
 
