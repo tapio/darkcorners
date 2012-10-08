@@ -172,6 +172,20 @@ function animate(dt) {
 $(document).ready(function() {
 	var v0 = new THREE.Vector3();
 	var v1 = new THREE.Vector3();
+
+	function formatRenderInfo(info) {
+		var report = [
+			"Prog:", info.memory.programs,
+			"Geom:", info.memory.geometries,
+			"Tex:", info.memory.textures,
+			"Calls:", info.render.calls,
+			"Verts:", info.render.vertices,
+			"Faces:", info.render.faces,
+			"Pts:", info.render.points
+		];
+		return report.join(' ');
+	}
+
 	function render() {
 		requestAnimationFrame(render);
 		if (!dungeon.loaded) return;
@@ -196,10 +210,15 @@ $(document).ready(function() {
 			renderer.shadowMapEnabled = CONFIG.shadows;
 			depthPassPlugin.enabled = true;
 			renderer.render(scene, pl.camera, composer.renderTarget2, true);
+			rendererInfo.innerHTML = formatRenderInfo(renderer.info);
 			renderer.shadowMapEnabled = false;
 			depthPassPlugin.enabled = false;
 			composer.render(dt);
-		} else renderer.render(scene, pl.camera);
+		} else {
+			renderer.render(scene, pl.camera);
+			rendererInfo.innerHTML = formatRenderInfo();
+		}
+
 		renderStats.update();
 	}
 

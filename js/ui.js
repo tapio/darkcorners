@@ -1,4 +1,4 @@
-var container, renderStats, physicsStats;
+var container, renderStats, physicsStats, rendererInfo;
 
 function initUI() {
 	container = document.getElementById('container');
@@ -16,6 +16,15 @@ function initUI() {
 	physicsStats.domElement.style.bottom = '0px';
 	physicsStats.domElement.style.left = '85px';
 	container.appendChild(physicsStats.domElement);
+
+	rendererInfo = document.createElement("div");
+	rendererInfo.style.position = 'absolute';
+	rendererInfo.style.bottom = '0px';
+	rendererInfo.style.left = '170px';
+	rendererInfo.style.color = '#f08';
+	rendererInfo.style.textAlign = 'left';
+	rendererInfo.style.backgroundColor = 'rgba(0, 0, 0, 0.33)';
+	container.appendChild(rendererInfo);
 
 	container.requestPointerLock = container.requestPointerLock ||
 			container.mozRequestPointerLock || container.webkitRequestPointerLock;
