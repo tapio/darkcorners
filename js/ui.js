@@ -60,6 +60,7 @@ function initUI() {
 
 	// GUI controls
 	var gui = new dat.GUI();
+	gui.add(CONFIG, "showStats").onChange(updateConfig);
 	gui.add(controls, "mouseFallback");
 	gui.add(window, "editLevel");
 	var guiRenderer = gui.addFolder("Renderer options (reload required)");

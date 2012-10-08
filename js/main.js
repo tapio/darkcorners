@@ -12,7 +12,7 @@ function init() {
 	scene.setGravity(new THREE.Vector3(0, -10 * UNIT, 0));
 	scene.fog = new THREE.FogExp2(0x000000, 0.05);
 	scene.addEventListener('update', function() {
-		physicsStats.update();
+		if (CONFIG.showStats) physicsStats.update();
 	});
 
 	pl = new Physijs.CapsuleMesh(
@@ -210,16 +210,16 @@ $(document).ready(function() {
 			renderer.shadowMapEnabled = CONFIG.shadows;
 			depthPassPlugin.enabled = true;
 			renderer.render(scene, pl.camera, composer.renderTarget2, true);
-			rendererInfo.innerHTML = formatRenderInfo(renderer.info);
+			if (CONFIG.showStats) rendererInfo.innerHTML = formatRenderInfo(renderer.info);
 			renderer.shadowMapEnabled = false;
 			depthPassPlugin.enabled = false;
 			composer.render(dt);
 		} else {
 			renderer.render(scene, pl.camera);
-			rendererInfo.innerHTML = formatRenderInfo();
+			if (CONFIG.showStats) rendererInfo.innerHTML = formatRenderInfo();
 		}
 
-		renderStats.update();
+		if (CONFIG.showStats) renderStats.update();
 	}
 
 	init();

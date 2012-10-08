@@ -1,4 +1,3 @@
-var DEBUG = true;
 var UNIT = 1;
 
 if (!Detector.webgl) {
@@ -20,6 +19,7 @@ var hashParams = (function() {
 })();
 
 var CONFIG = {
+	showStats: true,
 	postprocessing: true,
 	particles: true,
 	maxLights: 4,
@@ -46,6 +46,10 @@ var updateConfig = function() {
 	passes.bloom.enabled = CONFIG.bloom;
 	passes.ssao.enabled = CONFIG.SSAO;
 	passes.fxaa.enabled = CONFIG.FXAA;
+	var statDisplay = CONFIG.showStats ? "block" : "none";
+	if (renderStats) renderStats.domElement.style.display = statDisplay;
+	if (physicsStats) physicsStats.domElement.style.display = statDisplay;
+	if (rendererInfo) rendererInfo.style.display = statDisplay;
 	localStorage.setItem("CONFIG", JSON.stringify(CONFIG));
 };
 
