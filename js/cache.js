@@ -17,7 +17,6 @@ function Cache() {
 		if (!m) { // First time request for this model
 			this.models[path] = [ callback ];
 			loader.statusDomElement.style.display = "block";
-			loader.statusDomElement.innerHTML = "Loading " + modelsPending + " models...";
 			modelsPending++;
 			loader.load(path, function(geometry) {
 				var mm = self.models[path];
@@ -27,7 +26,6 @@ function Cache() {
 				modelsPending--;
 				if (modelsPending == 0)
 					loader.statusDomElement.style.display = "none";
-				else loader.statusDomElement.innerHTML = "Loading " + modelsPending + " models...";
 			});
 		} else if (m instanceof Array) { // Pending
 			m.push(callback);
