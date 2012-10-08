@@ -11,7 +11,7 @@ chrome:
 hint:
 	jshint js/*.js assets/*.js
 
-help: readme.html CONTRIBUTING.html
+help: README.html CONTRIBUTING.html
 
 .md.html:
 	markdown $< > $@
@@ -33,7 +33,7 @@ minify: concat
 	cat build/game.js | uglifyjs > build/game.min.js
 
 clean:
-	rm readme.html
+	rm README.html CONTRIBUTING.html
 
 .PHONY: all server chrome hint help deploy build clean
 
