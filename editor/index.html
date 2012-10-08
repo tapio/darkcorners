@@ -305,6 +305,11 @@
 			level = json;
 			level.map = new Map(level.width, level.depth, level.map);
 			w = level.width; h = level.depth;
+			// Discard y-coordinates
+			for (var i = 0; i < level.lights.length; ++i)
+				if (level.lights[i].position.y !== undefined)
+					delete level.lights[i].position.y
+
 			document.getElementById("exported").value = "";
 			document.getElementById("exported").style.display = "none";
 		}
