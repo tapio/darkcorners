@@ -177,8 +177,8 @@ $(document).ready(function() {
 		v1.set(pl.camera.position.x, 0, pl.camera.position.z);
 		v1.subSelf(v0); // Becomes velocity
 		v1.divideScalar(dt * UNIT);
-		v0 = pl.getLinearVelocity();
-		pl.setLinearVelocity({ x: v1.x, y: v0.y < 0 ? v0.y : 0, z: v1.z });
+		var vy = pl.getLinearVelocity().y;
+		pl.setLinearVelocity({ x: v1.x, y: vy < 0 ? vy : 0, z: v1.z });
 		scene.simulate(); // Simulate physics
 		// FIXME: 0.5 below is magic number to rise camera
 		controls.object.position.set(pl.position.x, pl.position.y + 0.5, pl.position.z);
