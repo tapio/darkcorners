@@ -52,6 +52,7 @@ function initUI() {
 	// GUI controls
 	var gui = new dat.GUI();
 	gui.add(controls, "mouseFallback");
+	gui.add(window, "editLevel");
 	var guiRenderer = gui.addFolder("Renderer options (reload required)");
 	guiRenderer.add(CONFIG, "antialias").onChange(updateConfig);
 	guiRenderer.add(CONFIG, "physicalShading").onChange(updateConfig);
@@ -73,6 +74,11 @@ function initUI() {
 	guiPostproc.add(CONFIG, "FXAA").onChange(updateConfig);
 	guiPostproc.add(CONFIG, "bloom").onChange(updateConfig);
 	gui.close();
+}
+
+function editLevel() {
+	var url = "../editor/index.html#level=" + window.btoa(dungeon.serialize());
+	window.open(url, "_blank");
 }
 
 function onWindowResize() {

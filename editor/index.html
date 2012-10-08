@@ -27,6 +27,16 @@
 
 	<script>
 		window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
+		var hashParams = (function() {
+			var params = {}, param;
+			var q = window.location.hash.replace('#', '').split('&');
+			for (var i = 0; i < q.length; ++i) {
+				param = q[i].split('=');
+				params[param[0]] = param[1];
+			}
+			return params;
+		})();
+
 		var canvas = document.getElementById("canvas");
 		var w = 40, h = 40;
 		var s = canvas.width / w;
@@ -61,6 +71,9 @@
 			depth: h,
 			map: new Map(w, h, OPEN)
 		};
+		if (hashParams.level)
+			importLevel(hashParams.level);
+
 
 		var materials = [ "rock-01", "rock-02", "rock-03", "rock-04", "sand-01", "sand-02", "sand-03", "sand-04", "stone-01", "stone-02", "stone-03", "stone-floor-01", "stone-floor-02", "stone-floor-03", "stone-floor-04", "stone-floor-05", "stone-floor-06", "tiles-01", "tiles-02", "wood-floor-01" ];
 		var gtemplate = '<td><img id="%1" src="../assets/textures/thumbs/%1.jpg" width="64" height="64" alt="%1" title="%1"></img></td>';
@@ -232,8 +245,8 @@
 			document.getElementById("exported").style.display = "block";
 		}
 
-		function importLevel() {
-			var json = prompt("Paste here the level JSON (can be base64) to import:");
+		function importLevel(json) {
+			var json = json || prompt("Paste here the level JSON (can be base64) to import:");
 			if (!json || !json.length) return;
 			try {
 				if (json[0] !== '{') json = window.atob(json);
@@ -249,7 +262,7 @@
 		}
 
 		function test() {
-			var url = "../game_dev.html#level=" + window.btoa(JSON.stringify(level, null));
+			var url = "../game_dev.html#level=" + window.btoa(JSON.stringify(level));
 			window.open(url, "_blank");
 		}
 

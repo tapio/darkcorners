@@ -270,8 +270,6 @@ function Dungeon(scene, player) {
 		}
 	};
 
-	var level;
-
 	function processLevel(level) {
 		if (typeof(level) == "string")
 			level = JSON.parse(level);
@@ -290,6 +288,7 @@ function Dungeon(scene, player) {
 		self.generateMesh(level);
 		self.addLights(level);
 		self.addObjects(level);
+		self.level = level;
 		self.loaded = true;
 	}
 
@@ -303,6 +302,10 @@ function Dungeon(scene, player) {
 		processLevel(JSON.parse(json));
 	} else {
 		$.get("assets/levels/" + hashParams.level + ".json", processLevel);
+	}
+
+	this.serialize = function() {
+		return JSON.stringify(this.level);
 	}
 
 }
