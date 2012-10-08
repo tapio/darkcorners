@@ -111,6 +111,21 @@
 		};
 		var currentTool = tools.walls;
 
+		tools.diagonals = {
+			placeDiagonalWalls: function() { currentTool = tools.diagonals; },
+			mousedown: function(e) {
+				if (e.button == 2) putMouse(e._x, e._y, OPEN);
+				else if (e.button == 0) {
+					var c = 0;
+					if (getMouse(e._x - s, e._y) != OPEN) ++c;
+					if (getMouse(e._x + s, e._y) != OPEN) ++c;
+					if (getMouse(e._x, e._y - s) != OPEN) ++c;
+					if (getMouse(e._x, e._y + s) != OPEN) ++c;
+					if (c == 2) putMouse(e._x, e._y, DIAG);
+				}
+			},
+		};
+
 		tools.start = {
 			placeStart: function() { currentTool = tools.start; },
 			mousedown: function(e) {
@@ -175,6 +190,12 @@
 			x = Math.floor(x / s);
 			y = Math.floor(y / s);
 			level.map.put(x, y, what);
+		}
+
+		function getMouse(x, y, fallback) {
+			x = Math.floor(x / s);
+			y = Math.floor(y / s);
+			return level.map.get(x, y, fallback);
 		}
 
 		function render() {
@@ -271,6 +292,7 @@
 
 		var gui = new dat.GUI();
 		gui.add(tools.walls, "drawWalls");
+		gui.add(tools.diagonals, "placeDiagonalWalls");
 		var guiMap = gui.addFolder("Map properties");
 		guiMap.add(level.materials, "ceiling", materials);
 		guiMap.add(level.materials, "wall", materials);
