@@ -117,10 +117,10 @@
 				if (e.button == 2) putMouse(e._x, e._y, OPEN);
 				else if (e.button == 0) {
 					var c = 0;
-					if (getMouse(e._x - s, e._y) != OPEN) ++c;
-					if (getMouse(e._x + s, e._y) != OPEN) ++c;
-					if (getMouse(e._x, e._y - s) != OPEN) ++c;
-					if (getMouse(e._x, e._y + s) != OPEN) ++c;
+					if (getMouse(e._x - s, e._y) == WALL) ++c;
+					if (getMouse(e._x + s, e._y) == WALL) ++c;
+					if (getMouse(e._x, e._y - s) == WALL) ++c;
+					if (getMouse(e._x, e._y + s) == WALL) ++c;
 					if (c == 2) putMouse(e._x, e._y, DIAG);
 				}
 			},
@@ -253,9 +253,30 @@
 		}
 
 		function prepareExport() {
-			if (!level.lights.length) alert("Warning: There are no lights in the level.");
+			var errors = [];
+			// Fill floor
 			level.map.replace(OPEN, VOID);
 			level.map.fill(Math.floor(level.start[0]), Math.floor(level.start[1]), VOID, OPEN, DIAG);
+			// Check for unreachable exit
+			if (level.map.get(Math.floor(level.exit[0]), Math.floor(level.exit[1])) != OPEN)
+				errors.push("Error: Exit is unreachable!");
+			// Check for reaching the borders
+			var closed = true;
+			for (var i = 0; i < w; ++i) {
+				if (level.map.get(i, 0) == OPEN) { closed = false; break; }
+				if (level.map.get(i, h-1) == OPEN) { closed = false; break; }
+			}
+			if (closed) {
+				for (var j = 0; j < h; ++j) {
+					if (level.map.get(0, j) == OPEN) { closed = false; break; }
+					if (level.map.get(w-1, 0) == OPEN) { closed = false; break; }
+				}
+			}
+			if (!closed) errors.push("Error: Walls are not closed!");
+			// Lights are useful to have
+			if (!level.lights.length) errors.push("Warning: There are no lights in the level.");
+			// Display check results to user
+			if (errors.length) alert(errors.join('\n'));
 		}
 
 		function exportBase64() {
@@ -283,6 +304,7 @@
 			}
 			level = json;
 			level.map = new Map(level.width, level.depth, level.map);
+			w = level.width; h = level.depth;
 			document.getElementById("exported").value = "";
 			document.getElementById("exported").style.display = "none";
 		}
