@@ -50,6 +50,10 @@ function Dungeon(scene, player, levelName) {
 				obj.castShadow = true;
 				obj.receiveShadow = true;
 			}
+			if (mass === 0) {
+				obj.matrixAutoUpdate = false;
+				obj.updateMatrix();
+			}
 			scene.add(obj);
 		};
 	}
@@ -134,6 +138,8 @@ function Dungeon(scene, player, levelName) {
 			cache.getMaterial(level.materials.ceiling)
 		);
 		ceiling_plane.position.set(level.gridSize * level.width * 0.5, level.roomHeight, level.gridSize * level.depth * 0.5);
+		ceiling_plane.matrixAutoUpdate = false;
+		ceiling_plane.updateMatrix();
 		scene.add(ceiling_plane);
 
 		// Floor with collision
@@ -145,12 +151,16 @@ function Dungeon(scene, player, levelName) {
 		);
 		floor_plane.position.set(level.gridSize * level.width * 0.5, 0.0, level.gridSize * level.depth * 0.5);
 		floor_plane.receiveShadow = true;
+		floor_plane.matrixAutoUpdate = false;
+		floor_plane.updateMatrix();
 		scene.add(floor_plane);
 
 		// Level mesh
 		geometry.computeTangents();
 		mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
 		mesh.receiveShadow = true;
+		mesh.matrixAutoUpdate = false;
+		mesh.updateMatrix();
 		scene.add(mesh);
 
 		// Exit
@@ -173,6 +183,8 @@ function Dungeon(scene, player, levelName) {
 				obj.rotation.y = rot;
 				obj.castShadow = true;
 				obj.receiveShadow = true;
+				obj.matrixAutoUpdate = false;
+				obj.updateMatrix();
 				scene.add(obj);
 			};
 		}
@@ -228,6 +240,8 @@ function Dungeon(scene, player, levelName) {
 
 			light.position.x *= level.gridSize;
 			light.position.z *= level.gridSize;
+			light.matrixAutoUpdate = false;
+			light.updateMatrix();
 			scene.add(light);
 			lightManager.addLight(light);
 
@@ -247,6 +261,8 @@ function Dungeon(scene, player, levelName) {
 				light2.shadowMapWidth = 256;
 				light2.shadowMapHeight = 256;
 				light2.shadowCameraVisible = false;
+				light2.matrixAutoUpdate = false;
+				light2.updateMatrix();
 				scene.add(light2);
 				lightManager.addShadow(light2);
 			}
