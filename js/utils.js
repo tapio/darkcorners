@@ -1,4 +1,4 @@
-
+"use strict";
 var _textures = [];
 
 function loadTexture(path, opts) {
@@ -123,7 +123,7 @@ function createMaterial(name) {
 
 function dumpInfo() {
 	var gl = renderer.context;
-	gl_info = {
+	var gl_info = {
 		"Version": gl.getParameter(gl.VERSION),
 		"Shading language": gl.getParameter(gl.SHADING_LANGUAGE_VERSION),
 		"Vendor": gl.getParameter(gl.VENDOR),

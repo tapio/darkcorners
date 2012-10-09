@@ -1,3 +1,4 @@
+"use strict";
 var UNIT = 1;
 
 if (!Detector.webgl) {

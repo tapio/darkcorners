@@ -1,3 +1,4 @@
+"use strict";
 /**
  * @author mrdoob / http://mrdoob.com/
  * @author alteredq / http://alteredqualia.com/
@@ -6,7 +7,7 @@
  */
 
 // Based on THREE.FirstPersonControls
-Controls = function (object, handlers, domElement) {
+function Controls(object, handlers, domElement) {
 	this.object = object;
 	this.handlers = handlers || {};
 	this.target = new THREE.Vector3(0, 0, 0);

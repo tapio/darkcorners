@@ -1,9 +1,10 @@
+"use strict";
 /**
  * original author mrdoob / http://mrdoob.com/ (THREE.CubeGeometry)
  * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Cube.as
  */
 
-BlockGeometry = function (width, height, depth, segmentsWidth, segmentsHeight, segmentsDepth, materials, sides, uRepeat, vRepeat, randDisplace) {
+function BlockGeometry(width, height, depth, segmentsWidth, segmentsHeight, segmentsDepth, materials, sides, uRepeat, vRepeat, randDisplace) {
 	THREE.Geometry.call(this);
 
 	var scope = this,

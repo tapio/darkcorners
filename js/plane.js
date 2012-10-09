@@ -1,9 +1,10 @@
+"use strict";
 /**
  * original author mrdoob / http://mrdoob.com/ (THREE.PlaneGeometry)
  * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Plane.as
  */
 
-PlaneGeometry = function (width, height, segmentsX, segmentsY, dir, uRepeat, vRepeat, randDisplace) {
+function PlaneGeometry(width, height, segmentsX, segmentsY, dir, uRepeat, vRepeat, randDisplace) {
 
 	THREE.Geometry.call(this);
 

@@ -1,3 +1,4 @@
+"use strict";
 var container, renderStats, physicsStats, rendererInfo;
 
 function initUI() {

@@ -1,3 +1,4 @@
+"use strict";
 // Most of the contents from this file is adapted from examples of firework.js
 // http://jeromeetienne.github.com/fireworks.js/
 

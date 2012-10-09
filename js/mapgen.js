@@ -1,3 +1,4 @@
+"use strict";
 function MapGen() {
 	var self = this;
 

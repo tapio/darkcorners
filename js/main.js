@@ -1,4 +1,4 @@
-
+"use strict";
 var pl, controls, scene, renderer, composer;
 var renderTargetParametersRGBA, renderTargetParametersRGB;
 var colorTarget, depthTarget, depthPassPlugin;

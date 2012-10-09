@@ -1,4 +1,4 @@
-
+"use strict";
 function LightManager(params) {
 	params = params || {};
 	this.maxLights = params.maxLights || 4;

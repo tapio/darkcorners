@@ -1,4 +1,4 @@
-
+"use strict";
 function Cache() {
 	this.models = {};
 	this.geometries = {};

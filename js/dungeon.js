@@ -1,3 +1,4 @@
+"use strict";
 function Dungeon(scene, player, levelName) {
 	var self = this;
 	this.loaded = false;
@@ -62,7 +63,7 @@ function Dungeon(scene, player, levelName) {
 
 		// Level geometry
 		var geometry = new THREE.Geometry(), mesh;
-		var cell, px, nx, pz, nz, tess, cube, hash, rot;
+		var cell, px, nx, pz, nz, py, ny, tess, cube, hash, rot;
 		for (var j = 0; j < level.depth; ++j) {
 			for (var i = 0; i < level.width; ++i) {
 				px = nx = pz = nz = py = ny = 0;
