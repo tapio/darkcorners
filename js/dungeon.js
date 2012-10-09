@@ -3,6 +3,7 @@ function Dungeon(scene, player, levelName) {
 	var self = this;
 	this.loaded = false;
 	this.objects = [];
+	this.monsters = [];
 	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
 	var debug_material = new THREE.MeshBasicMaterial({color: 0xff00ff});
 
@@ -303,6 +304,45 @@ function Dungeon(scene, player, levelName) {
 		}
 	};
 
+	this.addMonsters = function(level) {
+		if (!level.monsters) return;
+		function monsterHandler(level, pos, def) {
+			return function(geometry) {
+				geometry.computeMorphNormals();
+
+				for (var m = 0; m < geometry.materials.length; ++m)
+					fixAnisotropy(geometry.materials[m]);
+				var material = geometry.materials.length > 1 ? new THREE.MeshFaceMaterial() : geometry.materials[0];
+				material.morphTargets = true;
+				material.morphNormals = true;
+
+				var monster = new Physijs.CylinderMesh(
+					new THREE.CylinderGeometry(0.4, 0.4, 1),
+					dummy_material, 100000
+				);
+				monster.visible = false;
+				monster.position.set(pos.x * level.gridSize, 2, pos.z * level.gridSize);
+				self.monsters.push(monster);
+
+				monster.mesh = new THREE.MorphAnimMesh(geometry, material);
+				monster.mesh.speed = 0.4;
+				monster.mesh.duration = 2000;
+				monster.mesh.time = 600 * Math.random();
+				monster.mesh.castShadow = true;
+				monster.mesh.receiveShadow = true;
+				monster.add(monster.mesh);
+				scene.add(monster);
+				monster.setAngularFactor({ x: 0, y: 0, z: 0 });
+			}
+		}
+
+		for (var i = 0; i < level.monsters.length; ++i) {
+			var name = level.monsters[i].name;
+			cache.loadModel("assets/monsters/" + name + "/" + name + ".js",
+				monsterHandler(level, new THREE.Vector3().copy(level.monsters[i].position), assets.monsters[name]));
+		}
+	}
+
 	this.isAtExit = function(pos) {
 		return this.level &&
 			Math.abs(pos.x - this.level.exit[0] * this.level.gridSize) < 0.5 &&
@@ -327,6 +367,7 @@ function Dungeon(scene, player, levelName) {
 		self.generateMesh(level);
 		self.addLights(level);
 		self.addObjects(level);
+		self.addMonsters(level);
 		lightManager.update(pl);
 		self.level = level;
 		self.loaded = true;

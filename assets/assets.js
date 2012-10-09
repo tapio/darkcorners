@@ -33,6 +33,9 @@ var assets = {
 		"rock-03": { roughness: 0.15 },
 		"rock-04": { roughness: 0.15 }
 	},
+	monsters: {
+		"cerberus": {}
+	},
 	environments: {
 		"cave": {
 			wall: [ "rock-01", "rock-02", "rock-03", "rock-04" ],

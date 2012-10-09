@@ -120,7 +120,7 @@ function animate(dt) {
 	function fract(num) { return num - (num|0); }
 	var i, v = new THREE.Vector3();
 
-	/*for (i = 0; i < dungeon.monsters.length; ++i) {
+	for (i = 0; i < dungeon.monsters.length; ++i) {
 		var monster = dungeon.monsters[i];
 		monster.mesh.updateAnimation(1000 * dt);
 		// Look at player
@@ -129,7 +129,7 @@ function animate(dt) {
 		v.y = 0;
 		monster.mesh.lookAt(v.normalize());
 		monster.setLinearVelocity(v.multiplyScalar(50 * dt));
-	}*/
+	}
 
 	// Lights
 	var timeNow = new Date().getTime();
