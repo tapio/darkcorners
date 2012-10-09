@@ -1,5 +1,7 @@
 var assets = {
 	objects: {
+		"fern-01": { randScale: 0.3 },
+		"fern-02": { randScale: 0.3 },
 		"rock-01": { collision: "sphere", mass: 400, randScale: 0.4 },
 		"rock-02": { collision: "box", mass: 400, randScale: 0.4 },
 		"rock-03": { collision: "box", mass: 400, randScale: 0.4 },
