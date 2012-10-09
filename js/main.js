@@ -89,10 +89,6 @@ function init() {
 	updateConfig();
 	dumpInfo();
 	initUI();
-
-	var now = new Date().getTime();
-	if (window.performance)
-		console.log("Initialization took " + (now - window.performance.timing.navigationStart) + "ms");
 }
 
 function resetLevel(levelName) {

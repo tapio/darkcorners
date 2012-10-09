@@ -147,3 +147,27 @@ function screenshot() {
 	var dataUrl	= renderer.domElement.toDataURL("image/png");
 	window.open(dataUrl, "_blank");
 }
+
+
+window.performance = window.performance || {};
+performance.now = (function() {
+  return performance.now       ||
+         performance.mozNow    ||
+         performance.msNow     ||
+         performance.oNow      ||
+         performance.webkitNow ||
+         function() { return new Date().getTime(); };
+})();
+
+function Profiler(name) {
+	name = name || "Profiling";
+	name += ": ";
+	this.start = function() {
+		this.time = window.performance.now();
+	};
+	this.end = function() {
+		var diff = window.performance.now() - this.time;
+		console.log(name + diff + "ms");
+	};
+	this.start();
+}
