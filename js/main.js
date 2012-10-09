@@ -94,7 +94,7 @@ function init() {
 function resetLevel(levelName) {
 	// TODO: Reloadless reset?
 	if (dungeon) {
-		window.location.hash = "#level=" + levelName;
+		if (levelName) window.location.hash = "#level=" + levelName;
 		window.location.reload(true);
 	}
 	lightManager = new LightManager({ maxLights: CONFIG.maxLights, maxShadows: CONFIG.maxShadows });
