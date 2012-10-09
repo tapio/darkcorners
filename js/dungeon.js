@@ -32,6 +32,8 @@ function Dungeon(scene, player, levelName) {
 					obj = new Physijs.ConeMesh(geometry, material, mass);
 				else if (def.collision == "convex")
 					obj = new Physijs.ConvexMesh(geometry, material, mass);
+				else if (def.collision == "concave")
+					obj = new Physijs.ConcaveMesh(geometry, material, mass);
 				else throw "Unsupported collision mesh type " + def.collision;
 				self.objects.push(obj);
 			} else {
