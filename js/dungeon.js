@@ -19,12 +19,12 @@ function Dungeon(scene, player, levelName) {
 				scale += randf(-def.randScale, def.randScale);
 				mass *= scale;
 			}
-			if (def.animated) geometry.computeMorphNormals();
+			if (def.animation) geometry.computeMorphNormals();
 
 			// Handle materials
 			for (var m = 0; m < geometry.materials.length; ++m) {
 				fixAnisotropy(geometry.materials[m]);
-				if (def.animated) {
+				if (def.animation) {
 					geometry.materials[m].morphTargets = true;
 					geometry.materials[m].morphNormals = true;
 				}
@@ -65,7 +65,7 @@ function Dungeon(scene, player, levelName) {
 
 			// Other attributes
 			obj.scale.set(scale, scale, scale);
-			if (!def.noShadows && !def.animated) {
+			if (!def.noShadows && !def.animation) {
 				obj.castShadow = true;
 				obj.receiveShadow = true;
 			}
@@ -75,13 +75,12 @@ function Dungeon(scene, player, levelName) {
 			}
 
 			// Handle animated meshes
-			if (def.animated) {
+			if (def.animation) {
 				obj.visible = false;
 				self.monsters.push(obj);
 				obj.mesh = new THREE.MorphAnimMesh(geometry, mat);
-				obj.mesh.speed = 0.5;
-				obj.mesh.duration = 2000;
-				obj.mesh.time = 600 * Math.random();
+				obj.mesh.duration = def.animation.duration;
+				obj.mesh.time = obj.mesh.duration * Math.random();
 				if (!def.noShadows) {
 					obj.mesh.castShadow = true;
 					obj.mesh.receiveShadow = true;
@@ -92,6 +91,7 @@ function Dungeon(scene, player, levelName) {
 			// Finalize
 			scene.add(obj);
 			if (def.character && def.collision) obj.setAngularFactor({ x: 0, y: 0, z: 0 });
+			if (def.character) obj.speed = def.character.speed;
 		};
 	}
 

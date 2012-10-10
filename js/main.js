@@ -122,13 +122,18 @@ function animate(dt) {
 
 	for (i = 0; i < dungeon.monsters.length; ++i) {
 		var monster = dungeon.monsters[i];
-		monster.mesh.updateAnimation(1000 * dt);
 		// Look at player
 		v.copy(pl.position);
 		v.subSelf(monster.position);
 		v.y = 0;
 		monster.mesh.lookAt(v.normalize());
-		monster.setLinearVelocity(v.multiplyScalar(50 * dt));
+		// Move?
+		if (monster.position.distanceToSquared(pl.position) > 4) {
+			monster.mesh.updateAnimation(1000 * dt);
+			monster.setLinearVelocity(v.multiplyScalar(monster.speed * dt));
+		} else {
+			monster.setLinearVelocity(v.set(0,0,0));
+		}
 	}
 
 	// Lights
