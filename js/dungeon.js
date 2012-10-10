@@ -11,14 +11,27 @@ function Dungeon(scene, player, levelName) {
 		return function(geometry) {
 			if (!def) def = {};
 			var obj, mass = def.mass || 0;
+
+			// Preprocessing
+			if (def.character) mass = 100000;
 			var scale = 1.0;
 			if (def.randScale) {
 				scale += randf(-def.randScale, def.randScale);
 				mass *= scale;
 			}
-			for (var m = 0; m < geometry.materials.length; ++m)
+			if (def.animated) geometry.computeMorphNormals();
+
+			// Handle materials
+			for (var m = 0; m < geometry.materials.length; ++m) {
 				fixAnisotropy(geometry.materials[m]);
+				if (def.animated) {
+					geometry.materials[m].morphTargets = true;
+					geometry.materials[m].morphNormals = true;
+				}
+			}
 			var mat = geometry.materials.length > 1 ? new THREE.MeshFaceMaterial() : geometry.materials[0];
+
+			// Mesh creation
 			if (def.collision) {
 				var material = Physijs.createMaterial(mat, 0.7, 0.2); // friction, restition
 				if (def.collision == "plane")
@@ -40,16 +53,19 @@ function Dungeon(scene, player, levelName) {
 			} else {
 				obj = new THREE.Mesh(geometry, mat);
 			}
+
+			// Positioning
 			pos.x *= level.gridSize;
 			pos.z *= level.gridSize;
-			// Auto-height
-			if (!pos.y && pos.y !== 0) {
+			if (!pos.y && pos.y !== 0) { // Auto-height
 				if (!geometry.boundingBox) geometry.computeBoundingBox();
 				pos.y = 0.5 * (geometry.boundingBox.max.y - geometry.boundingBox.min.y) + 0.001;
 			}
 			obj.position.copy(pos);
+
+			// Other attributes
 			obj.scale.set(scale, scale, scale);
-			if (!def.noShadows) {
+			if (!def.noShadows && !def.animated) {
 				obj.castShadow = true;
 				obj.receiveShadow = true;
 			}
@@ -57,7 +73,25 @@ function Dungeon(scene, player, levelName) {
 				obj.matrixAutoUpdate = false;
 				obj.updateMatrix();
 			}
+
+			// Handle animated meshes
+			if (def.animated) {
+				obj.visible = false;
+				self.monsters.push(obj);
+				obj.mesh = new THREE.MorphAnimMesh(geometry, mat);
+				obj.mesh.speed = 0.5;
+				obj.mesh.duration = 2000;
+				obj.mesh.time = 600 * Math.random();
+				if (!def.noShadows) {
+					obj.mesh.castShadow = true;
+					obj.mesh.receiveShadow = true;
+				}
+				obj.add(obj.mesh);
+			}
+
+			// Finalize
 			scene.add(obj);
+			if (def.character && def.collision) obj.setAngularFactor({ x: 0, y: 0, z: 0 });
 		};
 	}
 
@@ -297,49 +331,20 @@ function Dungeon(scene, player, levelName) {
 	};
 
 	this.addObjects = function(level) {
+		if (!level.objects) return;
 		for (var i = 0; i < level.objects.length; ++i) {
-			var objname = level.objects[i].name;
-			var obj = cache.loadModel("assets/models/" + objname + "/" + objname + ".js",
-				objectHandler(level, new THREE.Vector3().copy(level.objects[i].position), assets.objects[objname]));
+			var name = level.objects[i].name;
+			var obj = cache.loadModel("assets/models/" + name + "/" + name + ".js",
+				objectHandler(level, new THREE.Vector3().copy(level.objects[i].position), assets.objects[name]));
 		}
 	};
 
 	this.addMonsters = function(level) {
 		if (!level.monsters) return;
-		function monsterHandler(level, pos, def) {
-			return function(geometry) {
-				geometry.computeMorphNormals();
-
-				for (var m = 0; m < geometry.materials.length; ++m)
-					fixAnisotropy(geometry.materials[m]);
-				var material = geometry.materials.length > 1 ? new THREE.MeshFaceMaterial() : geometry.materials[0];
-				material.morphTargets = true;
-				material.morphNormals = true;
-
-				var monster = new Physijs.CylinderMesh(
-					new THREE.CylinderGeometry(0.4, 0.4, 1),
-					dummy_material, 100000
-				);
-				monster.visible = false;
-				monster.position.set(pos.x * level.gridSize, 2, pos.z * level.gridSize);
-				self.monsters.push(monster);
-
-				monster.mesh = new THREE.MorphAnimMesh(geometry, material);
-				monster.mesh.speed = 0.4;
-				monster.mesh.duration = 2000;
-				monster.mesh.time = 600 * Math.random();
-				monster.mesh.castShadow = true;
-				monster.mesh.receiveShadow = true;
-				monster.add(monster.mesh);
-				scene.add(monster);
-				monster.setAngularFactor({ x: 0, y: 0, z: 0 });
-			}
-		}
-
 		for (var i = 0; i < level.monsters.length; ++i) {
 			var name = level.monsters[i].name;
 			cache.loadModel("assets/monsters/" + name + "/" + name + ".js",
-				monsterHandler(level, new THREE.Vector3().copy(level.monsters[i].position), assets.monsters[name]));
+				objectHandler(level, new THREE.Vector3().copy(level.monsters[i].position), assets.monsters[name]));
 		}
 	}
 

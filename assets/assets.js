@@ -34,7 +34,7 @@ var assets = {
 		"rock-04": { roughness: 0.15 }
 	},
 	monsters: {
-		"cerberus": {}
+		"cerberus": { collision: "box", character: true, animated: true }
 	},
 	environments: {
 		"cave": {
