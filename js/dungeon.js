@@ -231,6 +231,7 @@ function Dungeon(scene, player, levelName) {
 
 		// Point lights
 		var vec = new THREE.Vector2();
+		var target = new THREE.Vector3();
 		for (var i = 0; i < level.lights.length; ++i) {
 			if (level.lights[i].position.y === undefined)
 				level.lights[i].position.y = 2;
@@ -266,6 +267,7 @@ function Dungeon(scene, player, levelName) {
 				// Move out of the wall
 				light.position.x += vec.x * 0.08;
 				light.position.z += vec.y * 0.08;
+				target.set(light.position.x + vec.x , light.position.y - 1, light.position.z + vec.y);
 			} else {
 				// Switch to ceiling hanging light
 				torch = Math.random() < 0.5 ? "assets/models/torch-hanging-01/torch-hanging-01.js"
@@ -273,36 +275,39 @@ function Dungeon(scene, player, levelName) {
 				light.position.x = (level.lights[i].position.x|0) + 0.5;
 				light.position.y = level.roomHeight - 0.9;
 				light.position.z = (level.lights[i].position.z|0) + 0.5;
+				target.copy(light.position);
+				target.y -= 1;
 			}
 
 			light.position.x *= level.gridSize;
 			light.position.z *= level.gridSize;
+			target.x *= level.gridSize;
+			target.z *= level.gridSize;
 			light.matrixAutoUpdate = false;
 			light.updateMatrix();
 			scene.add(light);
 			lightManager.addLight(light);
 
 			// Shadow casting light
-			if (level.lights[i].target) {
-				var light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
-				light2.position = light.position;
-				light2.target.position.copy(level.lights[i].target);
-				light2.angle = Math.PI / 2;
-				light2.castShadow = true;
-				light2.onlyShadow = true;
-				light2.shadowCameraNear = 0.1 * UNIT;
-				light2.shadowCameraFar = light.distance * 1.5 * UNIT;
-				light2.shadowCameraFov = 100;
-				light2.shadowBias = -0.0002;
-				light2.shadowDarkness = 0.3;
-				light2.shadowMapWidth = 256;
-				light2.shadowMapHeight = 256;
-				light2.shadowCameraVisible = false;
-				light2.matrixAutoUpdate = false;
-				light2.updateMatrix();
-				scene.add(light2);
-				lightManager.addShadow(light2);
-			}
+			var light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
+			light2.position.copy(light.position);
+			light2.position.y = level.roomHeight;
+			light2.target.position.copy(target);
+			light2.angle = Math.PI / 2;
+			light2.castShadow = true;
+			light2.onlyShadow = true;
+			light2.shadowCameraNear = 0.1 * UNIT;
+			light2.shadowCameraFar = light.distance * 1.5 * UNIT;
+			light2.shadowCameraFov = 100;
+			light2.shadowBias = -0.0002;
+			light2.shadowDarkness = 0.3;
+			light2.shadowMapWidth = 512;
+			light2.shadowMapHeight = 512;
+			light2.shadowCameraVisible = false;
+			light2.matrixAutoUpdate = false;
+			light2.updateMatrix();
+			scene.add(light2);
+			lightManager.addShadow(light2);
 
 			// Mesh
 			cache.loadModel(torch, torchHandler(new THREE.Vector3().copy(light.position), snapped.a));
