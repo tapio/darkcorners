@@ -1,8 +1,8 @@
 "use strict";
-var container, renderStats, physicsStats, rendererInfo;
+var renderStats, physicsStats, rendererInfo;
 
 function initUI() {
-	container = document.getElementById('container');
+	var container = document.getElementById('container');
 
 	container.innerHTML = "";
 	container.appendChild(renderer.domElement);
