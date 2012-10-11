@@ -14,15 +14,16 @@
 				overflow:hidden;
 			}
 		</style>
+		<script src="../libs/dat.gui.min.js"></script>
+		<script src="../assets/assets.js"></script>
+		<script src="../libs/three.min.js"></script>
 	</head>
 
 	<body>
-		<script src="../libs/three.min.js"></script>
 		<script>
-
 			var container, loader;
 			var camera, scene, renderer;
-			var mesh;
+			var mesh, model;
 			var directionalLight, directionalLight2, pointLight, ambientLight, spotLight;
 			var mouseX = 0;
 			var mouseY = 0;
@@ -52,11 +53,13 @@
 				pointLight.position.set(3, 0, 3);
 				scene.add(pointLight);
 
-				var objname = "box";
+				var objects = [];
+				for (i in assets.objects) objects.push(i);
+				model = objects[objects.length-1];
 
 				loader = new THREE.JSONLoader(true);
 				document.body.appendChild(loader.statusDomElement);
-				loader.load("../assets/models/" + objname + "/" + objname + ".js", createScene);
+				loader.load("../assets/models/" + model + "/" + model + ".js", createScene);
 
 				renderer = new THREE.WebGLRenderer({ antialias: true, clearColor: 0x060708, clearAlpha: 1, alpha: false });
 				renderer.setSize(window.innerWidth, window.innerHeight);
@@ -66,9 +69,15 @@
 				renderer.gammaOutput = true;
 				renderer.physicallyBasedShading = true;
 
+				var gui = new dat.GUI();
+				gui.add(window, "model", objects).onChange(function() {
+					loader.statusDomElement.style.display = "block";
+					scene.remove(mesh);
+					loader.load("../assets/models/" + model + "/" + model + ".js", createScene);
+				});
+
 				document.addEventListener('mousemove', onDocumentMouseMove, false);
 				window.addEventListener('resize', onWindowResize, false);
-
 			}
 
 			function createScene(geometry) {
