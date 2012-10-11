@@ -111,7 +111,7 @@
 			function createScene(geometry) {
 				for (var m = 0; m < geometry.materials.length; ++m)
 					fixAnisotropy(geometry.materials[m], renderer.getMaxAnisotropy());
-				mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
+				mesh = new THREE.Mesh(geometry, geometry.materials.length > 1 ? new THREE.MeshFaceMaterial() : geometry.materials[0]);
 				mesh.castShadow = true;
 				mesh.receiveShadow = true;
 				scene.add(mesh);
