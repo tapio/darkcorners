@@ -27,10 +27,8 @@
 			var pointLight, ambientLight;
 			var mouseX = 0;
 			var mouseY = 0;
-			var targetX = 0;
-			var targetY = 0;
-			var windowHalfX = window.innerWidth / 2;
-			var windowHalfY = window.innerHeight / 2;
+			var mouseDragRefX = 0;
+			var mouseDragRefY = 0;
 			var mouseDown = false;
 
 			init();
@@ -97,7 +95,11 @@
 				gui.add(window, "squareCanvas");
 				gui.add(window, "screenshot");
 
-				document.addEventListener('mousedown', function(e) { mouseDown = e.button; }, false);
+				document.addEventListener('mousedown', function(e) {
+					mouseDragRefX = e.clientX;
+					mouseDragRefY = e.clientY;
+					mouseDown = e.button;
+				}, false);
 				document.addEventListener('mouseup', function(e) { mouseDown = false; }, false);
 				document.addEventListener('mousemove', onMouseMove, false);
 				document.addEventListener('contextmenu', function (e) { e.preventDefault(); }, false);
@@ -119,37 +121,39 @@
 			}
 
 			function screenshot() {
-				var dataUrl	= renderer.domElement.toDataURL("image/png");
+				var dataUrl = renderer.domElement.toDataURL("image/png");
 				window.open(dataUrl, "_blank");
 			}
 
-			function onWindowResize(event) {
+			function onWindowResize(e) {
 				renderer.setSize(window.innerWidth, window.innerHeight);
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
 			}
 
-			function onMouseMove(event) {
+			function onMouseMove(e) {
 				if (mouseDown === false) return;
-				mouseX = (event.clientX - windowHalfX);
-				mouseY = (event.clientY - windowHalfY);
+				mouseX = (e.clientX - mouseDragRefX);
+				mouseY = (e.clientY - mouseDragRefY);
+				mouseDragRefX = e.clientX;
+				mouseDragRefY = e.clientY;
 			}
 
 			function render() {
 				requestAnimationFrame(render);
 
-				targetX = mouseX * .01;
-				targetY = mouseY * .01;
-
 				if (mesh && mouseDown === 0) {
-					mesh.rotation.y += targetX - mesh.rotation.y;
-					mesh.rotation.x += targetY - mesh.rotation.x;
+					mesh.rotation.y += mouseX * 0.01;
+					mesh.rotation.x += mouseY * 0.01;
 				} else if (mesh && mouseDown === 2) {
-					mesh.scale.x += Math.abs(targetY) - mesh.scale.x;
+					mesh.scale.x += mouseY * 0.01;
 					mesh.scale.x = Math.max(mesh.scale.x, 0.1);
 					mesh.scale.y = mesh.scale.x;
 					mesh.scale.z = mesh.scale.x;
 				}
+
+				mouseX = 0;
+				mouseY = 0;
 
 				renderer.render(scene, camera);
 			}

@@ -144,7 +144,7 @@ function dumpInfo() {
 }
 
 function screenshot() {
-	var dataUrl	= renderer.domElement.toDataURL("image/png");
+	var dataUrl = renderer.domElement.toDataURL("image/png");
 	window.open(dataUrl, "_blank");
 }
 
