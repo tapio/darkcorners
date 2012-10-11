@@ -78,7 +78,8 @@
 				gui.add(window, "model", objects).onChange(function() {
 					loader.statusDomElement.style.display = "block";
 					scene.remove(mesh);
-					loader.load("../assets/models/" + model + "/" + model + ".js", createScene);
+					var magic = "?cacheOverwrite=" + Math.random();
+					loader.load("../assets/models/" + model + "/" + model + ".js" + magic, createScene);
 				});
 				gui.addColor(window, "bgcolor").onChange(function() {
 					if (typeof bgcolor == "string") {
