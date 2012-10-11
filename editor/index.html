@@ -333,6 +333,11 @@
 			window.open(url, "_blank");
 		}
 
+		function previewObject() {
+			var url = "model-viewer.html#" + tools.object.object;
+			window.open(url, "_blank");
+		}
+
 		var gui = new dat.GUI();
 		gui.add(tools.walls, "drawWalls");
 		gui.add(tools.diagonals, "placeDiagonalWalls");
@@ -350,6 +355,7 @@
 		var guiObjects = gui.addFolder("Objects");
 		guiObjects.add(tools.object, "object", objects).onChange(
 			function() { currentTool = tools.object; });
+		guiObjects.add(window, "previewObject");
 		guiObjects.add(tools.object, "addObject");
 		var guiEditor = gui.addFolder("Editor options");
 		guiEditor.add(editor, "drawGrid");
