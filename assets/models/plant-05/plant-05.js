@@ -23,7 +23,7 @@
 		"colorDiffuse" : [0.7, 0.7, 0.7],
 		"colorSpecular" : [0.3, 0.3, 0.3],
 		"depthTest" : true,
-		"depthWrite" : true,
+		"depthWrite" : false,
 		"mapDiffuse" : "diffuse.png",
 		"mapDiffuseWrap" : ["repeat", "repeat"],
 		"mapSpecular" : "specular.jpg",
