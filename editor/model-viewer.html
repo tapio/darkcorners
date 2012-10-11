@@ -17,6 +17,7 @@
 		<script src="../libs/dat.gui.min.js"></script>
 		<script src="../assets/assets.js"></script>
 		<script src="../libs/three.min.js"></script>
+		<script src="../js/utils.js"></script>
 	</head>
 
 	<body>
@@ -107,6 +108,8 @@
 			}
 
 			function createScene(geometry) {
+				for (var m = 0; m < geometry.materials.length; ++m)
+					fixAnisotropy(geometry.materials[m], renderer.getMaxAnisotropy());
 				mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
 				mesh.castShadow = true;
 				mesh.receiveShadow = true;
@@ -118,11 +121,6 @@
 				renderer.setSize(512, 512);
 				camera.aspect = 1;
 				camera.updateProjectionMatrix();
-			}
-
-			function screenshot() {
-				var dataUrl = renderer.domElement.toDataURL("image/png");
-				window.open(dataUrl, "_blank");
 			}
 
 			function onWindowResize(e) {

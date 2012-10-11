@@ -33,12 +33,13 @@ function updateTextures() {
 }
 
 
-function fixAnisotropy(mat) {
+function fixAnisotropy(mat, value) {
 	if (!mat) return;
+	value = value || CONFIG.anisotropy;
 
 	function fixAnisotropyTex(tex) {
 		if (!tex) return;
-		tex.anisotropy = CONFIG.anisotropy;
+		tex.anisotropy = value;
 		tex.needsUpdate = true;
 	}
 
