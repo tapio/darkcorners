@@ -24,13 +24,14 @@
 			var container, loader;
 			var camera, scene, renderer;
 			var mesh, model, bgcolor = [22, 22, 22];
-			var directionalLight, directionalLight2, pointLight, ambientLight, spotLight;
+			var pointLight, ambientLight;
 			var mouseX = 0;
 			var mouseY = 0;
 			var targetX = 0;
 			var targetY = 0;
 			var windowHalfX = window.innerWidth / 2;
 			var windowHalfY = window.innerHeight / 2;
+			var mouseDown = false;
 
 			init();
 			render();
@@ -41,16 +42,18 @@
 				document.body.appendChild(container);
 
 				camera = new THREE.PerspectiveCamera(27, window.innerWidth / window.innerHeight, 0.1, 50);
-				camera.position.z = 3;
+				camera.position.y = 4;
+				camera.position.z = 4;
+				camera.lookAt({ x: 0, y: 0, z: 0 });
 
 				scene = new THREE.Scene();
 
 				ambientLight = new THREE.AmbientLight(0x444444);
 				scene.add(ambientLight);
 
-				pointLight = new THREE.PointLight(0xffffff, 1.5, 10);
+				pointLight = new THREE.PointLight(0xffffff, 2.5, 10);
 				pointLight.color.setHSV(0.05, 0.05, 1);
-				pointLight.position.set(3, 0, 3);
+				pointLight.position.set(3, 6, 2);
 				scene.add(pointLight);
 
 				var objects = [];
@@ -63,7 +66,7 @@
 
 				var c = (new THREE.Color()).setRGB(bgcolor[0]/255, bgcolor[1]/255, bgcolor[2]/255);
 				renderer = new THREE.WebGLRenderer({
-					antialias: true, clearColor: c.getHex(), clearAlpha: 1
+					antialias: true, clearColor: c.getHex(), preserveDrawingBuffer: true, clearAlpha: 1
 				});
 				renderer.setSize(window.innerWidth, window.innerHeight);
 				container.appendChild(renderer.domElement);
@@ -92,8 +95,11 @@
 					renderer.setClearColor(c, 1.0);
 				});
 				gui.add(window, "squareCanvas");
+				gui.add(window, "screenshot");
 
-				document.addEventListener('mousemove', onDocumentMouseMove, false);
+				document.addEventListener('mousedown', function() { mouseDown = true; }, false);
+				document.addEventListener('mouseup', function() { mouseDown = false; }, false);
+				document.addEventListener('mousemove', onMouseMove, false);
 				window.addEventListener('resize', onWindowResize, false);
 			}
 
@@ -111,13 +117,19 @@
 				camera.updateProjectionMatrix();
 			}
 
+			function screenshot() {
+				var dataUrl	= renderer.domElement.toDataURL("image/png");
+				window.open(dataUrl, "_blank");
+			}
+
 			function onWindowResize(event) {
 				renderer.setSize(window.innerWidth, window.innerHeight);
 				camera.aspect = window.innerWidth / window.innerHeight;
 				camera.updateProjectionMatrix();
 			}
 
-			function onDocumentMouseMove(event) {
+			function onMouseMove(event) {
+				if (!mouseDown) return;
 				mouseX = (event.clientX - windowHalfX);
 				mouseY = (event.clientY - windowHalfY);
 			}
