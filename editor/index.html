@@ -21,9 +21,12 @@
 	</canvas>
 	<p>Left click to draw walls or place selected thing. Right click to erase.</p>
 	<textarea id="exported"></textarea>
-	<p>Material reference: hover over the image to see the name to put to the map properties.<p>
-	<p>Currently you can't click them and the material cannot be set for individual tiles.</p>
-	<table id="thumbs"></table>
+	<p>Object reference: hover over the image to see the name.
+	Currently you <strong>cannot</strong> click them.</p>
+	<table id="objthumbs"></table>
+	<p>Material reference: hover over the image to see the name to put to the map properties.
+	Currently you <strong>cannot</strong> click them and the material cannot be set for individual tiles.</p>
+	<table id="matthumbs"></table>
 
 	<script>
 		window.requestAnimationFrame = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame;
@@ -74,23 +77,34 @@
 		if (hashParams.level)
 			importLevel(hashParams.level);
 
-
+		// Material gallery
 		var materials = [ "grass-01", "grass-02", "grass-03", "grass-04", "moss-01", "moss-02", "rock-01", "rock-02", "rock-03", "rock-04", "rock-05", "sand-01", "sand-02", "sand-03", "sand-04", "stone-01", "stone-02", "stone-03", "stone-floor-01", "stone-floor-02", "stone-floor-03", "stone-floor-04", "stone-floor-05", "stone-floor-06", "tiles-01", "tiles-02", "wood-floor-01" ];
-		var gtemplate = '<td><img id="%1" src="../assets/textures/thumbs/%1.jpg" width="64" height="64" alt="%1" title="%1"></img></td>';
-		var gcols = 10;
-		var gallery = "";
+		var mtemplate = '<td><img id="%1" src="../assets/textures/thumbs/%1.jpg" width="64" height="64" alt="%1" title="%1"></img></td>';
+		var mcols = 10;
+		var mgallery = "";
 		for (i = 0; i < materials.length; ++i) {
-			if (i % gcols === 0) gallery += '<tr>';
-			gallery += gtemplate.replace(/%1/g, materials[i]);
-			if (i % gcols == gcols-1) gallery += '</tr>';
+			if (i % mcols === 0) mgallery += '<tr>';
+			mgallery += mtemplate.replace(/%1/g, materials[i]);
+			if (i % mcols == mcols-1) mgallery += '</tr>';
 		}
-		document.getElementById("thumbs").innerHTML = gallery;
+		document.getElementById("matthumbs").innerHTML = mgallery;
 		var images = {};
 		for (i = 0; i < materials.length; ++i)
 			images[materials[i]] = document.getElementById(materials[i]);
 
+		// Object gallery
 		var objects = [];
 		for (i in assets.objects) objects.push(i);
+		var otemplate = '<td><img id="%1" src="../assets/models/%1/thumb.jpg" width="64" height="64" alt="%1" title="%1"></img></td>';
+		var ocols = 10;
+		var ogallery = "";
+		for (i = 0; i < objects.length; ++i) {
+			if (i % ocols === 0) ogallery += '<tr>';
+			ogallery += otemplate.replace(/%1/g, objects[i]);
+			if (i % ocols == ocols-1) ogallery += '</tr>';
+		}
+		document.getElementById("objthumbs").innerHTML = ogallery;
+
 		var tools = {};
 
 		tools.walls = {
