@@ -79,7 +79,7 @@
 
 		// Material gallery
 		var materials = [ "grass-01", "grass-02", "grass-03", "grass-04", "moss-01", "moss-02", "rock-01", "rock-02", "rock-03", "rock-04", "rock-05", "sand-01", "sand-02", "sand-03", "sand-04", "stone-01", "stone-02", "stone-03", "stone-floor-01", "stone-floor-02", "stone-floor-03", "stone-floor-04", "stone-floor-05", "stone-floor-06", "tiles-01", "tiles-02", "wood-floor-01" ];
-		var mtemplate = '<td><img id="%1" src="../assets/textures/thumbs/%1.jpg" width="64" height="64" alt="%1" title="%1"></img></td>';
+		var mtemplate = '<td><img id="tex-%1" src="../assets/textures/thumbs/%1.jpg" width="64" height="64" alt="%1" title="%1"></img></td>';
 		var mcols = 10;
 		var mgallery = "";
 		for (i = 0; i < materials.length; ++i) {
@@ -90,12 +90,12 @@
 		document.getElementById("matthumbs").innerHTML = mgallery;
 		var images = {};
 		for (i = 0; i < materials.length; ++i)
-			images[materials[i]] = document.getElementById(materials[i]);
+			images[materials[i]] = document.getElementById("tex-" + materials[i]);
 
 		// Object gallery
 		var objects = [];
 		for (i in assets.objects) objects.push(i);
-		var otemplate = '<td><img id="%1" src="../assets/models/%1/thumb.jpg" width="64" height="64" alt="%1" title="%1"></img></td>';
+		var otemplate = '<td><img id="obj-%1" src="../assets/models/%1/thumb.jpg" width="64" height="64" alt="%1" title="%1"></img></td>';
 		var ocols = 10;
 		var ogallery = "";
 		for (i = 0; i < objects.length; ++i) {
