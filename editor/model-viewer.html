@@ -6,7 +6,7 @@
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<style>
 			body {
-				background:#000;
+				background:#555;
 				color:#fff;
 				padding:0;
 				margin:0;
@@ -23,7 +23,7 @@
 		<script>
 			var container, loader;
 			var camera, scene, renderer;
-			var mesh, model;
+			var mesh, model, bgcolor = [22, 22, 22];
 			var directionalLight, directionalLight2, pointLight, ambientLight, spotLight;
 			var mouseX = 0;
 			var mouseY = 0;
@@ -61,7 +61,10 @@
 				document.body.appendChild(loader.statusDomElement);
 				loader.load("../assets/models/" + model + "/" + model + ".js", createScene);
 
-				renderer = new THREE.WebGLRenderer({ antialias: true, clearColor: 0x060708, clearAlpha: 1, alpha: false });
+				var c = (new THREE.Color()).setRGB(bgcolor[0]/255, bgcolor[1]/255, bgcolor[2]/255);
+				renderer = new THREE.WebGLRenderer({
+					antialias: true, clearColor: c.getHex(), clearAlpha: 1
+				});
 				renderer.setSize(window.innerWidth, window.innerHeight);
 				container.appendChild(renderer.domElement);
 
@@ -75,6 +78,20 @@
 					scene.remove(mesh);
 					loader.load("../assets/models/" + model + "/" + model + ".js", createScene);
 				});
+				gui.addColor(window, "bgcolor").onChange(function() {
+					if (typeof bgcolor == "string") {
+						bgcolor = bgcolor.charAt(0) == "#" ? bgcolor.substring(1,7) : bgcolor;
+						bgcolor = [
+							parseInt(bgcolor.substring(0, 2), 16),
+							parseInt(bgcolor.substring(2, 4), 16),
+							parseInt(bgcolor.substring(4, 6), 16),
+						];
+					}
+					var c = (new THREE.Color()).setRGB(bgcolor[0]/255, bgcolor[1]/255, bgcolor[2]/255);
+					console.log(bgcolor);
+					renderer.setClearColor(c, 1.0);
+				});
+				gui.add(window, "squareCanvas");
 
 				document.addEventListener('mousemove', onDocumentMouseMove, false);
 				window.addEventListener('resize', onWindowResize, false);
@@ -86,6 +103,12 @@
 				mesh.receiveShadow = true;
 				scene.add(mesh);
 				loader.statusDomElement.style.display = "none";
+			}
+
+			function squareCanvas() {
+				renderer.setSize(512, 512);
+				camera.aspect = 1;
+				camera.updateProjectionMatrix();
 			}
 
 			function onWindowResize(event) {
