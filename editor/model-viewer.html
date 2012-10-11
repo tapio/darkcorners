@@ -97,9 +97,10 @@
 				gui.add(window, "squareCanvas");
 				gui.add(window, "screenshot");
 
-				document.addEventListener('mousedown', function() { mouseDown = true; }, false);
-				document.addEventListener('mouseup', function() { mouseDown = false; }, false);
+				document.addEventListener('mousedown', function(e) { mouseDown = e.button; }, false);
+				document.addEventListener('mouseup', function(e) { mouseDown = false; }, false);
 				document.addEventListener('mousemove', onMouseMove, false);
+				document.addEventListener('contextmenu', function (e) { e.preventDefault(); }, false);
 				window.addEventListener('resize', onWindowResize, false);
 			}
 
@@ -129,7 +130,7 @@
 			}
 
 			function onMouseMove(event) {
-				if (!mouseDown) return;
+				if (mouseDown === false) return;
 				mouseX = (event.clientX - windowHalfX);
 				mouseY = (event.clientY - windowHalfY);
 			}
@@ -140,9 +141,14 @@
 				targetX = mouseX * .01;
 				targetY = mouseY * .01;
 
-				if (mesh) {
+				if (mesh && mouseDown === 0) {
 					mesh.rotation.y += targetX - mesh.rotation.y;
 					mesh.rotation.x += targetY - mesh.rotation.x;
+				} else if (mesh && mouseDown === 2) {
+					mesh.scale.x += Math.abs(targetY) - mesh.scale.x;
+					mesh.scale.x = Math.max(mesh.scale.x, 0.1);
+					mesh.scale.y = mesh.scale.x;
+					mesh.scale.z = mesh.scale.x;
 				}
 
 				renderer.render(scene, camera);
