@@ -57,7 +57,7 @@
 
 				var objects = [];
 				for (i in assets.objects) objects.push(i);
-				model = objects[objects.length-1];
+				model = window.location.hash ? window.location.hash.replace('#', '') : objects[objects.length-1];
 
 				loader = new THREE.JSONLoader(true);
 				document.body.appendChild(loader.statusDomElement);
