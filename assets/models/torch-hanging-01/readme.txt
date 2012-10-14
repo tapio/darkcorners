@@ -1,7 +1,7 @@
-Torch2 by cemkalyoncu
-http://opengameart.org/forumtopic/wall-mounted-torch
+Swinging torch by cemkalyoncu
+http://opengameart.org/content/izchaks-torches
 http://opengameart.org/users/cemkalyoncu
-CC-BY-3.0
+CC-BY-3.0 or CC-BY-SA-3.0
 
 Metal texture by p0ss
 http://opengameart.org/node/9066
