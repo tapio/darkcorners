@@ -29,8 +29,8 @@ concat:
 	cat `grep "<script " game_dev.html | cut -d'"' -f2 | egrep "(^js/)|(^assets/)"` > build/game.js
 
 minify: concat
-	cat build/libs.js | uglifyjs > build/libs.min.js
-	cat build/game.js | uglifyjs > build/game.min.js
+	cat build/libs.js | uglifyjs -nc --max-line-len 1024 > build/libs.min.js
+	cat build/game.js | uglifyjs -nc --max-line-len 512 > build/game.min.js
 
 clean:
 	rm README.html CONTRIBUTING.html
