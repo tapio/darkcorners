@@ -203,7 +203,7 @@ function Dungeon(scene, player, levelName) {
 
 		// Exit
 		cache.loadModel("assets/models/teleporter/teleporter.js",
-			objectHandler(level, new THREE.Vector3().set(level.exit[0], null, level.exit[1]), assets.objects.teleporter));
+			objectHandler(level, new THREE.Vector3().set(level.exit[0], null, level.exit[1]), 0, assets.objects.teleporter));
 		if (CONFIG.particles)
 			this.exitParticles = createTeleporterParticles(
 				new THREE.Vector3(level.exit[0] * level.gridSize, 0.5, level.exit[1] * level.gridSize));
@@ -351,7 +351,7 @@ function Dungeon(scene, player, levelName) {
 		for (var i = 0; i < level.monsters.length; ++i) {
 			var name = level.monsters[i].name;
 			cache.loadModel("assets/monsters/" + name + "/" + name + ".js",
-				objectHandler(level, new THREE.Vector3().copy(level.monsters[i].position), assets.monsters[name]));
+				objectHandler(level, new THREE.Vector3().copy(level.monsters[i].position), 0, assets.monsters[name]));
 		}
 	}
 
