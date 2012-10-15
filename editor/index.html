@@ -181,13 +181,16 @@
 
 		tools.object = {
 			object: "barrel",
+			angle: 0,
 			addObject: function() { currentTool = tools.object; },
 			mousedown: function(e) {
 				if (e.button == 0) {
-					level.objects.push({
+					var obj = {
 						name: tools.object.object,
 						position: { x: e._x / s, z: e._y / s }
-					});
+					}
+					if (tools.object.angle !== 0) obj.angle = tools.object.angle;
+					level.objects.push(obj);
 				} else if (e.button == 2) {
 					for (var i = 0; i < level.objects.length; ++i) {
 						if (Math.abs(level.objects[i].position.x - e._x / s) < 0.75 &&
@@ -355,6 +358,7 @@
 		var guiObjects = gui.addFolder("Objects");
 		guiObjects.add(tools.object, "object", objects).onChange(
 			function() { currentTool = tools.object; });
+		guiObjects.add(tools.object, "angle", -165, 180).step(15);
 		guiObjects.add(window, "previewObject");
 		guiObjects.add(tools.object, "addObject");
 		var guiEditor = gui.addFolder("Editor options");

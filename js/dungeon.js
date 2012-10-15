@@ -7,7 +7,7 @@ function Dungeon(scene, player, levelName) {
 	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
 	var debug_material = new THREE.MeshBasicMaterial({color: 0xff00ff});
 
-	function objectHandler(level, pos, def) {
+	function objectHandler(level, pos, ang, def) {
 		return function(geometry) {
 			if (!def) def = {};
 			var obj, mass = def.mass || 0;
@@ -62,6 +62,7 @@ function Dungeon(scene, player, levelName) {
 				pos.y = 0.5 * (geometry.boundingBox.max.y - geometry.boundingBox.min.y) + 0.001;
 			}
 			obj.position.copy(pos);
+			if (ang) obj.rotation.y = ang / 180 * Math.PI;
 
 			// Other attributes
 			obj.scale.set(scale, scale, scale);
@@ -340,7 +341,8 @@ function Dungeon(scene, player, levelName) {
 		for (var i = 0; i < level.objects.length; ++i) {
 			var name = level.objects[i].name;
 			var obj = cache.loadModel("assets/models/" + name + "/" + name + ".js",
-				objectHandler(level, new THREE.Vector3().copy(level.objects[i].position), assets.objects[name]));
+				objectHandler(level, new THREE.Vector3().copy(level.objects[i].position),
+					level.objects[i].angle, assets.objects[name]));
 		}
 	};
 
