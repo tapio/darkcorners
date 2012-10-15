@@ -5,10 +5,17 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<style>
-		body { color: #ccc; background-color: #333; }
+		body { color: #ccc; position: relative; background-color: #333; }
 		canvas { background-color: #ccc; position: relative; }
 		#thumbs { float: left; margin-right: 10px; }
 		#exported { display: none; width: 640px; height: 480px; }
+		#tooltip {
+			display: none;
+			position: absolute;
+			background-color: rgba(0, 0, 0, 0.5);
+			border-radius: 5px;
+			padding: 5px;
+		}
 	</style>
 	<script src="../libs/dat.gui.min.js"></script>
 	<script src="../assets/assets.js"></script>
@@ -19,6 +26,7 @@
 	<canvas id="canvas" width="640", height="640">
 		<p>Oh noes, no &lt;canvas&gt;!</p>
 	</canvas>
+	<div id="tooltip"></div>
 	<p>Left click to draw walls or place selected thing. Right click to erase.</p>
 	<textarea id="exported"></textarea>
 	<p>Object reference: hover over the image to see the name.
@@ -40,6 +48,7 @@
 			return params;
 		})();
 
+		var tooltip = document.getElementById("tooltip");
 		var canvas = document.getElementById("canvas");
 		var w = 40, h = 40;
 		var s = canvas.width / w;
@@ -215,6 +224,17 @@
 			return level.map.get(x, y, fallback);
 		}
 
+		function showTooltip(x, y, msg) {
+			tooltip.innerHTML = msg;
+			tooltip.style.display = "block";
+			tooltip.style.left = x + "px";
+			tooltip.style.top = y + "px";
+		}
+
+		function hideTooltip() {
+			tooltip.style.display = "none";
+		}
+
 		function render() {
 			requestAnimationFrame(render);
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -374,6 +394,18 @@
 		function mouseHandler(e) {
 			e._x = e.layerX || e.offsetX || 0;
 			e._y = e.layerY || e.offsetY || 0;
+			if (e.type === "mousemove" && !editor.hideObjects) {
+				var found = false;
+				for (var i = 0; i < level.objects.length; ++i) {
+					var pos = level.objects[i].position;
+					if (Math.abs(e._x - pos.x * s) < s * 0.5 && Math.abs(e._y - pos.z * s) < s * 0.5) {
+						showTooltip(e._x, e._y, level.objects[i].name);
+						found = true;
+						break;
+					}
+				}
+				if (!found) hideTooltip();
+			}
 			if (currentTool[e.type]) currentTool[e.type](e);
 			return false;
 		}
