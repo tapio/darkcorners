@@ -74,6 +74,7 @@ tools.light = {
 
 tools.object = {
 	object: "barrel",
+	objects: [], // Populated from assets.js
 	angle: 0,
 	addObject: function() { currentTool = tools.object; },
 	mousedown: function(e) {

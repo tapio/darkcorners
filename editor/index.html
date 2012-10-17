@@ -105,14 +105,13 @@
 			images[materials[i]] = document.getElementById("tex-" + materials[i]);
 
 		// Object gallery
-		var objects = [];
-		for (i in assets.objects) objects.push(i);
+		for (i in assets.objects) tools.object.objects.push(i);
 		var otemplate = '<td><img id="obj-%1" src="../assets/models/%1/thumb.jpg" width="64" height="64" alt="%1" title="%1"></img></td>';
 		var ocols = 10;
 		var ogallery = "";
-		for (i = 0; i < objects.length; ++i) {
+		for (i = 0; i < tools.object.objects.length; ++i) {
 			if (i % ocols === 0) ogallery += '<tr>';
-			ogallery += otemplate.replace(/%1/g, objects[i]);
+			ogallery += otemplate.replace(/%1/g, tools.object.objects[i]);
 			if (i % ocols == ocols-1) ogallery += '</tr>';
 		}
 		document.getElementById("objthumbs").innerHTML = ogallery;
@@ -164,6 +163,7 @@
 						ctx.strokeRect(i * s, j * s, s, s);
 				}
 			}
+			// FIXME: Combine these loops below into a function
 			// Lights
 			if (!editor.hideLights) {
 				ctx.fillStyle = "#ff0";
@@ -248,7 +248,7 @@
 		guiLights.add(tools.light, "addLight");
 
 		var guiObjects = gui.addFolder("Objects");
-		guiObjects.add(tools.object, "object", objects).onChange(
+		guiObjects.add(tools.object, "object", tools.object.objects).onChange(
 			function() { currentTool = tools.object; });
 		guiObjects.add(tools.object, "angle", -165, 180).step(15);
 		guiObjects.add(tools, "previewObject");
