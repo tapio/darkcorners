@@ -166,7 +166,7 @@
 			// FIXME: Combine these loops below into a function
 			// Lights
 			if (!editor.hideLights) {
-				ctx.fillStyle = "#ff0";
+				ctx.fillStyle = "rgba(255,255,0,0.75)";
 				for (i = 0; i < level.lights.length; ++i) {
 					ctx.beginPath();
 					ctx.arc(level.lights[i].position.x * s, level.lights[i].position.z * s, s * 0.25, 0, Math.PI * 2);
@@ -175,7 +175,7 @@
 			}
 			// Objects
 			if (!editor.hideObjects) {
-				ctx.fillStyle = "#006";
+				ctx.fillStyle = "rgba(0,0,128,0.75)";
 				for (i = 0; i < level.objects.length; ++i) {
 					ctx.beginPath();
 					ctx.arc(level.objects[i].position.x * s, level.objects[i].position.z * s, s * 0.4, 0, Math.PI * 2);
@@ -184,7 +184,7 @@
 			}
 			// Triggers
 			if (!editor.hideTriggers) {
-				ctx.fillStyle = "#090";
+				ctx.fillStyle = "rgba(0,160,0,0.75)";
 				for (i = 0; i < level.triggers.length; ++i) {
 					ctx.beginPath();
 					ctx.arc(level.triggers[i].position.x * s, level.triggers[i].position.z * s, s * 0.6, 0, Math.PI * 2);
