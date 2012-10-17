@@ -9,7 +9,7 @@ chrome:
 	google-chrome --allow-file-access-from-files
 
 hint:
-	jshint js/*.js assets/*.js
+	jshint js/*.js assets/*.js editor/*.js
 
 help: README.html CONTRIBUTING.html
 
