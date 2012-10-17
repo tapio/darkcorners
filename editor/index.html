@@ -64,7 +64,8 @@
 			drawGrid: true,
 			drawTextures: false,
 			hideLights: false,
-			hideObjects: false
+			hideObjects: false,
+			hideTriggers: false
 		};
 
 		var level = {
@@ -77,6 +78,7 @@
 			gridSize: 2,
 			objects: [],
 			lights: [],
+			triggers: [],
 			start: [ Math.floor(w*0.3)-0.5, Math.floor(h/2)-0.5 ],
 			startAngle: 0,
 			exit: [ Math.floor(w*0.7)-0.5, Math.floor(h/2)-0.5 ],
@@ -180,6 +182,15 @@
 					ctx.fill();
 				}
 			}
+			// Triggers
+			if (!editor.hideTriggers) {
+				ctx.fillStyle = "#090";
+				for (i = 0; i < level.triggers.length; ++i) {
+					ctx.beginPath();
+					ctx.arc(level.triggers[i].position.x * s, level.triggers[i].position.z * s, s * 0.6, 0, Math.PI * 2);
+					ctx.fill();
+				}
+			}
 			// Start
 			ctx.fillStyle = "#229";
 			ctx.fillRect(level.start[0] * s + 1 - s/2, level.start[1] * s + 1 - s/2, s - 2, s - 2);
@@ -222,6 +233,7 @@
 		var gui = new dat.GUI();
 		gui.add(tools.walls, "drawWalls");
 		gui.add(tools.diagonals, "placeDiagonalWalls");
+
 		var guiMap = gui.addFolder("Map properties");
 		guiMap.add(level.materials, "ceiling", materials);
 		guiMap.add(level.materials, "wall", materials);
@@ -231,19 +243,27 @@
 		guiMap.add(level, "startAngle", -135, 180).step(45);
 		guiMap.add(tools.start, "placeStart");
 		guiMap.add(tools.exit, "placeExit");
+
 		var guiLights = gui.addFolder("Lights");
 		guiLights.add(tools.light, "addLight");
+
 		var guiObjects = gui.addFolder("Objects");
 		guiObjects.add(tools.object, "object", objects).onChange(
 			function() { currentTool = tools.object; });
 		guiObjects.add(tools.object, "angle", -165, 180).step(15);
 		guiObjects.add(tools, "previewObject");
 		guiObjects.add(tools.object, "addObject");
+
+		var guiTriggers = gui.addFolder("Triggers");
+		guiTriggers.add(tools.trigger, "type", tools.trigger.types);
+		guiTriggers.add(tools.trigger, "addTrigger");
+
 		var guiEditor = gui.addFolder("Editor options");
 		guiEditor.add(editor, "drawGrid");
 		guiEditor.add(editor, "drawTextures");
 		guiEditor.add(editor, "hideLights");
 		guiEditor.add(editor, "hideObjects");
+		guiEditor.add(editor, "hideTriggers");
 		gui.add(tools, "importLevel");
 		gui.add(tools, "exportBase64");
 		gui.add(tools, "exportJSON");
@@ -253,13 +273,23 @@
 			e._x = e.layerX || e.offsetX || 0;
 			e._y = e.layerY || e.offsetY || 0;
 			if (e.type === "mousemove" && !editor.hideObjects) {
-				var found = false;
-				for (var i = 0; i < level.objects.length; ++i) {
+				var found = false, i;
+				for (i = 0; i < level.objects.length; ++i) {
 					var pos = level.objects[i].position;
 					if (Math.abs(e._x - pos.x * s) < s * 0.5 && Math.abs(e._y - pos.z * s) < s * 0.5) {
 						showTooltip(e._x, e._y, level.objects[i].name);
 						found = true;
 						break;
+					}
+				}
+				if (!found) {
+					for (i = 0; i < level.triggers.length; ++i) {
+						var pos = level.triggers[i].position;
+						if (Math.abs(e._x - pos.x * s) < s * 0.5 && Math.abs(e._y - pos.z * s) < s * 0.5) {
+							showTooltip(e._x, e._y, level.triggers[i].message);
+							found = true;
+							break;
+						}
 					}
 				}
 				if (!found) hideTooltip();

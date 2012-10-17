@@ -96,6 +96,34 @@ tools.object = {
 	}
 };
 
+tools.trigger = {
+	type: "message",
+	types: [ "message" ],
+	addTrigger: function() { currentTool = tools.trigger; },
+	mousedown: function(e) {
+		if (e.button == 0) {
+			var trig = {
+				type: tools.trigger.type,
+				position: { x: e._x / s, z: e._y / s }
+			}
+			if (tools.trigger.type === "message") {
+				var msg = prompt("Please enter the message to be triggered:");
+				if (!msg) return;
+				trig.message = msg;
+			} else return;
+			level.triggers.push(trig);
+		} else if (e.button == 2) {
+			for (var i = 0; i < level.triggers.length; ++i) {
+				if (Math.abs(level.triggers[i].position.x - e._x / s) < 0.75 &&
+					Math.abs(level.triggers[i].position.z - e._y / s) < 0.75) {
+						level.triggers.splice(i, 1);
+						break;
+				}
+			}
+		}
+	}
+};
+
 tools.exportBase64 = function() {
 	prepareExport();
 	var b64 = window.btoa(JSON.stringify(level, null));
