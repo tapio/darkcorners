@@ -1,7 +1,10 @@
 var tools = {};
 
 tools.walls = {
-	"Draw walls": function() { currentTool = tools.walls; },
+	"Draw walls": function() {
+		currentTool = tools.walls;
+		canvas.style.cursor = "default";
+	},
 	drawing: null,
 	mousedown: function(e) {
 		if (e.button == 0) tools.walls.drawing = WALL;
@@ -19,7 +22,10 @@ tools.walls = {
 var currentTool = tools.walls;
 
 tools.diagonals = {
-	"Place diagonal walls": function() { currentTool = tools.diagonals; },
+	"Place diagonal walls": function() {
+		currentTool = tools.diagonals;
+		canvas.style.cursor = "default";
+	},
 	mousedown: function(e) {
 		if (e.button == 2) putMouse(e._x, e._y, OPEN);
 		else if (e.button == 0) {
@@ -34,7 +40,10 @@ tools.diagonals = {
 };
 
 tools.start = {
-	"Place start": function() { currentTool = tools.start; },
+	"Place start": function() {
+		currentTool = tools.start;
+		canvas.style.cursor = "crosshair";
+	},
 	mousedown: function(e) {
 		if (e.button == 0) {
 			putMouse(e._x, e._y, OPEN);
@@ -45,7 +54,10 @@ tools.start = {
 };
 
 tools.exit = {
-	"Place exit": function() { currentTool = tools.exit; },
+	"Place exit": function() {
+		currentTool = tools.exit;
+		canvas.style.cursor = "crosshair";
+	},
 	mousedown: function(e) {
 		if (e.button == 0) {
 			putMouse(e._x, e._y, OPEN);
@@ -56,7 +68,10 @@ tools.exit = {
 };
 
 tools.light = {
-	"Add light": function() { currentTool = tools.light; },
+	"Add light": function() {
+		currentTool = tools.light;
+		canvas.style.cursor = "crosshair";
+	},
 	mousedown: function(e) {
 		if (e.button == 0) {
 			level.lights.push({ position: { x: e._x / s, z: e._y / s } });
@@ -73,7 +88,10 @@ tools.light = {
 };
 
 tools.object = {
-	"Add object": function() { currentTool = tools.object; },
+	"Add object": function() {
+		currentTool = tools.object;
+		canvas.style.cursor = "crosshair";
+	},
 	object: "barrel",
 	objects: [], // Populated from assets.js
 	angle: 0,
@@ -98,7 +116,10 @@ tools.object = {
 };
 
 tools.trigger = {
-	"Add trigger": function() { currentTool = tools.trigger; },
+	"Add trigger": function() {
+		currentTool = tools.trigger;
+		canvas.style.cursor = "crosshair";
+	},
 	type: "message",
 	types: [ "message" ],
 	mousedown: function(e) {
