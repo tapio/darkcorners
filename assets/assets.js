@@ -28,7 +28,8 @@ var assets = {
 		"teleporter": { collision: "cylinder", mass: 0 }
 	},
 	items: {
-		"key": {}
+		"key": {},
+		"knife": {}
 	},
 	materials: {
 		"rock-01": { roughness: 0.15 },
