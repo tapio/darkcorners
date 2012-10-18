@@ -16,9 +16,20 @@ a { color: #a06851; }
 
 #instructions {
 	position: absolute;
-	top: 45%; width: 100%;
+	top: 45%;
+	width: 100%;
 	color: #a50;
 	text-align: center;
 	cursor: pointer;
 	display: none;
+}
+
+#message {
+	position: absolute;
+	top: 10%;
+	left: 10%;
+	width: 20%;
+	color: #500;
+	text-align: center;
+	font-size: 32px;
 }

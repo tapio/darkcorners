@@ -87,6 +87,16 @@ function initUI() {
 	gui.close();
 }
 
+var messageTimer = null;
+function displayMessage(msg) {
+	if (messageTimer)
+		window.clearTimeout(messageTimer);
+	$("#message").html(msg).fadeIn(5000);
+	messageTimer = window.setTimeout(function() {
+		$("#message").fadeOut(5000);
+	}, 5000);
+}
+
 function editLevel() {
 	var url = "editor/index.html#level=" + window.btoa(dungeon.serialize());
 	window.open(url, "_blank");

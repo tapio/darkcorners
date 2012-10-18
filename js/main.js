@@ -225,4 +225,5 @@ $(document).ready(function() {
 
 	init();
 	render();
+	displayMessage("Welcome.");
 });
