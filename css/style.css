@@ -32,4 +32,8 @@ a { color: #a06851; }
 	color: #500;
 	text-align: center;
 	font-size: 32px;
+	-webkit-transform: perspective(500px) rotateY(25deg);
+	-moz-transform: perspective(500px) rotateY(25deg);
+	-o-transform: perspective(500px) rotateY(25deg);
+	transform: perspective(500px) rotateY(25deg);
 }
