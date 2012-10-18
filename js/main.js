@@ -165,10 +165,16 @@ function animate(dt) {
 		pl.rhand.translateZ(-0.5*UNIT);
 	}
 
+	// Trigger?
+	var trigger = dungeon.getTriggerAt(pl.position);
+	if (trigger) {
+		if (trigger.type == "message") displayMessage(trigger.message);
+	}
+
+	// Exit?
 	if (dungeon.isAtExit(pl.position))
 		resetLevel(dungeon.level.next);
 }
-
 
 $(document).ready(function() {
 	var v0 = new THREE.Vector3();

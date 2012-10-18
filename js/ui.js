@@ -91,7 +91,7 @@ var messageTimer = null;
 function displayMessage(msg) {
 	if (messageTimer)
 		window.clearTimeout(messageTimer);
-	$("#message").html(msg).fadeIn(5000);
+	$("#message").html(msg).fadeIn(2000);
 	messageTimer = window.setTimeout(function() {
 		$("#message").fadeOut(5000);
 	}, 5000);

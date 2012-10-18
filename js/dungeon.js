@@ -355,6 +355,16 @@ function Dungeon(scene, player, levelName) {
 		}
 	}
 
+	this.getTriggerAt = function(pos) {
+		if (!this.level || !this.level.triggers) return false;
+		var triggers = this.level.triggers;
+		for (var i = 0; i < triggers.length; ++i) {
+			if (Math.abs(pos.x - triggers[i].position.x * this.level.gridSize) <= 1 &&
+				Math.abs(pos.z - triggers[i].position.z * this.level.gridSize) <= 1)
+					return triggers[i];
+		}
+	};
+
 	this.isAtExit = function(pos) {
 		return this.level &&
 			Math.abs(pos.x - this.level.exit[0] * this.level.gridSize) < 0.5 &&
