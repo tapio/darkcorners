@@ -139,6 +139,15 @@
 			tooltip.style.display = "none";
 		}
 
+		function renderThingArray(arr, style, radius) {
+			ctx.fillStyle = style;
+			for (var i = 0; i < arr.length; ++i) {
+				ctx.beginPath();
+				ctx.arc(arr[i].position.x * s, arr[i].position.z * s, radius, 0, Math.PI * 2);
+				ctx.fill();
+			}
+		}
+
 		function render() {
 			requestAnimationFrame(render);
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -163,34 +172,15 @@
 						ctx.strokeRect(i * s, j * s, s, s);
 				}
 			}
-			// FIXME: Combine these loops below into a function
 			// Lights
-			if (!editor.hideLights) {
-				ctx.fillStyle = "rgba(255,255,0,0.75)";
-				for (i = 0; i < level.lights.length; ++i) {
-					ctx.beginPath();
-					ctx.arc(level.lights[i].position.x * s, level.lights[i].position.z * s, s * 0.25, 0, Math.PI * 2);
-					ctx.fill();
-				}
-			}
+			if (!editor.hideLights)
+				renderThingArray(level.lights, "rgba(255,255,0,0.75)", s * 0.25);
 			// Objects
-			if (!editor.hideObjects) {
-				ctx.fillStyle = "rgba(0,0,128,0.75)";
-				for (i = 0; i < level.objects.length; ++i) {
-					ctx.beginPath();
-					ctx.arc(level.objects[i].position.x * s, level.objects[i].position.z * s, s * 0.4, 0, Math.PI * 2);
-					ctx.fill();
-				}
-			}
+			if (!editor.hideObjects)
+				renderThingArray(level.objects, "rgba(0,0,128,0.75)", s * 0.4);
 			// Triggers
-			if (!editor.hideTriggers) {
-				ctx.fillStyle = "rgba(0,160,0,0.75)";
-				for (i = 0; i < level.triggers.length; ++i) {
-					ctx.beginPath();
-					ctx.arc(level.triggers[i].position.x * s, level.triggers[i].position.z * s, s * 0.6, 0, Math.PI * 2);
-					ctx.fill();
-				}
-			}
+			if (!editor.hideTriggers)
+				renderThingArray(level.triggers, "rgba(0,160,0,0.75)", s * 0.6);
 			// Start
 			ctx.fillStyle = "#229";
 			ctx.fillRect(level.start[0] * s + 1 - s/2, level.start[1] * s + 1 - s/2, s - 2, s - 2);
