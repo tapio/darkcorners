@@ -76,8 +76,9 @@
 			},
 			roomHeight: 3,
 			gridSize: 2,
-			objects: [],
 			lights: [],
+			objects: [],
+			items: [],
 			triggers: [],
 			start: [ Math.floor(w*0.3)-0.5, Math.floor(h/2)-0.5 ],
 			startAngle: 0,
@@ -116,6 +117,9 @@
 		}
 		document.getElementById("objthumbs").innerHTML = ogallery;
 
+		// Items
+		for (i in assets.items) tools.item.items.push(i);
+
 		function putMouse(x, y, what) {
 			x = Math.floor(x / s);
 			y = Math.floor(y / s);
@@ -131,7 +135,7 @@
 		function showTooltip(x, y, msg) {
 			tooltip.innerHTML = msg;
 			tooltip.style.display = "block";
-			tooltip.style.left = x + "px";
+			tooltip.style.left = (x + 15) + "px";
 			tooltip.style.top = y + "px";
 		}
 
@@ -178,9 +182,12 @@
 			// Objects
 			if (!editor.hideObjects)
 				renderThingArray(level.objects, "rgba(0,0,128,0.75)", s * 0.4);
+			// Items
+			if (!editor.hideItems)
+				renderThingArray(level.items, "rgba(160,0,160,0.75)", s * 0.2);
 			// Triggers
 			if (!editor.hideTriggers)
-				renderThingArray(level.triggers, "rgba(0,160,0,0.75)", s * 0.6);
+				renderThingArray(level.triggers, "rgba(64,255,64,0.75)", s * 0.6);
 			// Start
 			ctx.fillStyle = "#229";
 			ctx.fillRect(level.start[0] * s + 1 - s/2, level.start[1] * s + 1 - s/2, s - 2, s - 2);
@@ -243,6 +250,11 @@
 		guiObjects.add(tools.object, "angle", -165, 180).step(15);
 		guiObjects.add(tools, "Preview object");
 		guiObjects.add(tools.object, "Add object");
+
+		var guiItems = gui.addFolder("Items");
+		guiItems.add(tools.item, "item", tools.item.items).onChange(
+			function() { currentTool = tools.item; });
+		guiItems.add(tools.item, "Add item");
 
 		var guiTriggers = gui.addFolder("Triggers");
 		guiTriggers.add(tools.trigger, "type", tools.trigger.types);

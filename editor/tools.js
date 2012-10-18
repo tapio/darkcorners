@@ -115,6 +115,32 @@ tools.object = {
 	}
 };
 
+tools.item = {
+	"Add item": function() {
+		currentTool = tools.item;
+		canvas.style.cursor = "crosshair";
+	},
+	item: "key",
+	items: [], // Populated from assets.js
+	mousedown: function(e) {
+		if (e.button == 0) {
+			var item = {
+				name: tools.item.item,
+				position: { x: e._x / s, z: e._y / s }
+			}
+			level.items.push(item);
+		} else if (e.button == 2) {
+			for (var i = 0; i < level.items.length; ++i) {
+				if (Math.abs(level.items[i].position.x - e._x / s) < 0.75 &&
+					Math.abs(level.items[i].position.z - e._y / s) < 0.75) {
+						level.items.splice(i, 1);
+						break;
+				}
+			}
+		}
+	}
+};
+
 tools.trigger = {
 	"Add trigger": function() {
 		currentTool = tools.trigger;
@@ -171,6 +197,10 @@ tools["Import level"] = function(json) {
 	}
 	level = json;
 	level.map = new Map(level.width, level.depth, level.map);
+	level.lights = level.lights || [];
+	level.objects = level.objects || [];
+	level.items = level.items || [];
+	level.triggers = level.triggers || [];
 	w = level.width; h = level.depth;
 	// Discard y-coordinates
 	for (var i = 0; i < level.lights.length; ++i)

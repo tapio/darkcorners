@@ -27,6 +27,9 @@ var assets = {
 		"forge": { collision: "concave", mass: 0 },
 		"teleporter": { collision: "cylinder", mass: 0 }
 	},
+	items: {
+		"key": {}
+	},
 	materials: {
 		"rock-01": { roughness: 0.15 },
 		"rock-02": { roughness: 0.15 },
