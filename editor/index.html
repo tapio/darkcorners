@@ -289,24 +289,16 @@
 		function mouseHandler(e) {
 			e._x = e.layerX || e.offsetX || 0;
 			e._y = e.layerY || e.offsetY || 0;
+			// Tooltips
 			if (e.type === "mousemove" && !editor.hideObjects) {
 				var found = false, i;
-				for (i = 0; i < level.objects.length; ++i) {
-					var pos = level.objects[i].position;
+				var arr = level.objects.concat(level.items, level.monsters, level.triggers);
+				for (i = 0; i < arr.length; ++i) {
+					var pos = arr[i].position;
 					if (Math.abs(e._x - pos.x * s) < s * 0.5 && Math.abs(e._y - pos.z * s) < s * 0.5) {
-						showTooltip(e._x, e._y, level.objects[i].name);
+						showTooltip(e._x, e._y, arr[i].name || arr[i].message);
 						found = true;
 						break;
-					}
-				}
-				if (!found) {
-					for (i = 0; i < level.triggers.length; ++i) {
-						var pos = level.triggers[i].position;
-						if (Math.abs(e._x - pos.x * s) < s * 0.5 && Math.abs(e._y - pos.z * s) < s * 0.5) {
-							showTooltip(e._x, e._y, level.triggers[i].message);
-							found = true;
-							break;
-						}
 					}
 				}
 				if (!found) hideTooltip();
