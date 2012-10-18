@@ -65,6 +65,8 @@
 			drawTextures: false,
 			hideLights: false,
 			hideObjects: false,
+			hideItems: false,
+			hideMonsters: false,
 			hideTriggers: false
 		};
 
@@ -119,6 +121,9 @@
 
 		// Items
 		for (i in assets.items) tools.item.items.push(i);
+
+		// Monsters
+		for (i in assets.monsters) tools.monster.monsters.push(i);
 
 		function putMouse(x, y, what) {
 			x = Math.floor(x / s);
@@ -185,6 +190,9 @@
 			// Items
 			if (!editor.hideItems)
 				renderThingArray(level.items, "rgba(160,0,160,0.75)", s * 0.2);
+			// Monsters
+			if (!editor.hideMonsters)
+				renderThingArray(level.monsters, "rgba(160,0,0,0.75)", s * 0.4);
 			// Triggers
 			if (!editor.hideTriggers)
 				renderThingArray(level.triggers, "rgba(64,255,64,0.75)", s * 0.6);
@@ -256,6 +264,11 @@
 			function() { currentTool = tools.item; });
 		guiItems.add(tools.item, "Add item");
 
+		var guiMonsters = gui.addFolder("Monsters");
+		guiMonsters.add(tools.monster, "monster", tools.monster.monsters).onChange(
+			function() { currentTool = tools.monster; });
+		guiMonsters.add(tools.monster, "Add monster");
+
 		var guiTriggers = gui.addFolder("Triggers");
 		guiTriggers.add(tools.trigger, "type", tools.trigger.types);
 		guiTriggers.add(tools.trigger, "Add trigger");
@@ -265,6 +278,8 @@
 		guiEditor.add(editor, "drawTextures");
 		guiEditor.add(editor, "hideLights");
 		guiEditor.add(editor, "hideObjects");
+		guiEditor.add(editor, "hideItems");
+		guiEditor.add(editor, "hideMonsters");
 		guiEditor.add(editor, "hideTriggers");
 		gui.add(tools, "Import level");
 		gui.add(tools, "Export base64");

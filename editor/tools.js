@@ -141,6 +141,32 @@ tools.item = {
 	}
 };
 
+tools.monster = {
+	"Add monster": function() {
+		currentTool = tools.monster;
+		canvas.style.cursor = "crosshair";
+	},
+	monster: "cerberus",
+	monsters: [], // Populated from assets.js
+	mousedown: function(e) {
+		if (e.button == 0) {
+			var monster = {
+				name: tools.monster.monster,
+				position: { x: e._x / s, z: e._y / s }
+			}
+			level.monsters.push(monster);
+		} else if (e.button == 2) {
+			for (var i = 0; i < level.monsters.length; ++i) {
+				if (Math.abs(level.monsters[i].position.x - e._x / s) < 0.75 &&
+					Math.abs(level.monsters[i].position.z - e._y / s) < 0.75) {
+						level.monsters.splice(i, 1);
+						break;
+				}
+			}
+		}
+	}
+};
+
 tools.trigger = {
 	"Add trigger": function() {
 		currentTool = tools.trigger;
@@ -200,6 +226,7 @@ tools["Import level"] = function(json) {
 	level.lights = level.lights || [];
 	level.objects = level.objects || [];
 	level.items = level.items || [];
+	level.monsters = level.monsters || [];
 	level.triggers = level.triggers || [];
 	w = level.width; h = level.depth;
 	// Discard y-coordinates
