@@ -340,9 +340,21 @@ function Dungeon(scene, player, levelName) {
 		if (!level.objects) return;
 		for (var i = 0; i < level.objects.length; ++i) {
 			var name = level.objects[i].name;
-			var obj = cache.loadModel("assets/models/" + name + "/" + name + ".js",
+			cache.loadModel("assets/models/" + name + "/" + name + ".js",
 				objectHandler(level, new THREE.Vector3().copy(level.objects[i].position),
 					level.objects[i].angle, assets.objects[name]));
+		}
+	};
+
+	this.addItems = function(level) {
+		if (!level.items) return;
+		var pos = new THREE.Vector3();
+		for (var i = 0; i < level.items.length; ++i) {
+			var name = level.items[i].name;
+			pos.copy(level.items[i].position);
+			pos.y = 1.2;
+			cache.loadModel("assets/models/" + name + "/" + name + ".js",
+				objectHandler(level, pos, 0, assets.items[name]));
 		}
 	};
 
@@ -353,7 +365,7 @@ function Dungeon(scene, player, levelName) {
 			cache.loadModel("assets/monsters/" + name + "/" + name + ".js",
 				objectHandler(level, new THREE.Vector3().copy(level.monsters[i].position), 0, assets.monsters[name]));
 		}
-	}
+	};
 
 	this.getTriggerAt = function(pos) {
 		if (!this.level || !this.level.triggers) return false;
@@ -389,6 +401,7 @@ function Dungeon(scene, player, levelName) {
 		self.generateMesh(level);
 		self.addLights(level);
 		self.addObjects(level);
+		self.addItems(level);
 		self.addMonsters(level);
 		lightManager.update(pl);
 		self.level = level;
