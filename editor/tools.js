@@ -1,8 +1,8 @@
 var tools = {};
 
 tools.walls = {
+	"Draw walls": function() { currentTool = tools.walls; },
 	drawing: null,
-	drawWalls: function() { currentTool = tools.walls; },
 	mousedown: function(e) {
 		if (e.button == 0) tools.walls.drawing = WALL;
 		else if (e.button == 2) tools.walls.drawing = OPEN;
@@ -19,7 +19,7 @@ tools.walls = {
 var currentTool = tools.walls;
 
 tools.diagonals = {
-	placeDiagonalWalls: function() { currentTool = tools.diagonals; },
+	"Place diagonal walls": function() { currentTool = tools.diagonals; },
 	mousedown: function(e) {
 		if (e.button == 2) putMouse(e._x, e._y, OPEN);
 		else if (e.button == 0) {
@@ -34,7 +34,7 @@ tools.diagonals = {
 };
 
 tools.start = {
-	placeStart: function() { currentTool = tools.start; },
+	"Place start": function() { currentTool = tools.start; },
 	mousedown: function(e) {
 		if (e.button == 0) {
 			putMouse(e._x, e._y, OPEN);
@@ -45,7 +45,7 @@ tools.start = {
 };
 
 tools.exit = {
-	placeExit: function() { currentTool = tools.exit; },
+	"Place exit": function() { currentTool = tools.exit; },
 	mousedown: function(e) {
 		if (e.button == 0) {
 			putMouse(e._x, e._y, OPEN);
@@ -56,7 +56,7 @@ tools.exit = {
 };
 
 tools.light = {
-	addLight: function() { currentTool = tools.light; },
+	"Add light": function() { currentTool = tools.light; },
 	mousedown: function(e) {
 		if (e.button == 0) {
 			level.lights.push({ position: { x: e._x / s, z: e._y / s } });
@@ -73,10 +73,10 @@ tools.light = {
 };
 
 tools.object = {
+	"Add object": function() { currentTool = tools.object; },
 	object: "barrel",
 	objects: [], // Populated from assets.js
 	angle: 0,
-	addObject: function() { currentTool = tools.object; },
 	mousedown: function(e) {
 		if (e.button == 0) {
 			var obj = {
@@ -98,9 +98,9 @@ tools.object = {
 };
 
 tools.trigger = {
+	"Add trigger": function() { currentTool = tools.trigger; },
 	type: "message",
 	types: [ "message" ],
-	addTrigger: function() { currentTool = tools.trigger; },
 	mousedown: function(e) {
 		if (e.button == 0) {
 			var trig = {
@@ -125,20 +125,20 @@ tools.trigger = {
 	}
 };
 
-tools.exportBase64 = function() {
+tools["Export base64"] = function() {
 	prepareExport();
 	var b64 = window.btoa(JSON.stringify(level, null));
 	document.getElementById("exported").value = b64;
 	document.getElementById("exported").style.display = "block";
 };
 
-tools.exportJSON = function() {
+tools["Export JSON"] = function() {
 	prepareExport();
 	document.getElementById("exported").value = JSON.stringify(level, null, '\t');
 	document.getElementById("exported").style.display = "block";
 };
 
-tools.importLevel = function(json) {
+tools["Import level"] = function(json) {
 	var json = json || prompt("Paste here the level JSON (can be base64) to import:");
 	if (!json || !json.length) return;
 	try {
@@ -160,12 +160,12 @@ tools.importLevel = function(json) {
 	document.getElementById("exported").style.display = "none";
 };
 
-tools.test = function() {
+tools["Test"] = function() {
 	var url = "../game_dev.html#level=" + window.btoa(JSON.stringify(level));
 	window.open(url, "_blank");
 };
 
-tools.previewObject = function() {
+tools["Preview object"] = function() {
 	var url = "model-viewer.html#" + tools.object.object;
 	window.open(url, "_blank");
 };
