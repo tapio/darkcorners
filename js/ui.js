@@ -94,6 +94,7 @@ function displayMessage(msg) {
 	$("#message").html(msg).fadeIn(2000);
 	messageTimer = window.setTimeout(function() {
 		$("#message").fadeOut(5000);
+		messageTimer = null;
 	}, 5000);
 }
 
