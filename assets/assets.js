@@ -39,7 +39,8 @@ var assets = {
 	},
 	monsters: {
 		"cerberus": { collision: "box", character: { speed: 120 }, animation: { duration: 750 } },
-		"spider": { collision: "box", character: { speed: 120 }, animation: { duration: 750 } }
+		"spider": { collision: "box", character: { speed: 120 }, animation: { duration: 750 } },
+		"minotaur": { collision: "box", character: { speed: 400 }, animation: { duration: 750 } }
 	},
 	environments: {
 		"cave": {
