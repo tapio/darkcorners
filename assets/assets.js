@@ -38,7 +38,8 @@ var assets = {
 		"rock-04": { roughness: 0.15 }
 	},
 	monsters: {
-		"cerberus": { collision: "box", character: { speed: 120 }, animation: { duration: 750 } }
+		"cerberus": { collision: "box", character: { speed: 120 }, animation: { duration: 750 } },
+		"spider": { collision: "box", character: { speed: 120 }, animation: { duration: 750 } }
 	},
 	environments: {
 		"cave": {
