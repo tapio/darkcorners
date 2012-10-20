@@ -199,14 +199,23 @@ $(document).ready(function() {
 
 		// Player movement, controls and physics
 		var dt = clock.getDelta();
+		// Take note of the position
 		v0.set(pl.camera.position.x, 0, pl.camera.position.z);
+		// Let controls update the position
 		controls.update(dt);
+		// Get the new position
 		v1.set(pl.camera.position.x, 0, pl.camera.position.z);
-		v1.subSelf(v0); // Becomes velocity
+		// Subtract them to get the velocity
+		v1.subSelf(v0);
+		// Convert the velocity unit to per second
 		v1.divideScalar(dt * UNIT);
+		// We only use the planar velocity, so we preserve the old y-velocity
 		var vy = pl.getLinearVelocity().y;
+		// Set the velocity, but disallow jumping/flying, i.e. upwards velocity
 		pl.setLinearVelocity({ x: v1.x, y: vy < 0 ? vy : 0, z: v1.z });
-		scene.simulate(); // Simulate physics
+		// Simulate physics
+		scene.simulate();
+		// Put the camera/controls back to the real, simulated position
 		// FIXME: 0.5 below is magic number to rise camera
 		controls.object.position.set(pl.position.x, pl.position.y + 0.5, pl.position.z);
 
