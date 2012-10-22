@@ -150,7 +150,7 @@ function screenshot() {
 }
 
 
-window.performance = window.performance || {};
+var performance = window.performance || {};
 performance.now = (function() {
   return performance.now       ||
          performance.mozNow    ||
@@ -164,10 +164,10 @@ function Profiler(name) {
 	name = name || "Profiling";
 	name += ": ";
 	this.start = function() {
-		this.time = window.performance.now();
+		this.time = performance.now();
 	};
 	this.end = function() {
-		var diff = window.performance.now() - this.time;
+		var diff = performance.now() - this.time;
 		console.log(name + diff + "ms");
 	};
 	this.start();
