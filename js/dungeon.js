@@ -20,6 +20,7 @@ function Dungeon(scene, player, levelName) {
 				mass *= scale;
 			}
 			if (def.animation) geometry.computeMorphNormals();
+			if (!geometry.boundingBox) geometry.computeBoundingBox();
 
 			// Handle materials
 			for (var m = 0; m < geometry.materials.length; ++m) {
@@ -55,10 +56,14 @@ function Dungeon(scene, player, levelName) {
 			}
 
 			// Positioning
+			if (def.door) {
+				// Fix door positions
+				pos.x = Math.floor(pos.x) + 0.5;
+				pos.z = Math.floor(pos.z) + 0.5;
+			}
 			pos.x *= level.gridSize;
 			pos.z *= level.gridSize;
 			if (!pos.y && pos.y !== 0) { // Auto-height
-				if (!geometry.boundingBox) geometry.computeBoundingBox();
 				pos.y = 0.5 * (geometry.boundingBox.max.y - geometry.boundingBox.min.y) + 0.001;
 			}
 			obj.position.copy(pos);
@@ -93,6 +98,26 @@ function Dungeon(scene, player, levelName) {
 			scene.add(obj);
 			if (def.character && def.collision) obj.setAngularFactor({ x: 0, y: 0, z: 0 });
 			if (def.character) obj.speed = def.character.speed;
+			if (def.door) {
+				obj.setAngularFactor({ x: 0, y: 1, z: 0 });
+				// Hinge
+				var hingepos = obj.position.clone();
+				var hingedist = 0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x) - 0.1
+				hingepos.x += Math.cos(obj.rotation.y) * hingedist;
+				hingepos.z += Math.sin(obj.rotation.y) * hingedist;
+				var constraint = new Physijs.HingeConstraint(
+					obj,
+					hingepos,
+					new THREE.Vector3(0, 1, 0) // Hinge axisAxis along which the hinge lies - in this case it is the X axis
+				);
+				scene.addConstraint(constraint);
+				constraint.setLimits(
+					-Math.PI / 2 * 0.95 + obj.rotation.y, // minimum angle of motion, in radians
+					Math.PI / 2 * 0.95 + obj.rotation.y, // maximum angle of motion, in radians
+					0.3, // bias_factor, applied as a factor to constraint error
+					0.01 // relaxation_factor, controls bounce at limit (0.0 == no bounce)
+				);
+			}
 		};
 	}
 
