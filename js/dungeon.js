@@ -103,7 +103,7 @@ function Dungeon(scene, player, levelName) {
 				// Hinge
 				var hingepos = obj.position.clone();
 				var hingedist = 0.5 * (geometry.boundingBox.max.x - geometry.boundingBox.min.x) - 0.1
-				hingepos.x += Math.cos(obj.rotation.y) * hingedist;
+				hingepos.x -= Math.cos(obj.rotation.y) * hingedist;
 				hingepos.z += Math.sin(obj.rotation.y) * hingedist;
 				var constraint = new Physijs.HingeConstraint(
 					obj,
