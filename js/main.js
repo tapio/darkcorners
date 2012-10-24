@@ -85,6 +85,8 @@ function init() {
 	depthPassPlugin.renderTarget = depthTarget;
 	renderer.addPrePlugin(depthPassPlugin);
 
+	if (CONFIG.quarterMode) onWindowResize();
+
 	resetLevel();
 	updateConfig();
 	dumpInfo();

@@ -62,6 +62,7 @@ function initUI() {
 	// GUI controls
 	var gui = new dat.GUI();
 	gui.add(CONFIG, "showStats").onChange(updateConfig);
+	gui.add(CONFIG, "quarterMode").onChange(function() { updateConfig(); onWindowResize(); });
 	gui.add(controls, "mouseFallback");
 	gui.add(window, "editLevel");
 	var guiRenderer = gui.addFolder("Renderer options (reload required)");
@@ -104,16 +105,17 @@ function editLevel() {
 }
 
 function onWindowResize() {
+	var scale = CONFIG.quarterMode ? 0.5 : 1;
 	pl.camera.aspect = window.innerWidth / window.innerHeight;
 	pl.camera.updateProjectionMatrix();
-	renderer.setSize(window.innerWidth, window.innerHeight);
-	colorTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParametersRGB);
+	renderer.setSize(window.innerWidth * scale, window.innerHeight * scale);
+	colorTarget = new THREE.WebGLRenderTarget(window.innerWidth * scale, window.innerHeight * scale, renderTargetParametersRGB);
 	composer.reset(colorTarget);
-	depthTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParametersRGBA);
+	depthTarget = new THREE.WebGLRenderTarget(window.innerWidth * scale, window.innerHeight * scale, renderTargetParametersRGBA);
 	depthPassPlugin.renderTarget = depthTarget;
 	passes.ssao.uniforms.tDepth.value = depthTarget;
-	passes.ssao.uniforms.size.value.set(window.innerWidth, window.innerHeight);
-	passes.fxaa.uniforms.resolution.value.set(1/window.innerWidth, 1/window.innerHeight);
+	passes.ssao.uniforms.size.value.set(window.innerWidth * scale, window.innerHeight * scale);
+	passes.fxaa.uniforms.resolution.value.set(scale/window.innerWidth, scale/window.innerHeight);
 	controls.handleResize();
 }
 
