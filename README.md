@@ -45,4 +45,6 @@ Their licenses are mentioned in the files.
 
 The licenses of models and textures in `assets/` can be
 viewed from their respective `readme.txt` files.
+However, all of them are available under at least one the following licenses:
+CC0/PD, CC-BY-3.0, CC-BY-SA-3.0
 
