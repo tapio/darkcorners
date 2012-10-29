@@ -198,9 +198,16 @@ tools.trigger = {
 	}
 };
 
+tools["Clear"] = function() {
+	if (confirm("Are you sure you want to erase everything?")) {
+		localStorage.removeItem("editor-autosave");
+		window.location.reload();
+	}
+};
+
 tools["Export base64"] = function() {
 	prepareExport();
-	var b64 = window.btoa(JSON.stringify(level, null));
+	var b64 = window.btoa(JSON.stringify(level));
 	document.getElementById("exported").value = b64;
 	document.getElementById("exported").style.display = "block";
 };
