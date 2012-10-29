@@ -30,7 +30,9 @@ var assets = {
 	},
 	items: {
 		"key": {},
-		"knife": {}
+		"knife": {},
+		"health-potion": {},
+		"mana-potion": {}
 	},
 	materials: {
 		"rock-01": { roughness: 0.15 },
