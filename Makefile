@@ -11,10 +11,10 @@ chrome:
 hint:
 	jshint js/*.js assets/*.js editor/*.js
 
-help: README.html CONTRIBUTING.html
+help: README.html CONTRIBUTING.html ART-TODO.html
 
 .md.html:
-	markdown $< > $@
+	markdown $< > build/$@
 
 deploy:
 	git checkout gh-pages
@@ -33,7 +33,7 @@ minify: concat
 	cat build/game.js | uglifyjs -nc --max-line-len 512 > build/game.min.js
 
 clean:
-	rm README.html CONTRIBUTING.html
+	rm build/*.html
 
 .PHONY: all server chrome hint help deploy build clean
 
