@@ -25,7 +25,7 @@ var assets = {
 		"pillar-broken-02": { collision: "cylinder", mass: 0 },
 		"pillar-greek": { collision: "cylinder", mass: 0 },
 		"forge": { collision: "concave", mass: 0 },
-		"gate": { collision: "box", mass: 400, door: true },
+		"door-barred": { collision: "box", mass: 400, door: true },
 		"teleporter": { collision: "cylinder", mass: 0 }
 	},
 	items: {

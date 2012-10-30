@@ -40,21 +40,21 @@
 	],
 	"objects": [
 		{
-			"name": "gate",
+			"name": "door-barred",
 			"position": {
 				"x": 7.5625,
 				"z": 5.5
 			}
 		},
 		{
-			"name": "gate",
+			"name": "door-barred",
 			"position": {
 				"x": 11.5625,
 				"z": 5.5
 			}
 		},
 		{
-			"name": "gate",
+			"name": "door-barred",
 			"position": {
 				"x": 14.5,
 				"z": 4.5
@@ -76,7 +76,7 @@
 			"angle": -75
 		},
 		{
-			"name": "gate",
+			"name": "door-barred",
 			"position": {
 				"x": 5.4375,
 				"z": 6.4375
