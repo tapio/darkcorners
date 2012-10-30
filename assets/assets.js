@@ -15,6 +15,7 @@ var assets = {
 		"box": { collision: "box", mass: 150 },
 		"bucket-broken": { collision: "cylinder", mass: 50 },
 		"netted-jar": { collision: "cylinder", mass: 100 },
+		"vase-01": { collision: "cylinder", mass: 75 },
 		"table-big": { collision: "box", mass: 1000 },
 		"table-old": { collision: "box", mass: 800 },
 		"chair-01": { collision: "box", mass: 200 },
