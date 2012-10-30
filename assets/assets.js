@@ -18,6 +18,7 @@ var assets = {
 		"table-big": { collision: "box", mass: 1000 },
 		"table-old": { collision: "box", mass: 800 },
 		"chair-01": { collision: "box", mass: 200 },
+		"bench-church": { collision: "box", mass: 1000 },
 		"torch-standing": { collision: "cylinder", mass: 150 },
 		"mine-cart": { collision: "box", mass: 900 },
 		"obelisk-01": { collision: "box", mass: 0 },
