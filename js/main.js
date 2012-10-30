@@ -134,6 +134,11 @@ function animate(dt) {
 			monster.mesh.updateAnimation(1000 * dt);
 			monster.setLinearVelocity(v.multiplyScalar(monster.speed * dt));
 		} else {
+			// Oh noes, death!
+			controls.active = false;
+			if (!$("#deathscreen").is(':visible'))
+				$("#deathscreen").fadeIn(500);
+			$("#instructions").hide();
 			monster.setLinearVelocity(v.set(0,0,0));
 		}
 	}

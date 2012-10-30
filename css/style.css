@@ -45,3 +45,32 @@ canvas {
 	-o-transform: perspective(500px) rotateY(25deg);
 	transform: perspective(500px) rotateY(25deg);
 }
+
+#deathscreen {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(128, 0, 0, 0.5);
+	background: -webkit-radial-gradient(ellipse, rgba(128, 0, 0, 0.25), rgba(0, 0, 0, 1));
+	background: -moz-radial-gradient(ellipse, rgba(128, 0, 0, 0.25), rgba(0, 0, 0, 1));
+	background: -o-radial-gradient(ellipse, rgba(128, 0, 0, 0.25), rgba(0, 0, 0, 1));
+	background: radial-gradient(ellipse, rgba(128, 0, 0, 0.25), rgba(0, 0, 0, 1));
+	text-align: center;
+}
+
+#deathscreen div {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width:60%;
+	height: 64px;
+	margin: auto;
+	color: #c00;
+	font-size: 32px;
+	font-family: 'Underdog', serif;
+}
