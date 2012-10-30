@@ -19,9 +19,6 @@ Core engine
 Gameplay
 --------
 
-* Death
-	- Visuals and end screen
-	- Death from touching enemies
 * Enemy AI
 * Pick up objects, move and throw them
 * Better character dynamics (so that object mass matters)
