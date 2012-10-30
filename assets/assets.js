@@ -13,6 +13,7 @@ var assets = {
 		"rock-04": { collision: "box", mass: 500, randScale: 0.4 },
 		"barrel": { collision: "cylinder", mass: 250 },
 		"box": { collision: "box", mass: 150 },
+		"bucket-broken": { collision: "cylinder", mass: 50 },
 		"netted-jar": { collision: "cylinder", mass: 100 },
 		"table-big": { collision: "box", mass: 1000 },
 		"table-old": { collision: "box", mass: 800 },
