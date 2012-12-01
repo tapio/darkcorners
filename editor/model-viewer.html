@@ -57,7 +57,7 @@
 
 				var objects = [];
 				for (i in assets.objects) objects.push(i);
-				model = window.location.hash ? window.location.hash.replace('#', '') : objects[objects.length-1];
+				model = window.location.hash ? window.location.hash.replace('#', '') : objects[0];
 
 				loader = new THREE.JSONLoader(true);
 				document.body.appendChild(loader.statusDomElement);
@@ -73,6 +73,11 @@
 				renderer.gammaInput = true;
 				renderer.gammaOutput = true;
 				renderer.physicallyBasedShading = true;
+
+				var shooter = {
+					"screenshot.png": function() { screenshot(false, false); },
+					"screenshot.jpg": function() { screenshot(false, true); }
+				};
 
 				var gui = new dat.GUI();
 				gui.add(window, "model", objects).onChange(function() {
@@ -95,7 +100,9 @@
 					renderer.setClearColor(c, 1.0);
 				});
 				gui.add(window, "squareCanvas");
-				gui.add(window, "screenshot");
+				gui.add(window, "thumbnailCanvas");
+				gui.add(shooter, "screenshot.jpg");
+				gui.add(shooter, "screenshot.png");
 
 				document.addEventListener('mousedown', function(e) {
 					mouseDragRefX = e.clientX;
@@ -108,10 +115,10 @@
 				window.addEventListener('resize', onWindowResize, false);
 			}
 
-			function createScene(geometry) {
-				for (var m = 0; m < geometry.materials.length; ++m)
-					fixAnisotropy(geometry.materials[m], renderer.getMaxAnisotropy());
-				mesh = new THREE.Mesh(geometry, geometry.materials.length > 1 ? new THREE.MeshFaceMaterial() : geometry.materials[0]);
+			function createScene(geometry, materials) {
+				for (var m = 0; m < materials.length; ++m)
+					fixAnisotropy(materials[m], renderer.getMaxAnisotropy());
+				mesh = new THREE.Mesh(geometry, materials.length > 1 ? new THREE.MeshFaceMaterial(materials) : materials[0]);
 				mesh.castShadow = true;
 				mesh.receiveShadow = true;
 				scene.add(mesh);
@@ -120,6 +127,12 @@
 
 			function squareCanvas() {
 				renderer.setSize(512, 512);
+				camera.aspect = 1;
+				camera.updateProjectionMatrix();
+			}
+
+			function thumbnailCanvas() {
+				renderer.setSize(64, 64);
 				camera.aspect = 1;
 				camera.updateProjectionMatrix();
 			}
