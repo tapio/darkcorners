@@ -62,4 +62,34 @@ function Map(w, h, data) {
 		floodFill(this, x, y, target, filler, skip);
 	};
 
+	function distSq(x1, y1, x2, y2) {
+		var dx = x2 - x1, dy = y2 - y1;
+		return dx * dx + dy * dy;
+	}
+
+	this.raycast = function(x1, y1, x2, y2, step) {
+		step = step || 0.5;
+		var angle = Math.atan2(y2 - y1, x2 - x1);
+		var dx = Math.cos(angle) * step;
+		var dy = Math.sin(angle) * step;
+		while (distSq(x1, y1, x2, y2) > step * step) {
+			if (this.map[(y1|0) * w + (x1|0)] == WALL)
+				return false;
+			x1 += dx;
+			y1 += dy;
+		}
+		return true;
+	};
+
+	this.getWalkableMatrix = function() {
+		var grid = new Array(h);
+		for (var j = 0; j < h; ++j) {
+			grid[j] = [];
+			for (var i = 0; i < w; ++i) {
+				grid[j].push(this.map[j * w + i] == WALL ? 1 : 0);;
+			}
+		}
+		return grid;
+	};
+
 }

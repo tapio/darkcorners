@@ -4,7 +4,7 @@
  * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Cube.as
  */
 
-function BlockGeometry(width, height, depth, segmentsWidth, segmentsHeight, segmentsDepth, materials, sides, uRepeat, vRepeat, randDisplace) {
+function BlockGeometry(width, height, depth, segmentsWidth, segmentsHeight, segmentsDepth, individualMaterials, sides, uRepeat, vRepeat, randDisplace) {
 	THREE.Geometry.call(this);
 
 	var scope = this,
@@ -18,18 +18,10 @@ function BlockGeometry(width, height, depth, segmentsWidth, segmentsHeight, segm
 
 	var mpx, mpy, mpz, mnx, mny, mnz;
 
-	if (materials !== undefined) {
-		if (materials instanceof Array) {
-			this.materials = materials;
-		} else {
-			this.materials = [];
-			for (var i = 0; i < 6; i ++) {
-				this.materials.push(materials);
-			}
-		}
+	if (individualMaterials) {
 		mpx = 0; mnx = 1; mpy = 2; mny = 3; mpz = 4; mnz = 5;
 	} else {
-		this.materials = [];
+		mpx = mnx = mpy = mny = mpz = mnz = 0;
 	}
 
 	this.sides = { px: true, nx: true, py: true, ny: true, pz: true, nz: true };
