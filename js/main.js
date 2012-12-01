@@ -169,6 +169,7 @@ function savePlayerState(levelName) {
 	localStorage.setItem("campaingState-" + levelName, JSON.stringify(state));
 }
 
+/*
 var shootVector = new THREE.Vector3();
 function shoot(obj, type, faction, off, flip) {
 	var bullet = dungeon.forks[dungeon.forkIndex];
@@ -214,10 +215,10 @@ function reload() {
 		pl.rhand.materialNeedsUpdate = true;
 	}, 2000);
 	soundManager.play("reload");
-}
+}*/
 
 function mouseHandler(button) {
-	if (button == 0 && pl.rhand && pl.bullets <= 0 && !pl.reloading) {
+	/*if (button == 0 && pl.rhand && pl.bullets <= 0 && !pl.reloading) {
 		// Clip empty, force reload if there is more
 		soundManager.play("shoot-dry");
 		reload();
@@ -230,7 +231,7 @@ function mouseHandler(button) {
 		}
 		shoot(pl.rhand, pl.ammoType, pl.faction, { x: 0.0, y: 0.11, z: 1.0 }, true);
 		updateHUD();
-	} else if (button == 2) {
+	} else*/ if (button == 2) {
 		// Punch/push
 		shootVector.set(0, 0, 1);
 		projector.unprojectVector(shootVector, pl.camera);
