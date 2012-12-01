@@ -278,11 +278,11 @@ function Dungeon(scene, player, levelName) {
 		scene.add(floor_plane);
 
 		// Exit
-		//cache.loadModel("assets/models/teleporter/teleporter.js",
-		//	objectHandler(level, new THREE.Vector3().set(level.exit[0], null, level.exit[1]), 0, assets.objects.teleporter));
-		//if (CONFIG.particles)
-		//	this.exitParticles = createTeleporterParticles(
-		//		new THREE.Vector3(level.exit[0] * level.gridSize, 0.5, level.exit[1] * level.gridSize));
+		cache.loadModel("assets/models/teleporter/teleporter.js",
+			objectHandler(level, new THREE.Vector3().set(level.exit[0], null, level.exit[1]), 0, assets.objects.teleporter));
+		if (CONFIG.particles)
+			this.exitParticles = createTeleporterParticles(
+				new THREE.Vector3(level.exit[0] * level.gridSize, 0.5, level.exit[1] * level.gridSize));
 	};
 
 	this.addLights = function(level) {
@@ -295,8 +295,8 @@ function Dungeon(scene, player, levelName) {
 				var obj = new Physijs.CylinderMesh(geometry, mat, 0);
 				obj.position.copy(pos);
 				obj.rotation.y = rot;
-				//obj.castShadow = true;
-				//obj.receiveShadow = true;
+				obj.castShadow = true;
+				obj.receiveShadow = true;
 				obj.matrixAutoUpdate = false;
 				obj.updateMatrix();
 				scene.add(obj);
@@ -319,7 +319,7 @@ function Dungeon(scene, player, levelName) {
 
 			// Snap to wall
 			// Create wall candidates for checking which wall is closest to the light
-			/*vec.set(level.lights[i].position.x|0, level.lights[i].position.z|0);
+			vec.set(level.lights[i].position.x|0, level.lights[i].position.z|0);
 			var candidates = [
 				{ x: vec.x + 0.5, y: vec.y, a: Math.PI },
 				{ x: vec.x + 1.0, y: vec.y + 0.5, a: Math.PI/2 },
@@ -342,12 +342,12 @@ function Dungeon(scene, player, levelName) {
 			// Check if there actually is a wall
 			if (level.map.get((light.position.x - vec.x * 0.5)|0, (light.position.z - vec.y * 0.5)|0) == WALL) {
 				// Switch to wall light
-				//name = "wall-lamp";
+				name = "wall-lamp";
 				// Move out of the wall
 				light.position.x += vec.x * 0.08;
 				light.position.z += vec.y * 0.08;
 				target.set(light.position.x + vec.x , light.position.y - 1, light.position.z + vec.y);
-			} else*/ {
+			} else {
 				// Center the ceiling hanging light to grid cell
 				light.position.x = (level.lights[i].position.x|0) + 0.5;
 				light.position.y = level.roomHeight;
@@ -389,12 +389,12 @@ function Dungeon(scene, player, levelName) {
 			lightManager.addShadow(light2);
 
 			// Mesh
-			cache.loadModel("assets/models/" + name + "/" + name + ".js", torchHandler(modelPos, 0/*snapped.a*/),
+			cache.loadModel("assets/models/" + name + "/" + name + ".js", torchHandler(modelPos, snapped.a),
 				modelTexturePath + name);
 
 			// Flame
-			//if (CONFIG.particles)
-			//	light.emitter = createTexturedFire(light);
+			if (CONFIG.particles)
+				light.emitter = createTexturedFire(light);
 		}
 
 		// Player's torch
@@ -478,44 +478,8 @@ function Dungeon(scene, player, levelName) {
 		if (level.startAngle)
 			controls.setYAngle(level.startAngle);
 
-		// Player gun
-		cache.loadModel("assets/models/gun/gun.js", function(geometry, materials) {
-			player.rhand = new Physijs.BoxMesh(geometry, new THREE.MeshFaceMaterial(materials));
-			// Hack: Materials for gun screen in order to show ammo is out differently
-			player.rhand.ammoGood = materials[2].clone();
-			player.rhand.ammoOut = materials[2].clone();
-			player.rhand.ammoOut.color.setRGB(0.3, 0.1, 0.1);
-			player.rhand.castShadow = true;
-			player.rhand.receiveShadow = true;
-			// FIXME: Should load this relative position from assets.js
-			player.rhand.position.set(0.4, 0.2, -1.0);
-			player.add(player.rhand);
-			scene.add(player); // Here player is added to the scene
-			player.setAngularFactor({ x: 0, y: 0, z: 0 });
-		}, modelTexturePath + "gun");
-
-		// Bullets
-		cache.loadModel("assets/models/fork/fork.js", function(geometry, materials) {
-			self.forks = [];
-			self.forkIndex = 0;
-			self.forkTypes = {
-				plain: { damage: 5, material: materials[0] },
-				heated: { damage: 8, material: materials[0].clone() },
-				plasma: { damage: 20, material: materials[0].clone() }
-			}
-			self.forkTypes.heated.material.ambient.setRGB(1.0, 0.3, 0.3);
-			self.forkTypes.plasma.material.ambient.setRGB(1.0, 0.3, 1.0);
-			for (var i = 0; i < 40; ++i) {
-				var fork = new Physijs.BoxMesh(geometry, self.forkTypes.plain.material, 100);
-				fork.damage = self.forkTypes.plain.damage;
-				self.forks.push(fork);
-				fork.visible = false;
-				// Trick Physijs into thinking the fork is bigger -> greater change it appears on ground
-				fork.scale.set(3.0, 3.0, 1.0);
-				scene.add(fork);
-				fork.scale.set(1.0, 1.0, 1.0);
-			}
-		});
+		scene.add(player); // Here player is added to the scene
+		player.setAngularFactor({ x: 0, y: 0, z: 0 });
 
 		self.generateMesh(level);
 		self.addLights(level);
