@@ -292,7 +292,7 @@ function Dungeon(scene, player, levelName) {
 				for (var m = 0; m < materials.length; ++m)
 					fixAnisotropy(materials[m]);
 				var mat = materials.length > 1 ? new THREE.MeshFaceMaterial(materials) : materials[0];
-				var obj = new Physijs.CylinderMesh(geometry, mat, 0);
+				var obj = new THREE.Mesh(geometry, mat, 0);
 				obj.position.copy(pos);
 				obj.rotation.y = rot;
 				obj.castShadow = true;
