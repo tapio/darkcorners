@@ -108,13 +108,13 @@ function createTexturedFire(parent) {
 		.renderToThreejsObject3D({
 			container: parent,
 			create: function() {
-				var object3d = new THREE.Sprite({
+				var object3d = new THREE.Sprite(new THREE.SpriteMaterial({
 					useScreenCoordinates: false,
 					map: _fireTexture,
 					blending: THREE.AdditiveBlending,
 					transparent: true
-				});
-				object3d.uvScale.set(1, 1 / numSprites)
+				}));
+				object3d.material.uvScale.set(1, 1 / numSprites)
 				return object3d;
 			}
 		})
@@ -124,7 +124,7 @@ function createTexturedFire(parent) {
 				var canonAge = particle.get('lifeTime').normalizedAge();
 				var imageIdx = Math.floor(canonAge * (numSprites));
 				var uvOffsetY = imageIdx * 1 / numSprites;
-				object3d.uvOffset.set(0, uvOffsetY)
+				object3d.material.uvOffset.set(0, uvOffsetY)
 			}).back()
 		.back()
 	.start();
