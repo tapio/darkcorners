@@ -104,6 +104,38 @@ function Dungeon(scene, player, levelName) {
 				if (def.character.hp) obj.hp = def.character.hp;
 				obj.faction = def.character.faction || 1;
 				self.monsters.push(obj);
+
+				// Character collision callbacks
+				obj.addEventListener('collision', function(other, vel, rot) {
+					if (vel.lengthSq() < 1) return;
+					if (other.damage && def.sound)
+						soundManager.playSpatial(def.sound, other.position, 10);
+					if (this.dead) return;
+					if (this.hp && other.damage && other.position.y > 0.3 && this.faction != other.faction) {
+						this.hp -= other.damage;
+						other.damage = 0;
+						// Check for death
+						if (this.hp <= 0) {
+							soundManager.playSpatial("robot-death", 20);
+							this.dead = true;
+							if (this.mesh) this.mesh.animate = false;
+							this.setAngularFactor({ x: 1, y: 1, z: 1 });
+							this.setAngularVelocity({ x: 0, y: 0, z: 0 });
+							this.setLinearVelocity({ x: 0, y: 0, z: 0 });
+							this.mass = 2000;
+							if (this.mesh) this.mesh.material = dead_material;
+							else this.material = dead_material;
+						} else {
+							// Hit effect
+							// TODO: Make this or similar work using the new non-shared materials
+							//var mats = this.mesh.materials, m;
+							//for (m = 0; m < mats.length; ++m) {
+							//	mats[m].color.r += 0.05;
+							//	mats[m].ambient.r += 0.05;
+							//}
+						}
+					}
+				});
 			}
 
 			if (def.item) {
@@ -111,38 +143,6 @@ function Dungeon(scene, player, levelName) {
 				obj.items[def.item.type] = def.item.value || 1;
 				obj.itemName = def.name;
 			}
-
-			// Character collision callbacks
-			obj.addEventListener('collision', function(other, vel, rot) {
-				if (vel.lengthSq() < 1) return;
-				if (other.damage && def.sound)
-					soundManager.playSpatial(def.sound, other.position, 10);
-				if (this.dead) return;
-				if (this.hp && other.damage && other.position.y > 0.3 && this.faction != other.faction) {
-					this.hp -= other.damage;
-					other.damage = 0;
-					// Check for death
-					if (this.hp <= 0) {
-						soundManager.playSpatial("robot-death", 20);
-						this.dead = true;
-						if (this.mesh) this.mesh.animate = false;
-						this.setAngularFactor({ x: 1, y: 1, z: 1 });
-						this.setAngularVelocity({ x: 0, y: 0, z: 0 });
-						this.setLinearVelocity({ x: 0, y: 0, z: 0 });
-						this.mass = 2000;
-						if (this.mesh) this.mesh.material = dead_material;
-						else this.material = dead_material;
-					} else {
-						// Hit effect
-						// TODO: Make this or similar work using the new non-shared materials
-						//var mats = this.mesh.materials, m;
-						//for (m = 0; m < mats.length; ++m) {
-						//	mats[m].color.r += 0.05;
-						//	mats[m].ambient.r += 0.05;
-						//}
-					}
-				}
-			});
 
 			// Finalize
 			scene.add(obj);
