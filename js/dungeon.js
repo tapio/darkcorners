@@ -368,6 +368,7 @@ function Dungeon(scene, player, levelName) {
 			lightManager.addLight(light);
 
 			// Shadow casting light
+			// FIXME: Should be point light
 			var light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
 			light2.position.copy(light.position);
 			light2.position.y = level.roomHeight;
