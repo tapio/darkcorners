@@ -315,7 +315,7 @@ function Dungeon(scene, player, levelName) {
 			// Actual light
 			var light = new THREE.PointLight(0xffffaa, 1, 2 * level.gridSize);
 			light.position.copy(level.lights[i].position);
-			var name = "ceiling-lamp";
+			var name = "torch-hanging-01";
 
 			// Snap to wall
 			// Create wall candidates for checking which wall is closest to the light
@@ -342,7 +342,7 @@ function Dungeon(scene, player, levelName) {
 			// Check if there actually is a wall
 			if (level.map.get((light.position.x - vec.x * 0.5)|0, (light.position.z - vec.y * 0.5)|0) == WALL) {
 				// Switch to wall light
-				name = "wall-lamp";
+				name = "torch";
 				// Move out of the wall
 				light.position.x += vec.x * 0.08;
 				light.position.z += vec.y * 0.08;

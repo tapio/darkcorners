@@ -37,6 +37,12 @@ var assets = {
 		"health-potion": {},
 		"mana-potion": {}
 	},
+	lights: {
+		"torch-hanging-01": { type: "ceiling", offset: { x: 0, y: -0.2, z: 0 } },
+		"torch-hanging-02": { type: "ceiling", offset: { x: 0, y: -0.2, z: 0 } },
+		"torch": { type: "wall", offset: { x: 0, y: -0.2, z: 0 } }
+	},
+	sounds: { },
 	materials: {
 		"grass-01": {},
 		"grass-02": {},
