@@ -70,6 +70,7 @@ function createTeleporterParticles(position) {
 var _fireTexture = loadTexture("assets/particles/flame.png", { alpha: true });
 function createTexturedFire(parent) {
 	var numSprites = 8;
+	var spriteSize = 128;
 	var emitter = Fireworks.createEmitter({ nParticles: 20 });
 	emitter.effectsStackBuilder()
 		.spawnerSteadyRate(15)
@@ -79,7 +80,7 @@ function createTexturedFire(parent) {
 		.friction(0.99)
 		//.randomVelocityDrift(Fireworks.createVector(0.1,2,0))
 		.createEffect('scale', {
-				origin: 1/1000,
+				origin: spriteSize / 1000,
 				factor: 1.02
 			}).onBirth(function(particle) {
 				var object3d = particle.get('threejsObject3D').object3d;
@@ -109,12 +110,15 @@ function createTexturedFire(parent) {
 			container: parent,
 			create: function() {
 				var object3d = new THREE.Sprite(new THREE.SpriteMaterial({
-					useScreenCoordinates: false,
 					map: _fireTexture,
+					useScreenCoordinates: false,
+					depthTest: true,
+					sizeAttenuation: true,
+					scaleByViewport: false,
 					blending: THREE.AdditiveBlending,
 					transparent: true
 				}));
-				object3d.material.uvScale.set(1, 1 / numSprites)
+				object3d.material.uvScale.set(1, 1 / numSprites);
 				return object3d;
 			}
 		})
@@ -124,7 +128,7 @@ function createTexturedFire(parent) {
 				var canonAge = particle.get('lifeTime').normalizedAge();
 				var imageIdx = Math.floor(canonAge * (numSprites));
 				var uvOffsetY = imageIdx * 1 / numSprites;
-				object3d.material.uvOffset.set(0, uvOffsetY)
+				object3d.material.uvOffset.set(0, uvOffsetY);
 			}).back()
 		.back()
 	.start();
