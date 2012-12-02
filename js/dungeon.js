@@ -315,7 +315,7 @@ function Dungeon(scene, player, levelName) {
 			// Actual light
 			var light = new THREE.PointLight(0xffffaa, 1, 2 * level.gridSize);
 			light.position.copy(level.lights[i].position);
-			var name = "torch-hanging-01";
+			var name = Math.random() < 0.5 ? "torch-hanging-01" : "torch-hanging-02";
 
 			// Snap to wall
 			// Create wall candidates for checking which wall is closest to the light
@@ -350,7 +350,7 @@ function Dungeon(scene, player, levelName) {
 			} else {
 				// Center the ceiling hanging light to grid cell
 				light.position.x = (level.lights[i].position.x|0) + 0.5;
-				light.position.y = level.roomHeight;
+				light.position.y = level.roomHeight - 0.9;
 				light.position.z = (level.lights[i].position.z|0) + 0.5;
 				target.copy(light.position);
 				target.y -= 1;
@@ -368,7 +368,6 @@ function Dungeon(scene, player, levelName) {
 			lightManager.addLight(light);
 
 			// Shadow casting light
-			// FIXME: Should be point light
 			var light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
 			light2.position.copy(light.position);
 			light2.position.y = level.roomHeight;
@@ -400,11 +399,10 @@ function Dungeon(scene, player, levelName) {
 
 		// Player's torch
 		player.light = new THREE.PointLight(0xccccaa, 1, level.gridSize * 3);
-		player.light.visible = false;
-		//scene.add(player.light);
+		scene.add(player.light);
 		player.shadow = new THREE.SpotLight(player.light.color.getHex(), player.light.intensity, player.light.distance);
-		player.shadow.angle = Math.PI / 8;
-		//player.shadow.onlyShadow = true;
+		player.shadow.angle = Math.PI / 4;
+		player.shadow.onlyShadow = true;
 		player.shadow.castShadow = true;
 		player.shadow.shadowCameraNear = 0.1;
 		player.shadow.shadowCameraFar = 10;
