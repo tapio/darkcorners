@@ -169,9 +169,9 @@ function savePlayerState(levelName) {
 	localStorage.setItem("campaingState-" + levelName, JSON.stringify(state));
 }
 
-/*
+
 var shootVector = new THREE.Vector3();
-function shoot(obj, type, faction, off, flip) {
+/*function shoot(obj, type, faction, off, flip) {
 	var bullet = dungeon.forks[dungeon.forkIndex];
 	dungeon.forkIndex = (dungeon.forkIndex + 1) % dungeon.forks.length;
 	bullet.position.copy(obj.matrixWorld.getPosition());
