@@ -500,7 +500,7 @@ function Dungeon(scene, player, levelName) {
 		if (level.title) displayMessage(level.title);
 	}
 
-	levelName = levelName || hashParams.level || "01-intro";
+	levelName = levelName || hashParams.level || "cave-test";
 	if (levelName == "rand") {
 		var gen = new MapGen();
 		processLevel(gen.generate());
