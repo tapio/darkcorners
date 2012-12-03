@@ -4,10 +4,10 @@ TODO & Roadmap
 Core engine
 -----------
 
+* Fix monster animation
 * Texture sharing between models
 	- Mention texture path in assets.js
 	- Expand to model sharing
-* Texture size changing
 * Individual wall texture to a block
 * Object LOD?
 	- Use simpler mesh for far away objects
@@ -19,7 +19,7 @@ Core engine
 Gameplay
 --------
 
-* Enemy AI
+* Complex enemy AI
 * Pick up objects, move and throw them
 * Better character dynamics (so that object mass matters)
 
@@ -27,7 +27,6 @@ Gameplay
 Editor
 ------
 
-* Universal right-click delete
 * Move things
 * Clickable thumbnails
 
