@@ -123,14 +123,14 @@ canvas {
 }
 
 #credits h1 {
-	color: #107;
-	text-shadow: #329 0 0 40px;
+	color: #321;
+	text-shadow: #543 0 0 40px;
 	font-size: 48px;
 }
 
 #credits h2 {
-	color: #43c;
-	text-shadow: #76f 0 0 20px;
+	color: #a33;
+	text-shadow: #c55 0 0 20px;
 }
 
 #credits ul {
@@ -139,7 +139,7 @@ canvas {
 }
 
 #credits a {
-	color: #226;
+	color: #a53;
 }
 
 @-webkit-keyframes creditsroll {
