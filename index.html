@@ -15,9 +15,15 @@
 			color: #aaa;
 			background-color: #111;
 		}
-		.hero-unit h1 { color: #500; }
+		hr { margin: 80px 0; }
+		.row { margin-top: 20px; }
+		.hero-unit h1 { color: #500; text-shadow: #800 0 0 70px; }
 		.hero-unit { background-color: #444; }
+		.red { color: red; }
+		.alert a { color: blue; }
 		#webgl-error { display: none; }
+		#firefox-warning { display: none; }
+		#angle-warning { display: none; }
 		#carousel { width: 300px; }
 	</style>
 	<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
@@ -57,45 +63,55 @@
 						<a class="btn btn-inverse btn-large" href="game.html#level=cave-test">Try demo!</a>
 						<a class="btn btn-inverse btn-large" href="game.html#level=temple-test">Try another scene!</a>
 					</p>
+					<div id="webgl-error" class="alert alert-error">
+						Oh no! Your browser or GPU doesn't seem to support <a href="http://get.webgl.org/">WebGL</a>.
+						Unfortunately you can't play the game without it.
+					</div>
 					<div class="alert">
 						<button type="button" class="close" data-dismiss="alert">×</button>
 						This is an early alpha. Performance or compatibility has <strong>not</strong>
 						been optimized and gameplay is mostly missing.
 					</div>
-					<div id="webgl-error" class="alert alert-error">
-						Oh no! Your browser or GPU doesn't seem to support <a href="http://get.webgl.org/">WebGL</a>.
-						Unfortunately you can't play the game without it.
+					<div id="angle-warning" class="alert">
+						<button type="button" class="close" data-dismiss="alert">×</button>
+						You may be affected by ANGLE/browser bug.<br/>
+						Try disabling <em>shadows</em> in the options and reloading the game if there are missing textures.
+					</div>
+					<div id="firefox-warning" class="alert">
+						<button type="button" class="close" data-dismiss="alert">×</button>
+						You seem to be using Firefox. It has bad performance and reduced features.<br/>
+						Check out <a href="https://github.com/tapio/plasma-forks/wiki/Performance-Tips">Performance Tips</a> or switch to Chrome.
 					</div>
 				</div>
 				<div class="span5">
 					<div id="carousel" class="carousel slide">
 						<div class="carousel-inner">
 							<div class="active item">
-								<a href="img/carousel/temple.jpg"><img src="img/carousel/temple.jpg" alt=""></a>
+								<a href="img/carousel/temple.jpg"><img src="img/carousel/temple.jpg" alt="Temple"/></a>
 								<div class="carousel-caption">
 									<h4>3D environments with dynamic lighting</h4>
 								</div>
 							</div>
 							<div class="item">
-								<a href="img/carousel/fallen.jpg"><img src="img/carousel/fallen.jpg" alt=""></a>
+								<a href="img/carousel/fallen.jpg"><img src="img/carousel/fallen.jpg" alt="Objects"/></a>
 								<div class="carousel-caption">
 									<h4>Enhanced immersion with physics engine</h4>
 								</div>
 							</div>
 							<div class="item">
-								<a href="img/carousel/editor.jpg"><img src="img/carousel/editor.jpg" alt=""></a>
+								<a href="img/carousel/editor.jpg"><img src="img/carousel/editor.jpg" alt="Editor"/></a>
 								<div class="carousel-caption">
 									<h4>Create your own levels with a simple editor</h4>
 								</div>
 							</div>
 							<div class="item">
-								<a href="img/carousel/room.jpg"><img src="img/carousel/room.jpg" alt=""></a>
+								<a href="img/carousel/room.jpg"><img src="img/carousel/room.jpg" alt="Room"/></a>
 								<div class="carousel-caption">
 									<h4>High quality, yet freely licensed assets</h4>
 								</div>
 							</div>
 							<div class="item">
-								<a href="img/carousel/portal.jpg"><img src="img/carousel/portal.jpg" alt=""></a>
+								<a href="img/carousel/portal.jpg"><img src="img/carousel/portal.jpg" alt="Portal"/></a>
 								<div class="carousel-caption">
 									<h4>Varying locations from caves to temples</h4>
 								</div>
@@ -111,16 +127,51 @@
 		<div class="row">
 			<div class="span4">
 				<h2>Requirements</h2>
-				<ul>
-					<li>Latest version of Chrome (best performance and features) or Firefox
+				<p><ul>
+					<li>Latest version of Chrome
 						<ul>
-							<li>IE does not support WebGL and Opera has issues</li>
+							<li>Firefox kind of works too, but has bad performance and some missing features</li>
 						</ul>
 					</li>
-					<li>Good dedicated GPU and drivers (both must not be blacklisted for WebGL by the browser vendors)</li>
-					<li>Decent CPU so that JavaScript runs well</li>
-				</ul>
-				<p><a class="btn btn-inverse" href="https://github.com/tapio/darkcorners/issues">Not running? Create an issue &raquo;</a></p>
+					<li><strong class="red">Excellent dedicated GPU and drivers</strong> (both must not be blacklisted for WebGL by the browser vendors)</li>
+					<li><strong class="red">Fast CPU and 1GB of free RAM</strong> so that JavaScript runs well</li>
+				</ul></p>
+			</div>
+			<div class="span4">
+				<h2>About</h2>
+				<p>This is a game prototype with a fantasy/mediaval setting. It's an experiment in
+				creating a full-blown 3D browser game complete with physics and high quality assets.</p>
+				<p>Currently the engine is in a demoable state, but the actual game is missing.
+				However, a different game using this engine has been completed and is featured
+				<a href="#plasma-forks">below</a>.</p>
+			</div>
+			<div class="span4">
+				<h2>Features</h2>
+				<p><ul>
+					<li>Editor for creating and sharing more levels</li>
+					<li>High quality textures, models etc</li>
+					<li>Animated enemies</li>
+					<li>Path finding enemies</li>
+					<li>Rigid body dynamics, i.e. physics</li>
+					<li>Dynamic lighting with shadows</li>
+					<li>Post-processing effects</li>
+				</ul></p>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="span4">
+				<h2>Troubleshooting</h2>
+				<p>If you experience problems, follow these steps:
+				<ol>
+					<li>Check that your system fulfills the system requirements on the left.</li>
+					<li>Read the <a href="https://github.com/tapio/plasma-forks/wiki/Known-Issues">
+						Known Issues</a> wiki page.</li>
+					<li>Check out the <a href="https://github.com/tapio/plasma-forks/wiki/Performance-Tips">
+						Performance Tips</a> wiki page if needed.</li>
+					<li>If the above didn't solve the problem, you are welcome to
+						<a href="https://github.com/tapio/darkcorners/issues/new">file an issue</a>.</li>
+				</ol></p>
 			</div>
 			<div class="span4">
 				<h2>Editor</h2>
@@ -141,11 +192,11 @@
 			</div>
 		</div>
 
-		<hr>
+		<hr/>
 
 		<div class="row">
 			<div class="span4">
-				<h2>Derivative: Plasma Forks</h2>
+				<h2 id="plasma-forks">Derivative: Plasma Forks</h2>
 				<p>Check out a small but complete scifi first-person shooter based on Dark Corners engine!</p>
 				<p><a class="btn btn-inverse" href="http://tapio.github.com/plasma-forks/">Plasma Forks &raquo;</a></p>
 			</div>
@@ -157,7 +208,7 @@
 			</div>
 		</div>
 
-		<hr>
+		<hr/>
 
 		<footer>
 			<p class="muted"><small>&copy; Tapio Vierros 2012</small></p>
@@ -168,11 +219,17 @@
 	<script src="libs/jquery-1.8.1.min.js"></script>
 	<script src="libs/bootstrap.min.js"></script>
 	<script>
+		// Warnings and errors
 		var hasWebGL;
 		try {
 			hasWebGL = !!window.WebGLRenderingContext && !!document.createElement('canvas').getContext('experimental-webgl');
 		} catch( e ) { hasWebGL = false; }
 		if (!hasWebGL) $("#webgl-error").show();
+		var isFirefox = /Firefox/i.test(navigator.userAgent);
+		var isChrome = /Chrome/i.test(navigator.userAgent);
+		var isWindows = /Win/i.test(navigator.platform);
+		if (isFirefox) $("#firefox-warning").show();
+		if (isWindows && (isFirefox || isChrome)) $("#angle-warning").show();
 	</script>
 
 </body>
