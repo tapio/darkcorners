@@ -12,8 +12,8 @@ System Requirements
 * Latest version of Chrome or Firefox
 	* Chrome offers noticeable better performance
 	* IE does not support WebGL and Opera has issues
-* Good dedicated GPU and drivers (both must not be blacklisted for WebGL by the browser vendors)
-* Decent CPU so that JavaScript runs well
+* **Good dedicated GPU and drivers** (both must not be blacklisted for WebGL by the browser vendors)
+* **Powerful CPU** so that JavaScript runs well
 
 
 Acknowledgements
@@ -27,6 +27,8 @@ This is based on several JS libraries, most prominently:
 	* Physics engine
 * Fireworks.js - http://jeromeetienne.github.com/fireworks.js/
 	* Particle engine
+* PathFinding.js - https://github.com/qiao/PathFinding.js
+	* Path finding library
 * dat.GUI - http://code.google.com/p/dat-gui/
 	* Settings and editor GUI
 
