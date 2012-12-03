@@ -80,7 +80,6 @@ function init() {
 
 	renderer = new THREE.WebGLRenderer({
 		clearColor: 0x000000,
-		maxLights: CONFIG.maxLights + 2, // Player light is separate
 		antialias: CONFIG.antialias,
 		preserveDrawingBuffer: true
 	});
