@@ -73,9 +73,9 @@ var assets = {
 		"wood-floor-01": {}
 	},
 	monsters: {
-		"cerberus": { collision: "box", character: { speed: 120 }, animation: { duration: 750 } },
-		"spider": { collision: "box", character: { speed: 120 }, animation: { duration: 750 } },
-		"minotaur": { collision: "box", character: { speed: 400 }, animation: { duration: 750 } }
+		"cerberus": { collision: "box", character: { speed: 4, hp: 50 }, animation: { type: "morph", duration: 750 } },
+		"spider": { collision: "box", character: { speed: 4, hp: 50 }, animation: { type: "morph", duration: 750 } },
+		"minotaur": { collision: "box", character: { speed: 10, hp: 50 }, animation: { type: "morph", duration: 750 } }
 	},
 	environments: {
 		"cave": {

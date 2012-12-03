@@ -56,9 +56,9 @@ function AIManager() {
 				// Look at player
 				walkTowards(monster, pl.position, 12);
 				// Shoot?
-				if (Math.random() < 0.333) {
-					shoot(monster, "plain", monster.faction, v1.set(0, 0.11, 1.2));
-				}
+				//if (Math.random() < 0.333) {
+				//	shoot(monster, "plain", monster.faction, v1.set(0, 0.11, 1.2));
+				//}
 
 			// Target lost? Let's find a path
 			} else if (monster.activated && !monster.waypoints) {

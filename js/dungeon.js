@@ -116,7 +116,7 @@ function Dungeon(scene, player, levelName) {
 						other.damage = 0;
 						// Check for death
 						if (this.hp <= 0) {
-							soundManager.playSpatial("robot-death", 20);
+							//soundManager.playSpatial("robot-death", 20);
 							this.dead = true;
 							if (this.mesh) this.mesh.animate = false;
 							this.setAngularFactor({ x: 1, y: 1, z: 1 });
