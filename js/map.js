@@ -56,7 +56,7 @@ function Map(w, h, data) {
 		floodFill(map, x+1, y, target, filler, skip);
 		floodFill(map, x, y-1, target, filler, skip);
 		floodFill(map, x, y+1, target, filler, skip);
-	};
+	}
 
 	this.fill = function(x, y, target, filler, skip) {
 		floodFill(this, x, y, target, filler, skip);
@@ -86,7 +86,7 @@ function Map(w, h, data) {
 		for (var j = 0; j < h; ++j) {
 			grid[j] = [];
 			for (var i = 0; i < w; ++i) {
-				grid[j].push(this.map[j * w + i] == WALL ? 1 : 0);;
+				grid[j].push(this.map[j * w + i] == WALL ? 1 : 0);
 			}
 		}
 		return grid;

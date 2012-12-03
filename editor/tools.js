@@ -7,7 +7,7 @@ tools.walls = {
 	},
 	drawing: null,
 	mousedown: function(e) {
-		if (e.button == 0) tools.walls.drawing = WALL;
+		if (e.button === 0) tools.walls.drawing = WALL;
 		else if (e.button == 2) tools.walls.drawing = OPEN;
 		else return;
 		putMouse(e._x, e._y, tools.walls.drawing);
@@ -28,7 +28,7 @@ tools.diagonals = {
 	},
 	mousedown: function(e) {
 		if (e.button == 2) putMouse(e._x, e._y, OPEN);
-		else if (e.button == 0) {
+		else if (e.button === 0) {
 			var c = 0;
 			if (getMouse(e._x - s, e._y) == WALL) ++c;
 			if (getMouse(e._x + s, e._y) == WALL) ++c;
@@ -36,7 +36,7 @@ tools.diagonals = {
 			if (getMouse(e._x, e._y + s) == WALL) ++c;
 			if (c == 2) putMouse(e._x, e._y, DIAG);
 		}
-	},
+	}
 };
 
 tools.start = {
@@ -45,7 +45,7 @@ tools.start = {
 		canvas.style.cursor = "crosshair";
 	},
 	mousedown: function(e) {
-		if (e.button == 0) {
+		if (e.button === 0) {
 			putMouse(e._x, e._y, OPEN);
 			level.start[0] = e._x / s;
 			level.start[1] = e._y / s;
@@ -59,7 +59,7 @@ tools.exit = {
 		canvas.style.cursor = "crosshair";
 	},
 	mousedown: function(e) {
-		if (e.button == 0) {
+		if (e.button === 0) {
 			putMouse(e._x, e._y, OPEN);
 			level.exit[0] = e._x / s;
 			level.exit[1] = e._y / s;
@@ -73,7 +73,7 @@ tools.light = {
 		canvas.style.cursor = "crosshair";
 	},
 	mousedown: function(e) {
-		if (e.button == 0) {
+		if (e.button === 0) {
 			level.lights.push({ position: { x: e._x / s, z: e._y / s } });
 		} else if (e.button == 2) tools.del(e);
 	}
@@ -88,11 +88,11 @@ tools.object = {
 	objects: [], // Populated from assets.js
 	angle: 0,
 	mousedown: function(e) {
-		if (e.button == 0) {
+		if (e.button === 0) {
 			var obj = {
 				name: tools.object.object,
 				position: { x: e._x / s, z: e._y / s }
-			}
+			};
 			if (tools.object.angle !== 0) obj.angle = tools.object.angle;
 			level.objects.push(obj);
 		} else if (e.button == 2) tools.del(e);
@@ -107,11 +107,11 @@ tools.item = {
 	item: "", // Populated from assets.js
 	items: [], // Populated from assets.js
 	mousedown: function(e) {
-		if (e.button == 0) {
+		if (e.button === 0) {
 			var item = {
 				name: tools.item.item,
 				position: { x: e._x / s, z: e._y / s }
-			}
+			};
 			level.items.push(item);
 		} else if (e.button == 2) tools.del(e);
 	}
@@ -125,11 +125,11 @@ tools.monster = {
 	monster: "", // Populated from assets.js
 	monsters: [], // Populated from assets.js
 	mousedown: function(e) {
-		if (e.button == 0) {
+		if (e.button === 0) {
 			var monster = {
 				name: tools.monster.monster,
 				position: { x: e._x / s, z: e._y / s }
-			}
+			};
 			level.monsters.push(monster);
 		} else if (e.button == 2) tools.del(e);
 	}
@@ -143,11 +143,11 @@ tools.trigger = {
 	type: "message",
 	types: [ "message" ],
 	mousedown: function(e) {
-		if (e.button == 0) {
+		if (e.button === 0) {
 			var trig = {
 				type: tools.trigger.type,
 				position: { x: e._x / s, z: e._y / s }
-			}
+			};
 			if (tools.trigger.type === "message") {
 				var msg = prompt("Please enter the message to be triggered:");
 				if (!msg) return;
@@ -198,7 +198,7 @@ tools["Export JSON"] = function() {
 };
 
 tools["Import level"] = function(json) {
-	var json = json || prompt("Paste here the level JSON (can be base64) to import:");
+	json = json || prompt("Paste here the level JSON (can be base64) to import:");
 	if (!json || !json.length) return;
 	try {
 		if (json[0] !== '{') json = window.atob(json);
@@ -219,7 +219,7 @@ tools["Import level"] = function(json) {
 	// Discard y-coordinates
 	for (var i = 0; i < level.lights.length; ++i)
 		if (level.lights[i].position.y !== undefined)
-			delete level.lights[i].position.y
+			delete level.lights[i].position.y;
 
 	document.getElementById("exported").value = "";
 	document.getElementById("exported").style.display = "none";

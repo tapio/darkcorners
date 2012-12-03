@@ -85,7 +85,7 @@ function createTexturedFire(parent) {
 			}).onBirth(function(particle) {
 				var object3d = particle.get('threejsObject3D').object3d;
 				var scale = this.opts.origin;
-				object3d.scale.set(scale*1.5, scale*4)
+				object3d.scale.set(scale*1.5, scale*4);
 			}).onUpdate(function(particle, deltaTime) {
 				var object3d = particle.get('threejsObject3D').object3d;
 				object3d.scale.multiplyScalar(this.opts.factor);

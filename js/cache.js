@@ -26,7 +26,7 @@ function Cache() {
 				self.models[path] = geometry;
 				self.modelMaterials[path] = materials;
 				modelsPending--;
-				if (modelsPending == 0)
+				if (modelsPending === 0)
 					loader.statusDomElement.style.display = "none";
 			}, texturePath);
 		} else if (m instanceof Array) { // Pending
