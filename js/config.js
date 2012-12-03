@@ -1,5 +1,4 @@
 "use strict";
-var UNIT = 1;
 
 if (!Detector.webgl) {
 	Detector.addGetWebGLMessage();
@@ -20,8 +19,12 @@ var hashParams = (function() {
 })();
 
 var CONFIG = {
-	showStats: true,
-	quarterMode: false,
+	fullscreen: false,
+	showStats: false,
+	resolution: 1.0,
+	physicsFPS: 60,
+	sounds: true,
+	music: true,
 	postprocessing: true,
 	particles: true,
 	maxLights: 4,
@@ -36,7 +39,8 @@ var CONFIG = {
 	linearTextureFilter: true,
 	bloom: true,
 	SSAO: true,
-	FXAA: false
+	FXAA: false,
+	textureQuality: 2
 };
 
 var updateConfig = function() {
@@ -48,6 +52,7 @@ var updateConfig = function() {
 	passes.bloom.enabled = CONFIG.bloom;
 	passes.ssao.enabled = CONFIG.SSAO;
 	passes.fxaa.enabled = CONFIG.FXAA;
+	scene.setFixedTimeStep(1 / CONFIG.physicsFPS);
 	var statDisplay = CONFIG.showStats ? "block" : "none";
 	if (renderStats) renderStats.domElement.style.display = statDisplay;
 	if (physicsStats) physicsStats.domElement.style.display = statDisplay;

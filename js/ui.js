@@ -3,8 +3,6 @@ var renderStats, physicsStats, rendererInfo;
 
 function initUI() {
 	var container = document.getElementById('container');
-
-	container.innerHTML = "";
 	container.appendChild(renderer.domElement);
 
 	renderStats = new Stats();
@@ -18,17 +16,15 @@ function initUI() {
 	physicsStats.domElement.style.left = '85px';
 	container.appendChild(physicsStats.domElement);
 
-	rendererInfo = document.createElement("div");
-	rendererInfo.style.position = 'absolute';
-	rendererInfo.style.bottom = '0px';
-	rendererInfo.style.left = '170px';
-	rendererInfo.style.color = '#f08';
-	rendererInfo.style.textAlign = 'left';
-	rendererInfo.style.backgroundColor = 'rgba(0, 0, 0, 0.33)';
-	container.appendChild(rendererInfo);
+	if (!CONFIG.showStats) {
+		renderStats.domElement.style.display = "none";
+		physicsStats.domElement.style.display = "none";
+	}
+
+	rendererInfo = document.getElementById("renderer-info");
 
 	container.requestPointerLock = container.requestPointerLock ||
-			container.mozRequestPointerLock || container.webkitRequestPointerLock;
+		container.mozRequestPointerLock || container.webkitRequestPointerLock;
 
 	container.requestFullscreen = container.requestFullscreen ||
 		container.mozRequestFullscreen || container.mozRequestFullScreen || container.webkitRequestFullscreen;
@@ -38,16 +34,18 @@ function initUI() {
 	$(window).focus(resume);
 	$("#instructions").click(function() {
 		// Firefox doesn't support fullscreenless pointer lock, so resort to this hack
-		if (/Firefox/i.test(navigator.userAgent)) {
+		if (CONFIG.fullscreen || /Firefox/i.test(navigator.userAgent)) {
 			var onFullscreenChange = function(event) {
-				if (document.fullscreenElement || document.mozFullscreenElement || document.mozFullScreenElement) {
+				if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullscreenElement || document.mozFullScreenElement) {
 					document.removeEventListener('fullscreenchange', onFullscreenChange);
 					document.removeEventListener('mozfullscreenchange', onFullscreenChange);
+					document.removeEventListener('webkitfullscreenchange', onFullscreenChange);
 					container.requestPointerLock();
 				}
 			};
 			document.addEventListener('fullscreenchange', onFullscreenChange, false);
 			document.addEventListener('mozfullscreenchange', onFullscreenChange, false);
+			document.addEventListener('webkitfullscreenchange', onFullscreenChange, false);
 			container.requestFullscreen();
 		} else {
 			container.requestPointerLock();
@@ -60,11 +58,22 @@ function initUI() {
 	$("#instructions").show();
 
 	// GUI controls
+	dat.GUI.TEXT_CLOSED = 'Close Options';
+	dat.GUI.TEXT_OPEN = 'Options';
 	var gui = new dat.GUI();
+	gui.add(CONFIG, "fullscreen").onChange(updateConfig);
+	gui.add(CONFIG, "resolution", 0.1, 1.0).step(0.1).onChange(function() { updateConfig(); onWindowResize(); });
+	gui.add(CONFIG, "physicsFPS", 30, 100).step(10).onChange(updateConfig);
 	gui.add(CONFIG, "showStats").onChange(updateConfig);
-	gui.add(CONFIG, "quarterMode").onChange(function() { updateConfig(); onWindowResize(); });
 	gui.add(controls, "mouseFallback");
 	gui.add(window, "editLevel");
+	var guiAudio = gui.addFolder("Audio");
+	guiAudio.add(CONFIG, "sounds").onChange(updateConfig);
+	guiAudio.add(CONFIG, "music").onChange(function() {
+		if (CONFIG.music) soundManager.playMusic("dark-ambiance-01");
+		else soundManager.stopMusic();
+		updateConfig();
+	});
 	var guiRenderer = gui.addFolder("Renderer options (reload required)");
 	guiRenderer.add(CONFIG, "antialias").onChange(updateConfig);
 	guiRenderer.add(CONFIG, "physicalShading").onChange(updateConfig);
@@ -73,11 +82,12 @@ function initUI() {
 	guiRenderer.add(CONFIG, "particles").onChange(updateConfig);
 	guiRenderer.add(window, "reload");
 	var guiLighting = gui.addFolder("Light and shadow");
-	guiLighting.add(CONFIG, "maxLights", 0, 6).step(1).onChange(updateConfig);
+	guiLighting.add(CONFIG, "maxLights", 0, 10).step(1).onChange(updateConfig);
 	guiLighting.add(CONFIG, "maxShadows", 0, 6).step(1).onChange(updateConfig);
 	guiLighting.add(CONFIG, "shadows").onChange(updateMaterials);
 	guiLighting.add(CONFIG, "softShadows").onChange(updateMaterials);
 	var guiTextures = gui.addFolder("Texture options");
+	//guiTextures.add(CONFIG, "textureQuality", 0, 2).step(1).onChange(updateConfig);
 	guiTextures.add(CONFIG, "anisotropy", 1, renderer.getMaxAnisotropy()).step(1).onChange(updateTextures);
 	guiTextures.add(CONFIG, "linearTextureFilter").onChange(updateTextures);
 	var guiPostproc = gui.addFolder("Post-processing");
@@ -88,15 +98,30 @@ function initUI() {
 	gui.close();
 }
 
+function updateHUD() {
+	$("#health").html(pl.hp);
+	$("#bullets").html(pl.bullets);
+	$("#clips").html(pl.clips);
+}
+
 var messageTimer = null;
 function displayMessage(msg) {
+	var elem = $("#message");
 	if (messageTimer)
 		window.clearTimeout(messageTimer);
-	$("#message").html(msg).fadeIn(2000);
+	if (elem.is(':visible')) elem.stop(true, true).hide();
+	elem.html(msg).fadeIn(2000);
 	messageTimer = window.setTimeout(function() {
-		$("#message").fadeOut(5000);
+		elem.fadeOut(5000);
 		messageTimer = null;
-	}, 5000);
+	}, 3000);
+}
+
+function displayMinorMessage(msg) {
+	var elem = $("#minor-messages");
+	if (!elem.is(':visible')) elem.html("");
+	elem.stop(true, true);
+	elem.prepend(msg + "<br/>").show().fadeOut(5000);
 }
 
 function editLevel() {
@@ -105,7 +130,7 @@ function editLevel() {
 }
 
 function onWindowResize() {
-	var scale = CONFIG.quarterMode ? 0.5 : 1;
+	var scale = CONFIG.resolution;
 	pl.camera.aspect = window.innerWidth / window.innerHeight;
 	pl.camera.updateProjectionMatrix();
 	renderer.setSize(window.innerWidth * scale, window.innerHeight * scale);
@@ -125,7 +150,7 @@ function onPointerLockChange() {
 		$("#instructions").hide();
 	} else {
 		controls.pointerLockEnabled = false;
-		$("#instructions").show();
+		if (!pl.dead) $("#instructions").show();
 	}
 }
 

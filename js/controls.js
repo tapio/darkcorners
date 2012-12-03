@@ -64,14 +64,14 @@ function Controls(object, handlers, domElement) {
 		event.preventDefault();
 		if (this.domElement !== document) this.domElement.focus();
 		if (this.pointerLockEnabled) event.stopPropagation();
-		if (this.mouseEnabled && this.handlers.mouse)
+		if (this.mouseEnabled && this.active && this.handlers.mouse && this.pointerLockEnabled)
 			this.handlers.mouse(event.button);
 	};
 
 	this.onMouseUp = function (event) {
 		event.preventDefault();
 		if (this.pointerLockEnabled) event.stopPropagation();
-		if (this.mouseEnabled) {
+		if (this.mouseEnabled && this.active) {
 			switch (event.button) {
 				case 0: break;
 				case 2: break;
@@ -81,6 +81,7 @@ function Controls(object, handlers, domElement) {
 
 	this.onMouseMove = function (event) {
 		function limit(a, lo, hi) { return a < lo ? lo : (a > hi ? hi : a); }
+		if (!this.mouseEnabled || !this.active) return;
 		if (this.pointerLockEnabled) {
 			if (event.mozMovementX === 0 && event.mozMovementY === 0) return; // Firefox fires 0-movement event right after real one
 			this.mouseX = event.movementX || event.webkitMovementX || event.mozMovementX || 0;
@@ -107,8 +108,9 @@ function Controls(object, handlers, domElement) {
 			case 83: /*S*/ moveBackward = true; break;
 			case 39: /*right*/
 			case 68: /*D*/ moveRight = true; break;
-			case 81: /*Q*/ this.active = !this.active; break;
-			case 123: /*F12*/ screenshot(); break;
+			case 82: /*R*/ reload(); break;
+			case 70: /*F*/ pl.shadow.visible = !pl.shadow.visible; break;
+			case 123: /*F12*/ screenshot(true); break;
 		}
 	};
 

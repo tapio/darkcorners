@@ -1,14 +1,23 @@
 "use strict";
 function Dungeon(scene, player, levelName) {
 	var self = this;
-	this.loaded = false;
+	this.onLoad = null;
 	this.objects = [];
 	this.monsters = [];
-	var dummy_material = new THREE.MeshBasicMaterial({color: 0x000000});
-	var debug_material = new THREE.MeshBasicMaterial({color: 0xff00ff});
+	this.grid = null;
+	this.pathFinder = null;
+	this.level = null;
+	var dummy_material = new THREE.MeshBasicMaterial({ color: 0x000000 });
+	var debug_material = new THREE.MeshBasicMaterial({ color: 0xff00ff });
+	var dead_material = new THREE.MeshLambertMaterial({ color: 0x222222, ambient: 0x222222 });
+	var dummy_geometry = new THREE.Geometry();
+
+	var modelTexturePath = "assets/models/";
+	if (CONFIG.textureQuality === 0) modelTexturePath = "assets/models-256/";
+	else if (CONFIG.textureQuality == 1) modelTexturePath = "assets/models-512/";
 
 	function objectHandler(level, pos, ang, def) {
-		return function(geometry) {
+		return function(geometry, materials) {
 			if (!def) def = {};
 			var obj, mass = def.mass || 0;
 
@@ -19,18 +28,13 @@ function Dungeon(scene, player, levelName) {
 				scale += randf(-def.randScale, def.randScale);
 				mass *= scale;
 			}
-			if (def.animation) geometry.computeMorphNormals();
 			if (!geometry.boundingBox) geometry.computeBoundingBox();
 
-			// Handle materials
-			for (var m = 0; m < geometry.materials.length; ++m) {
-				fixAnisotropy(geometry.materials[m]);
-				if (def.animation) {
-					geometry.materials[m].morphTargets = true;
-					geometry.materials[m].morphNormals = true;
-				}
-			}
-			var mat = geometry.materials.length > 1 ? new THREE.MeshFaceMaterial() : geometry.materials[0];
+			// Fix anisotropy
+			for (var m = 0; m < materials.length; ++m)
+				fixAnisotropy(materials[m]);
+
+			var mat = materials.length > 1 ? new THREE.MeshFaceMaterial(materials) : materials[0];
 
 			// Mesh creation
 			if (def.collision) {
@@ -45,6 +49,8 @@ function Dungeon(scene, player, levelName) {
 					obj = new Physijs.CylinderMesh(geometry, material, mass);
 				else if (def.collision == "cone")
 					obj = new Physijs.ConeMesh(geometry, material, mass);
+				else if (def.collision == "capsule")
+					obj = new Physijs.CapsuleMesh(geometry, material, mass);
 				else if (def.collision == "convex")
 					obj = new Physijs.ConvexMesh(geometry, material, mass);
 				else if (def.collision == "concave")
@@ -75,7 +81,7 @@ function Dungeon(scene, player, levelName) {
 				obj.castShadow = true;
 				obj.receiveShadow = true;
 			}
-			if (mass === 0) {
+			if (mass === 0 && !def.character) {
 				obj.matrixAutoUpdate = false;
 				obj.updateMatrix();
 			}
@@ -83,10 +89,10 @@ function Dungeon(scene, player, levelName) {
 			// Handle animated meshes
 			if (def.animation) {
 				obj.visible = false;
-				self.monsters.push(obj);
-				obj.mesh = new THREE.MorphAnimMesh(geometry, mat);
-				obj.mesh.duration = def.animation.duration;
-				obj.mesh.time = obj.mesh.duration * Math.random();
+				// Switch the geometry to simple dummy one
+				obj.geometry = dummy_geometry;
+				// Create the animated mesh for displaying
+				obj.mesh = animationManager.createAnimatedMesh(geometry, materials, def);
 				if (!def.noShadows) {
 					obj.mesh.castShadow = true;
 					obj.mesh.receiveShadow = true;
@@ -94,9 +100,53 @@ function Dungeon(scene, player, levelName) {
 				obj.add(obj.mesh);
 			}
 
+			if (def.character) {
+				if (def.character.hp) obj.hp = def.character.hp;
+				obj.faction = def.character.faction || 1;
+				self.monsters.push(obj);
+
+				// Character collision callbacks
+				obj.addEventListener('collision', function(other, vel, rot) {
+					if (vel.lengthSq() < 1) return;
+					if (other.damage && def.sound)
+						soundManager.playSpatial(def.sound, other.position, 10);
+					if (this.dead) return;
+					if (this.hp && other.damage && other.position.y > 0.3 && this.faction != other.faction) {
+						this.hp -= other.damage;
+						other.damage = 0;
+						// Check for death
+						if (this.hp <= 0) {
+							//soundManager.playSpatial("robot-death", 20);
+							this.dead = true;
+							if (this.mesh) this.mesh.animate = false;
+							this.setAngularFactor({ x: 1, y: 1, z: 1 });
+							this.setAngularVelocity({ x: 0, y: 0, z: 0 });
+							this.setLinearVelocity({ x: 0, y: 0, z: 0 });
+							this.mass = 2000;
+							if (this.mesh) this.mesh.material = dead_material;
+							else this.material = dead_material;
+						} else {
+							// Hit effect
+							// TODO: Make this or similar work using the new non-shared materials
+							//var mats = this.mesh.materials, m;
+							//for (m = 0; m < mats.length; ++m) {
+							//	mats[m].color.r += 0.05;
+							//	mats[m].ambient.r += 0.05;
+							//}
+						}
+					}
+				});
+			}
+
+			if (def.item) {
+				obj.items = {};
+				obj.items[def.item.type] = def.item.value || 1;
+				obj.itemName = def.name;
+			}
+
 			// Finalize
 			scene.add(obj);
-			if (def.character && def.collision) obj.setAngularFactor({ x: 0, y: 0, z: 0 });
+			if (def.character && def.collision) obj.setAngularFactor({ x: 0, y: 1, z: 0 });
 			if (def.character) obj.speed = def.character.speed;
 			if (def.door) {
 				obj.setAngularFactor({ x: 0, y: 1, z: 0 });
@@ -124,13 +174,11 @@ function Dungeon(scene, player, levelName) {
 	this.generateMesh = function(level) {
 		var sqrt2 = Math.sqrt(2);
 		var block_mat = cache.getMaterial(level.materials.wall);
-		var block_params = {};
-		if (assets.materials[level.materials.wall] && assets.materials[level.materials.wall].roughness)
-			block_params.roughness = assets.materials[level.materials.wall].roughness;
+		var block_params = assets.materials[level.materials.wall] || {};
 
 		// Level geometry
-		var geometry = new THREE.Geometry(), mesh;
-		var cell, px, nx, pz, nz, py, ny, tess, cube, hash, rot;
+		var geometry = new THREE.Geometry(), mesh = new THREE.Mesh();
+		var cell, px, nx, pz, nz, py, ny, tess, cube, hash, rot, repeat;
 		for (var j = 0; j < level.depth; ++j) {
 			for (var i = 0; i < level.width; ++i) {
 				px = nx = pz = nz = py = ny = 0;
@@ -145,22 +193,22 @@ function Dungeon(scene, player, levelName) {
 					hash = px + nx + pz + nz;
 					if (hash === 0) continue;
 					tess = block_params.roughness ? 10 : 0;
+					repeat = block_params.repeat || 1;
 					rot = 0;
 					if (cell === DIAG && (hash == 5 || hash == 6 || hash == 9 || hash == 10)) {
 						cube = new PlaneGeometry(level.gridSize * sqrt2, level.roomHeight, tess, tess,
-							"px", level.gridSize * sqrt2 / 2, level.roomHeight / 2, block_params.roughness);
+							"px", level.gridSize * sqrt2 / 2 * repeat, level.roomHeight / 2 * repeat, block_params.roughness);
 						if (hash == 5) rot = -45 / 180 * Math.PI;
 						else if (hash == 6) rot = -135 / 180 * Math.PI;
 						else if (hash == 9) rot = 45 / 180 * Math.PI;
 						else if (hash == 10) rot = 135 / 180 * Math.PI;
-						cube.materials = [ block_mat ];
 					} else {
 						cube = new BlockGeometry(level.gridSize, level.roomHeight, level.gridSize,
-							tess, tess, tess, block_mat,
+							tess, tess, tess, false,
 							{ px: px, nx: nx, py: 0, ny: 0, pz: pz, nz: nz },
-							level.gridSize/2, level.roomHeight/2, block_params.roughness);
+							level.gridSize/2 * repeat, level.roomHeight/2 * repeat, block_params.roughness);
 					}
-					mesh = new THREE.Mesh(cube);
+					mesh.geometry = cube;
 					mesh.position.x = (i + 0.5) * level.gridSize;
 					mesh.position.y = 0.5 * level.roomHeight;
 					mesh.position.z = (j + 0.5) * level.gridSize;
@@ -194,21 +242,32 @@ function Dungeon(scene, player, levelName) {
 			}
 		}
 
-		// Ceiling, no collision needed
-		var ceiling_plane = new THREE.Mesh(
+		// Level mesh
+		//geometry.computeTangents();
+		mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial([ block_mat ]));
+		mesh.receiveShadow = true;
+		mesh.matrixAutoUpdate = false;
+		mesh.updateMatrix();
+		scene.add(mesh);
+
+		// Ceiling
+		repeat = assets.materials[level.materials.ceiling] ? assets.materials[level.materials.ceiling].repeat || 1 : 1;
+		var ceiling_plane = new Physijs.PlaneMesh(
 			new PlaneGeometry(level.gridSize * level.width, level.gridSize * level.depth,
-				1, 1, "ny", level.width, level.depth),
-			cache.getMaterial(level.materials.ceiling)
+				1, 1, "ny", level.width * repeat, level.depth * repeat),
+			Physijs.createMaterial(cache.getMaterial(level.materials.ceiling), 0.9, 0.0), // friction, restitution
+			0 // mass
 		);
 		ceiling_plane.position.set(level.gridSize * level.width * 0.5, level.roomHeight, level.gridSize * level.depth * 0.5);
 		ceiling_plane.matrixAutoUpdate = false;
 		ceiling_plane.updateMatrix();
 		scene.add(ceiling_plane);
 
-		// Floor with collision
+		// Floor
+		repeat = assets.materials[level.materials.floor] ? assets.materials[level.materials.floor].repeat || 1 : 1;
 		var floor_plane = new Physijs.PlaneMesh(
 			new PlaneGeometry(level.gridSize * level.width, level.gridSize * level.depth,
-				1, 1, "py", level.width, level.depth),
+				1, 1, "py", level.width * repeat, level.depth * repeat),
 			Physijs.createMaterial(cache.getMaterial(level.materials.floor), 0.9, 0.0), // friction, restitution
 			0 // mass
 		);
@@ -217,14 +276,6 @@ function Dungeon(scene, player, levelName) {
 		floor_plane.matrixAutoUpdate = false;
 		floor_plane.updateMatrix();
 		scene.add(floor_plane);
-
-		// Level mesh
-		geometry.computeTangents();
-		mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial());
-		mesh.receiveShadow = true;
-		mesh.matrixAutoUpdate = false;
-		mesh.updateMatrix();
-		scene.add(mesh);
 
 		// Exit
 		cache.loadModel("assets/models/teleporter/teleporter.js",
@@ -237,11 +288,11 @@ function Dungeon(scene, player, levelName) {
 	this.addLights = function(level) {
 		// Torch model load callback
 		function torchHandler(pos, rot) {
-			return function(geometry) {
-				for (var m = 0; m < geometry.materials.length; ++m)
-					fixAnisotropy(geometry.materials[m]);
-				var mat = geometry.materials.length > 1 ? new THREE.MeshFaceMaterial() : geometry.materials[0];
-				var obj = new THREE.Mesh(geometry, mat);
+			return function(geometry, materials) {
+				for (var m = 0; m < materials.length; ++m)
+					fixAnisotropy(materials[m]);
+				var mat = materials.length > 1 ? new THREE.MeshFaceMaterial(materials) : materials[0];
+				var obj = new THREE.Mesh(geometry, mat, 0);
 				obj.position.copy(pos);
 				obj.rotation.y = rot;
 				obj.castShadow = true;
@@ -253,7 +304,7 @@ function Dungeon(scene, player, levelName) {
 		}
 
 		// Ambient
-		scene.add(new THREE.AmbientLight(0xaaaaaa));
+		scene.add(new THREE.AmbientLight(0x444444));
 
 		// Point lights
 		var vec = new THREE.Vector2();
@@ -264,7 +315,7 @@ function Dungeon(scene, player, levelName) {
 			// Actual light
 			var light = new THREE.PointLight(0xffffaa, 1, 2 * level.gridSize);
 			light.position.copy(level.lights[i].position);
-			var torch = "assets/models/torch/torch.js";
+			var name = Math.random() < 0.5 ? "torch-hanging-01" : "torch-hanging-02";
 
 			// Snap to wall
 			// Create wall candidates for checking which wall is closest to the light
@@ -290,14 +341,14 @@ function Dungeon(scene, player, levelName) {
 			vec.subSelf(snapped).multiplyScalar(2);
 			// Check if there actually is a wall
 			if (level.map.get((light.position.x - vec.x * 0.5)|0, (light.position.z - vec.y * 0.5)|0) == WALL) {
+				// Switch to wall light
+				name = "torch";
 				// Move out of the wall
 				light.position.x += vec.x * 0.08;
 				light.position.z += vec.y * 0.08;
 				target.set(light.position.x + vec.x , light.position.y - 1, light.position.z + vec.y);
 			} else {
-				// Switch to ceiling hanging light
-				torch = Math.random() < 0.5 ? "assets/models/torch-hanging-01/torch-hanging-01.js"
-					: "assets/models/torch-hanging-02/torch-hanging-02.js";
+				// Center the ceiling hanging light to grid cell
 				light.position.x = (level.lights[i].position.x|0) + 0.5;
 				light.position.y = level.roomHeight - 0.9;
 				light.position.z = (level.lights[i].position.z|0) + 0.5;
@@ -309,6 +360,8 @@ function Dungeon(scene, player, levelName) {
 			light.position.z *= level.gridSize;
 			target.x *= level.gridSize;
 			target.z *= level.gridSize;
+			var modelPos = new THREE.Vector3().copy(light.position);
+			if (assets.lights[name].offset) light.position.addSelf(assets.lights[name].offset);
 			light.matrixAutoUpdate = false;
 			light.updateMatrix();
 			scene.add(light);
@@ -322,8 +375,8 @@ function Dungeon(scene, player, levelName) {
 			light2.angle = Math.PI / 2;
 			light2.castShadow = true;
 			light2.onlyShadow = true;
-			light2.shadowCameraNear = 0.1 * UNIT;
-			light2.shadowCameraFar = light.distance * 1.5 * UNIT;
+			light2.shadowCameraNear = 0.1;
+			light2.shadowCameraFar = light.distance * 1.5;
 			light2.shadowCameraFov = 100;
 			light2.shadowBias = -0.0002;
 			light2.shadowDarkness = 0.3;
@@ -336,7 +389,8 @@ function Dungeon(scene, player, levelName) {
 			lightManager.addShadow(light2);
 
 			// Mesh
-			cache.loadModel(torch, torchHandler(new THREE.Vector3().copy(light.position), snapped.a));
+			cache.loadModel("assets/models/" + name + "/" + name + ".js", torchHandler(modelPos, snapped.a),
+				modelTexturePath + name);
 
 			// Flame
 			if (CONFIG.particles)
@@ -346,12 +400,12 @@ function Dungeon(scene, player, levelName) {
 		// Player's torch
 		player.light = new THREE.PointLight(0xccccaa, 1, level.gridSize * 3);
 		scene.add(player.light);
-		player.shadow = new THREE.SpotLight(player.light.color, player.light.intensity, player.light.distance);
+		player.shadow = new THREE.SpotLight(player.light.color.getHex(), player.light.intensity, player.light.distance);
 		player.shadow.angle = Math.PI / 4;
 		player.shadow.onlyShadow = true;
 		player.shadow.castShadow = true;
-		player.shadow.shadowCameraNear = 0.1 * UNIT;
-		player.shadow.shadowCameraFar = 10 * UNIT;
+		player.shadow.shadowCameraNear = 0.1;
+		player.shadow.shadowCameraFar = 10;
 		player.shadow.shadowCameraFov = 90;
 		player.shadow.shadowBias = -0.0002;
 		player.shadow.shadowDarkness = 0.3;
@@ -367,19 +421,19 @@ function Dungeon(scene, player, levelName) {
 			var name = level.objects[i].name;
 			cache.loadModel("assets/models/" + name + "/" + name + ".js",
 				objectHandler(level, new THREE.Vector3().copy(level.objects[i].position),
-					level.objects[i].angle, assets.objects[name]));
+					level.objects[i].angle, assets.objects[name]),
+				modelTexturePath + name);
 		}
 	};
 
 	this.addItems = function(level) {
 		if (!level.items) return;
-		var pos = new THREE.Vector3();
 		for (var i = 0; i < level.items.length; ++i) {
 			var name = level.items[i].name;
-			pos.copy(level.items[i].position);
-			pos.y = 1.2;
 			cache.loadModel("assets/models/" + name + "/" + name + ".js",
-				objectHandler(level, pos, 0, assets.items[name]));
+				objectHandler(level, new THREE.Vector3().copy(level.items[i].position),
+					level.items[i].angle, assets.items[name]),
+				modelTexturePath + name);
 		}
 	};
 
@@ -387,8 +441,10 @@ function Dungeon(scene, player, levelName) {
 		if (!level.monsters) return;
 		for (var i = 0; i < level.monsters.length; ++i) {
 			var name = level.monsters[i].name;
-			cache.loadModel("assets/monsters/" + name + "/" + name + ".js",
-				objectHandler(level, new THREE.Vector3().copy(level.monsters[i].position), 0, assets.monsters[name]));
+			cache.loadModel("assets/models/" + name + "/" + name + ".js",
+				objectHandler(level, new THREE.Vector3().copy(level.monsters[i].position),
+					level.monsters[i].angle, assets.monsters[name]),
+				modelTexturePath + name);
 		}
 	};
 
@@ -404,8 +460,8 @@ function Dungeon(scene, player, levelName) {
 
 	this.isAtExit = function(pos) {
 		return this.level &&
-			Math.abs(pos.x - this.level.exit[0] * this.level.gridSize) < 0.5 &&
-			Math.abs(pos.z - this.level.exit[1] * this.level.gridSize) < 0.5;
+			Math.abs(pos.x - this.level.exit[0] * this.level.gridSize) < 0.5 * this.level.gridSize &&
+			Math.abs(pos.z - this.level.exit[1] * this.level.gridSize) < 0.5 * this.level.gridSize;
 	};
 
 	function processLevel(level) {
@@ -420,8 +476,9 @@ function Dungeon(scene, player, levelName) {
 		player.position.z = level.start[1] * level.gridSize;
 		if (level.startAngle)
 			controls.setYAngle(level.startAngle);
-		scene.add(pl);
-		pl.setAngularFactor({ x: 0, y: 0, z: 0 });
+
+		scene.add(player); // Here player is added to the scene
+		player.setAngularFactor({ x: 0, y: 0, z: 0 });
 
 		self.generateMesh(level);
 		self.addLights(level);
@@ -430,7 +487,17 @@ function Dungeon(scene, player, levelName) {
 		self.addMonsters(level);
 		lightManager.update(pl);
 		self.level = level;
-		self.loaded = true;
+		self.grid = new PF.Grid(level.width, level.depth, level.map.getWalkableMatrix());
+		self.pathFinder = new PF.AStarFinder({
+			allowDiagonal: true,
+			dontCrossCorners: true,
+			heurestic: PF.Heuristic.euclidean
+		});
+		// Callback
+		if (self.onLoad) self.onLoad();
+		else self.onLoad = true;
+
+		if (level.title) displayMessage(level.title);
 	}
 
 	levelName = levelName || hashParams.level || "cave-test";
@@ -446,6 +513,10 @@ function Dungeon(scene, player, levelName) {
 
 	this.serialize = function() {
 		return JSON.stringify(this.level);
-	}
+	};
 
+	this.ready = function(callback) {
+		if (this.onLoad === true) callback();
+		else this.onLoad = callback;
+	};
 }

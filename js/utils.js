@@ -71,7 +71,9 @@ function updateMaterials() {
 
 function createMaterial(name) {
 	var texture_path = "assets/textures/";
-	var ambient = 0x333333, diffuse = 0xbbbbbb, specular = 0xffffff, shininess = 30, scale = 1.0;
+	if (CONFIG.textureQuality === 0) texture_path = "assets/textures-256/";
+	else if (CONFIG.textureQuality == 1) texture_path = "assets/textures-512/";
+	var ambient = 0xaaaaaa, diffuse = 0xaaaaaa, specular = 0xffffff, shininess = 30, scale = 1.0;
 	/*var shader = THREE.ShaderUtils.lib["normal"];
 	var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
 
@@ -144,8 +146,10 @@ function dumpInfo() {
 	console.log("WebGL info: ", gl_info);
 }
 
-function screenshot() {
-	var dataUrl = renderer.domElement.toDataURL("image/png");
+function screenshot(dontDownload, useJPG) {
+	var imgtype = useJPG ? "image/jpeg" : "image/png";
+	var dataUrl = renderer.domElement.toDataURL(imgtype);
+	if (!dontDownload) dataUrl = dataUrl.replace(imgtype, "image/octet-stream");
 	window.open(dataUrl, "_blank");
 }
 

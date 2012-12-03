@@ -49,7 +49,7 @@ tools.start = {
 			putMouse(e._x, e._y, OPEN);
 			level.start[0] = e._x / s;
 			level.start[1] = e._y / s;
-		}
+		} else if (e.button == 2) tools.del(e);
 	}
 };
 
@@ -63,7 +63,7 @@ tools.exit = {
 			putMouse(e._x, e._y, OPEN);
 			level.exit[0] = e._x / s;
 			level.exit[1] = e._y / s;
-		}
+		} else if (e.button == 2) tools.del(e);
 	}
 };
 
@@ -75,15 +75,7 @@ tools.light = {
 	mousedown: function(e) {
 		if (e.button == 0) {
 			level.lights.push({ position: { x: e._x / s, z: e._y / s } });
-		} else if (e.button == 2) {
-			for (var i = 0; i < level.lights.length; ++i) {
-				if (Math.abs(level.lights[i].position.x - e._x / s) < 0.75 &&
-					Math.abs(level.lights[i].position.z - e._y / s) < 0.75) {
-						level.lights.splice(i, 1);
-						break;
-				}
-			}
-		}
+		} else if (e.button == 2) tools.del(e);
 	}
 };
 
@@ -92,7 +84,7 @@ tools.object = {
 		currentTool = tools.object;
 		canvas.style.cursor = "crosshair";
 	},
-	object: "barrel",
+	object: "", // Populated from assets.js
 	objects: [], // Populated from assets.js
 	angle: 0,
 	mousedown: function(e) {
@@ -103,15 +95,7 @@ tools.object = {
 			}
 			if (tools.object.angle !== 0) obj.angle = tools.object.angle;
 			level.objects.push(obj);
-		} else if (e.button == 2) {
-			for (var i = 0; i < level.objects.length; ++i) {
-				if (Math.abs(level.objects[i].position.x - e._x / s) < 0.75 &&
-					Math.abs(level.objects[i].position.z - e._y / s) < 0.75) {
-						level.objects.splice(i, 1);
-						break;
-				}
-			}
-		}
+		} else if (e.button == 2) tools.del(e);
 	}
 };
 
@@ -120,7 +104,7 @@ tools.item = {
 		currentTool = tools.item;
 		canvas.style.cursor = "crosshair";
 	},
-	item: "key",
+	item: "", // Populated from assets.js
 	items: [], // Populated from assets.js
 	mousedown: function(e) {
 		if (e.button == 0) {
@@ -129,15 +113,7 @@ tools.item = {
 				position: { x: e._x / s, z: e._y / s }
 			}
 			level.items.push(item);
-		} else if (e.button == 2) {
-			for (var i = 0; i < level.items.length; ++i) {
-				if (Math.abs(level.items[i].position.x - e._x / s) < 0.75 &&
-					Math.abs(level.items[i].position.z - e._y / s) < 0.75) {
-						level.items.splice(i, 1);
-						break;
-				}
-			}
-		}
+		} else if (e.button == 2) tools.del(e);
 	}
 };
 
@@ -146,7 +122,7 @@ tools.monster = {
 		currentTool = tools.monster;
 		canvas.style.cursor = "crosshair";
 	},
-	monster: "cerberus",
+	monster: "", // Populated from assets.js
 	monsters: [], // Populated from assets.js
 	mousedown: function(e) {
 		if (e.button == 0) {
@@ -155,15 +131,7 @@ tools.monster = {
 				position: { x: e._x / s, z: e._y / s }
 			}
 			level.monsters.push(monster);
-		} else if (e.button == 2) {
-			for (var i = 0; i < level.monsters.length; ++i) {
-				if (Math.abs(level.monsters[i].position.x - e._x / s) < 0.75 &&
-					Math.abs(level.monsters[i].position.z - e._y / s) < 0.75) {
-						level.monsters.splice(i, 1);
-						break;
-				}
-			}
-		}
+		} else if (e.button == 2) tools.del(e);
 	}
 };
 
@@ -186,16 +154,27 @@ tools.trigger = {
 				trig.message = msg;
 			} else return;
 			level.triggers.push(trig);
-		} else if (e.button == 2) {
-			for (var i = 0; i < level.triggers.length; ++i) {
-				if (Math.abs(level.triggers[i].position.x - e._x / s) < 0.75 &&
-					Math.abs(level.triggers[i].position.z - e._y / s) < 0.75) {
-						level.triggers.splice(i, 1);
-						break;
-				}
-			}
+		} else if (e.button == 2) tools.del(e);
+	}
+};
+
+tools.delHelper = function(e, arr) {
+	for (var i = 0; i < arr.length; ++i) {
+		if (Math.abs(arr[i].position.x - e._x / s) < 0.75 &&
+			Math.abs(arr[i].position.z - e._y / s) < 0.75) {
+				arr.splice(i, 1);
+				return true;
 		}
 	}
+	return false;
+};
+
+tools.del = function(e) {
+	if (tools.delHelper(e, level.lights)) return;
+	if (tools.delHelper(e, level.objects)) return;
+	if (tools.delHelper(e, level.items)) return;
+	if (tools.delHelper(e, level.monsters)) return;
+	if (tools.delHelper(e, level.triggers)) return;
 };
 
 tools["Clear"] = function() {
@@ -229,6 +208,7 @@ tools["Import level"] = function(json) {
 		return;
 	}
 	level = json;
+	level.title = level.title || "Untitled";
 	level.map = new Map(level.width, level.depth, level.map);
 	level.lights = level.lights || [];
 	level.objects = level.objects || [];
