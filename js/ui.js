@@ -82,7 +82,7 @@ function initUI() {
 	guiRenderer.add(CONFIG, "particles").onChange(updateConfig);
 	guiRenderer.add(window, "reload");
 	var guiLighting = gui.addFolder("Light and shadow");
-	guiLighting.add(CONFIG, "maxLights", 0, 6).step(1).onChange(updateConfig);
+	guiLighting.add(CONFIG, "maxLights", 0, 10).step(1).onChange(updateConfig);
 	guiLighting.add(CONFIG, "maxShadows", 0, 6).step(1).onChange(updateConfig);
 	guiLighting.add(CONFIG, "shadows").onChange(updateMaterials);
 	guiLighting.add(CONFIG, "softShadows").onChange(updateMaterials);
