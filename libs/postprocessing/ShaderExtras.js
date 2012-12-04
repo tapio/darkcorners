@@ -1914,3 +1914,5 @@ THREE.ShaderExtras = {
 	}
 
 };
+
+THREE.CopyShader = THREE.ShaderExtras.screen;
