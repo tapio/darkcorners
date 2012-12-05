@@ -78,6 +78,8 @@ function PlaneGeometry(width, height, segmentsX, segmentsY, dir, uRepeat, vRepea
 	this.computeCentroids();
 	if (randDisplace)
 		this.computeVertexNormals();
+
+	this.dynamic = false;
 }
 
 PlaneGeometry.prototype = Object.create( THREE.Geometry.prototype );

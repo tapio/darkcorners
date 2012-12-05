@@ -29,6 +29,7 @@ function Dungeon(scene, player, levelName) {
 				mass *= scale;
 			}
 			if (!geometry.boundingBox) geometry.computeBoundingBox();
+			geometry.dynamic = false;
 
 			// Fix anisotropy
 			for (var m = 0; m < materials.length; ++m)
@@ -245,6 +246,7 @@ function Dungeon(scene, player, levelName) {
 		}
 
 		// Level mesh
+		geometry.dynamic = false;
 		//geometry.computeTangents();
 		mesh.deallocate();
 		mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial([ block_mat ]));
@@ -264,6 +266,7 @@ function Dungeon(scene, player, levelName) {
 		ceiling_plane.position.set(level.gridSize * level.width * 0.5, level.roomHeight, level.gridSize * level.depth * 0.5);
 		ceiling_plane.matrixAutoUpdate = false;
 		ceiling_plane.updateMatrix();
+		ceiling_plane.geometry.dynamic = false;
 		scene.add(ceiling_plane);
 
 		// Floor
@@ -278,6 +281,7 @@ function Dungeon(scene, player, levelName) {
 		floor_plane.receiveShadow = true;
 		floor_plane.matrixAutoUpdate = false;
 		floor_plane.updateMatrix();
+		floor_plane.geometry.dynamic = false;
 		scene.add(floor_plane);
 
 		// Exit
@@ -294,6 +298,7 @@ function Dungeon(scene, player, levelName) {
 			return function(geometry, materials) {
 				for (var m = 0; m < materials.length; ++m)
 					fixAnisotropy(materials[m]);
+				geometry.dynamic = false;
 				var mat = materials.length > 1 ? new THREE.MeshFaceMaterial(materials) : materials[0];
 				var obj = new THREE.Mesh(geometry, mat, 0);
 				obj.position.copy(pos);

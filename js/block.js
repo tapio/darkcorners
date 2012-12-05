@@ -109,6 +109,8 @@ function BlockGeometry(width, height, depth, segmentsWidth, segmentsHeight, segm
 	this.mergeVertices();
 	if (randDisplace)
 		this.computeVertexNormals();
+
+	this.dynamic = false;
 }
 
 BlockGeometry.prototype = Object.create(THREE.Geometry.prototype);

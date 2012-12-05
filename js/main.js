@@ -22,6 +22,7 @@ function init() {
 		100
 	);
 	pl.visible = false;
+	pl.geometry.dynamic = false;
 	pl.addEventListener('collision', function(other, vel, rot) {
 		if (this.dead) return;
 		if (other.items) {
