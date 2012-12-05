@@ -2,9 +2,44 @@
 // Most of the contents from this file is adapted from examples of firework.js
 // http://jeromeetienne.github.com/fireworks.js/
 
+var _novaTexture = loadTexture("assets/particles/nova.png", { alpha: true });
+var _fireTexture = loadTexture("assets/particles/flame.png", { alpha: true });
+
+var particleMaterials = {
+	teleporter: new THREE.ParticleBasicMaterial({
+		color: 0x0088ee,
+		size: 0.3,
+		sizeAttenuation: true,
+		vertexColors: true,
+		map: _novaTexture,
+		blending: THREE.AdditiveBlending,
+		depthWrite: false,
+		transparent: true
+	}),
+	simpleFire: new THREE.ParticleBasicMaterial({
+		color: 0xee8800,
+		size: 0.3,
+		sizeAttenuation: true,
+		vertexColors: true,
+		map: Fireworks.ProceduralTextures.buildTexture(),
+		blending: THREE.AdditiveBlending,
+		depthWrite: false,
+		transparent: true
+	}),
+	texturedFire: new THREE.SpriteMaterial({
+		map: _fireTexture,
+		useScreenCoordinates: false,
+		depthTest: true,
+		sizeAttenuation: true,
+		scaleByViewport: false,
+		blending: THREE.AdditiveBlending,
+		transparent: true
+	})
+};
+
 
 // Particle system initializer for simple particle flames
-function particleSystemCreator(emitter, position, color, texture) {
+function particleSystemCreator(emitter, position, material) {
 	var i, geometry = new THREE.Geometry();
 	// Init vertices
 	for (i = 0; i < emitter.nParticles(); i++)
@@ -13,17 +48,6 @@ function particleSystemCreator(emitter, position, color, texture) {
 	geometry.colors = new Array(emitter.nParticles());
 	for (i = 0; i < emitter.nParticles(); i++)
 		geometry.colors[i] = new THREE.Color();
-	// Init material
-	var material = new THREE.ParticleBasicMaterial({
-		color: new THREE.Color(color).getHex(),
-		size: 0.3,
-		sizeAttenuation: true,
-		vertexColors: true,
-		map: texture || Fireworks.ProceduralTextures.buildTexture(),
-		blending: THREE.AdditiveBlending,
-		depthWrite: false,
-		transparent: true
-	});
 	// Init particle system
 	var particleSystem = new THREE.ParticleSystem(geometry, material);
 	particleSystem.dynamic = true;
@@ -42,7 +66,7 @@ function createSimpleFire(position) {
 		.velocity(Fireworks.createShapePoint(0, 1, 0))
 		.lifeTime(0.3, 0.6)
 		.renderToThreejsParticleSystem({
-			particleSystem: particleSystemCreator(emitter, position, 0xee8800)
+			particleSystem: particleSystemCreator(emitter, position, particleMaterials.simpleFire)
 		}).back()
 	.start();
 	return emitter;
@@ -50,7 +74,6 @@ function createSimpleFire(position) {
 
 
 // Create a teleporter emitter
-var _novaTexture = loadTexture("assets/particles/nova.png", { alpha: true });
 function createTeleporterParticles(position) {
 	var emitter = Fireworks.createEmitter({ nParticles: 30 });
 	emitter.effectsStackBuilder()
@@ -59,7 +82,7 @@ function createTeleporterParticles(position) {
 		.velocity(Fireworks.createShapePoint(0, 1, 0))
 		.lifeTime(0.6, 1.2)
 		.renderToThreejsParticleSystem({
-			particleSystem: particleSystemCreator(emitter, position, 0x0088ee, _novaTexture)
+			particleSystem: particleSystemCreator(emitter, position, particleMaterials.teleporter)
 		}).back()
 	.start();
 	return emitter;
@@ -67,11 +90,10 @@ function createTeleporterParticles(position) {
 
 
 // Create a torch fire emitter
-var _fireTexture = loadTexture("assets/particles/flame.png", { alpha: true });
 function createTexturedFire(parent) {
 	var numSprites = 8;
 	var spriteSize = 128;
-	var emitter = Fireworks.createEmitter({ nParticles: 20 });
+	var emitter = Fireworks.createEmitter({ nParticles: 5 });
 	emitter.effectsStackBuilder()
 		.spawnerSteadyRate(15)
 		.position(Fireworks.createShapeSphere(0, 0.05, 0, 0.05))
@@ -109,15 +131,8 @@ function createTexturedFire(parent) {
 		.renderToThreejsObject3D({
 			container: parent,
 			create: function() {
-				var object3d = new THREE.Sprite(new THREE.SpriteMaterial({
-					map: _fireTexture,
-					useScreenCoordinates: false,
-					depthTest: true,
-					sizeAttenuation: true,
-					scaleByViewport: false,
-					blending: THREE.AdditiveBlending,
-					transparent: true
-				}));
+				// Unfortunately material clone is needed due to uvOffset in onUpdate :(
+				var object3d = new THREE.Sprite(particleMaterials.texturedFire.clone());
 				object3d.material.uvScale.set(1, 1 / numSprites);
 				return object3d;
 			}
