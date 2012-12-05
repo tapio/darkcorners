@@ -4,6 +4,11 @@
 
 var _novaTexture = loadTexture("assets/particles/nova.png", { alpha: true });
 var _fireTexture = loadTexture("assets/particles/flame.png", { alpha: true });
+var _fireGradient = Fireworks.createLinearGradient()
+	.push(0.00, 0.00)
+	.push(0.05, 1.00)
+	.push(0.99, 1.00)
+	.push(1.00, 0.00);
 
 var particleMaterials = {
 	teleporter: new THREE.ParticleBasicMaterial({
@@ -118,11 +123,7 @@ function createTexturedFire(parent) {
 				object3d.rotation = Math.random() * Math.PI * 2;
 			}).back()
 		.createEffect('opacity', {
-				gradient: Fireworks.createLinearGradient()
-						.push(0.00, 0.00)
-						.push(0.05, 1.00)
-						.push(0.99, 1.00)
-						.push(1.00, 0.00)
+				gradient: _fireGradient
 			}).onUpdate(function(particle) {
 				var object3d = particle.get('threejsObject3D').object3d;
 				var canonAge = particle.get('lifeTime').normalizedAge();
