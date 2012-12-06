@@ -234,6 +234,7 @@ function Dungeon(scene, player, levelName) {
 					var wallbody = new Physijs.BoxMesh(cube, dummy_material, 0);
 					wallbody.position.copy(mesh.position);
 					wallbody.visible = false;
+					wallbody.matrixAutoUpdate = false;
 					scene.add(wallbody);
 					if (cell === DIAG) {
 						wallbody.rotation.y = rot;
