@@ -31,11 +31,14 @@ function Dungeon(scene, player, levelName) {
 			if (!geometry.boundingBox) geometry.computeBoundingBox();
 			geometry.dynamic = false;
 
-			// Fix anisotropy and set normalScale
+			// Fix anisotropy and colors, set normalScale
 			for (var m = 0; m < materials.length; ++m) {
 				fixAnisotropy(materials[m]);
 				if (materials[m].normalScale)
 					materials[m].normalScale.set(CONFIG.normalScale, CONFIG.normalScale);
+				// HACK: Should fix these in the JSON files
+				materials[m].ambient.setRGB(0.5, 0.5, 0.5);
+				materials[m].color.setRGB(0.6, 0.6, 0.6);
 			}
 
 			var mat = materials.length > 1 ? new THREE.MeshFaceMaterial(materials) : materials[0];
