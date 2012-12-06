@@ -1,10 +1,29 @@
 "use strict";
 var _textures = [];
 
+var _resizeCanvas = document.createElement("canvas");
+_resizeCanvas.style.display = "none";
+document.body.appendChild(_resizeCanvas);
+var _resizeCtx = _resizeCanvas.getContext("2d");
+
+function _resize(img, ratio) {
+	_resizeCanvas.width = (img.width * ratio)|0;
+	_resizeCanvas.height = (img.height * ratio)|0;
+	_resizeCanvas.style.width = _resizeCanvas.width + "px";
+	_resizeCanvas.style.height = _resizeCanvas.height + "px";
+	_resizeCtx.drawImage(img, 0, 0, _resizeCanvas.width, _resizeCanvas.height);
+	img.sized = true;
+	img.src = _resizeCanvas.toDataURL("image/png");
+};
+
 function loadTexture(path, opts) {
 	opts = opts || {};
 	var image = new Image();
-	image.onload = function() { texture.needsUpdate = true; };
+	image.sized = true;
+	image.onload = function() {
+		if (!image.sized) _resize(image, 0.0625);
+		else texture.needsUpdate = true;
+	};
 	image.src = path;
 	var texture = new THREE.Texture(
 		image,
