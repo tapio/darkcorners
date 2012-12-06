@@ -8513,7 +8513,7 @@ THREE.Loader.prototype = {
 
 		// special case for normal mapped material
 
-		if ( m.mapNormal ) {
+		if ( false && m.mapNormal ) {
 
 			var shader = THREE.ShaderUtils.lib[ "normal" ];
 			var uniforms = THREE.UniformsUtils.clone( shader.uniforms );
