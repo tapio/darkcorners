@@ -9,10 +9,10 @@ Fireworks.EffectsStackBuilder	= function(emitter){
 };
 
 /**
- * Getter for the emitter 
+ * Getter for the emitter
 */
 Fireworks.EffectsStackBuilder.prototype.emitter	= function(){
-	return this._emitter;	
+	return this._emitter;
 };
 
 Fireworks.EffectsStackBuilder.prototype.back	= function(){
@@ -38,7 +38,7 @@ Fireworks.createEffect	= function(name, opts){
 		opts	= name;
 		name	= undefined;
 	}
-	
+
 	var effect	= new Fireworks.Effect();
 	effect.opts	= opts;
 	effect.name	= name;
@@ -82,12 +82,12 @@ Fireworks.createEffect	= function(name, opts){
 		},
 		pushTo	: function(emitter){
 			emitter.effects().push(effect);
-			return methods;	
+			return methods;
 		},
 		back	: function(value){
-			if( value === undefined )	return effect.back;	
+			if( value === undefined )	return effect.back;
 			effect.back	= value;
-			return methods;	
+			return methods;
 		},
 		effect	: function(){
 			return effect;
@@ -107,12 +107,12 @@ Fireworks.Effect.prototype.destroy	= function(){
 }
 
 /**
- * Getter/Setter for the emitter 
+ * Getter/Setter for the emitter
 */
 Fireworks.Effect.prototype.emitter	= function(value){
-	if( value === undefined )	return this._emitter;	
+	if( value === undefined )	return this._emitter;
 	this._emitter	= value;
-	return this;	
+	return this;
 };
 
 /**
@@ -216,7 +216,7 @@ Fireworks.Emitter.prototype.intensity	= function(value){
 	// notify all effects
 	this._effects.forEach(function(effect){
 		if( !effect.onIntensityChange )	return;
-		effect.onIntensityChange(this._intensity, oldValue);			
+		effect.onIntensityChange(this._intensity, oldValue);
 	}.bind(this));
 	return this;	// for chained API
 }
@@ -250,7 +250,7 @@ Fireworks.Emitter.prototype.start	= function()
 {
 	console.assert( this._effects.length > 0, "At least one effect MUST be set")
 	console.assert( this._started === false );
-	
+
 	this._particles		= new Array(this._nParticles);
 	for(var i = 0; i < this._nParticles; i++){
 		this._particles[i]	= new Fireworks.Particle();
@@ -264,7 +264,7 @@ Fireworks.Emitter.prototype.start	= function()
 	this._effects.forEach(function(effect){
 		if( !effect.onCreate )	return;
 		this._particles.forEach(function(particle, particleIdx){
-			effect.onCreate(particle, particleIdx);			
+			effect.onCreate(particle, particleIdx);
 		})
 	}.bind(this));
 	// set the intensity to 1
@@ -279,13 +279,13 @@ Fireworks.Emitter.prototype.update	= function(deltaTime){
 	// honor effect.onPreUpdate
 	this._effects.forEach(function(effect){
 		if( !effect.onPreUpdate )	return;
-		effect.onPreUpdate(deltaTime);			
+		effect.onPreUpdate(deltaTime);
 	}.bind(this));
 	// update each particles
 	this._effects.forEach(function(effect){
 		if( !effect.onUpdate )	return;
 		this._liveParticles.forEach(function(particle){
-			effect.onUpdate(particle, deltaTime);			
+			effect.onUpdate(particle, deltaTime);
 		})
 	}.bind(this));
 	return this;	// for chained API
@@ -294,17 +294,17 @@ Fireworks.Emitter.prototype.update	= function(deltaTime){
 Fireworks.Emitter.prototype.render	= function(){
 	this._effects.forEach(function(effect){
 		if( !effect.onPreRender )	return;
-		effect.onPreRender();			
+		effect.onPreRender();
 	}.bind(this));
 	this._effects.forEach(function(effect){
 		if( !effect.onRender )	return;
 		this._liveParticles.forEach(function(particle){
-			effect.onRender(particle);			
+			effect.onRender(particle);
 		})
 	}.bind(this));
 	this._effects.forEach(function(effect){
 		if( !effect.onPostRender )	return;
-		effect.onPostRender();			
+		effect.onPostRender();
 	}.bind(this));
 	return this;	// for chained API
 }
@@ -324,7 +324,7 @@ Fireworks.Emitter.prototype.killParticle	= function(particle)
 	this._deadParticles.push(particle);
 	// do the death on all effects
 	this.effects().forEach(function(effect){
-		effect.onDeath && effect.onDeath(particle);			
+		effect.onDeath && effect.onDeath(particle);
 	}.bind(this));
 }
 
@@ -333,12 +333,12 @@ Fireworks.Emitter.prototype.killParticle	= function(particle)
 */
 Fireworks.Emitter.prototype.spawnParticle	= function(){
 	console.assert(this._deadParticles.length >= 1, 'no more particle available' );
-	// change the particles 
+	// change the particles
 	var particle	= this.deadParticles().pop();
 	this.liveParticles().push(particle);
 	// do the birth on all effects
 	this.effects().forEach(function(effect){
-		effect.onBirth && effect.onBirth(particle);			
+		effect.onBirth && effect.onBirth(particle);
 	}.bind(this));
 }
 Fireworks.createLinearGradient	= function(opts){
@@ -376,10 +376,10 @@ Fireworks.LinearGradient.prototype.get	= function(x){
 
 	var prev	= this._keyPoints[i-1];
 	var next	= this._keyPoints[i];
-	
+
 	var ratio	= (x - prev.x) / (next.x - prev.x)
 	var y		= prev.y + ratio * (next.y - prev.y)
-	
+
 	return y;
 };
 /**
@@ -478,14 +478,14 @@ Fireworks.Vector.prototype = {
 		return this;
 
 	},
-	
+
 	random	: function( ) {
 		this.x	= Math.random() - 0.5;
 		this.y	= Math.random() - 0.5;
 		this.z	= Math.random() - 0.5;
 		return this;
 	}, // jme - added
-	
+
 	toString	: function(){
 		return JSON.stringify(this);
 	}, // jme - added
@@ -646,7 +646,7 @@ Fireworks.Vector.prototype = {
 		return this.normalize().multiplyScalar( l );
 
 	},
-	
+
 	cross: function ( a, b ) {
 
 		this.x = a.y * b.z - a.z * b.y;
@@ -763,10 +763,10 @@ Fireworks.EffectsStackBuilder.prototype.friction	= function(value)
  * Shortcut to create Fireworks.EffectRandomDriftVelocity
 */
 Fireworks.EffectsStackBuilder.prototype.lifeTime	= function(minAge, maxAge)
-{	
+{
 	// sanity check
 	console.assert( minAge !== undefined )
-	// if maxAge isnt 
+	// if maxAge isnt
 	if( maxAge === undefined )	maxAge	= minAge;
 	console.assert( maxAge !== undefined )
 	// create the effect itself
@@ -820,7 +820,7 @@ Fireworks.EffectsStackBuilder.prototype.radialVelocity	= function(minSpeed, maxS
 {
 	Fireworks.createEffect('radialVelocity', {
 		minSpeed	: minSpeed,
-		maxSpeed	: maxSpeed	
+		maxSpeed	: maxSpeed
 	}).onCreate(function(particle){
 		particle.set('velocity', {
 			vector	: new Fireworks.Vector()
@@ -865,7 +865,7 @@ Fireworks.EffectsStackBuilder.prototype.randomVelocityDrift	= function(drift)
 Fireworks.EffectsStackBuilder.prototype.velocity	= function(shape, speed)
 {
 	Fireworks.createEffect('velocity', {
-		shape	: shape, 
+		shape	: shape,
 		speed	: speed !== undefined ? speed : -1
 	}).onCreate(function(particle){
 		particle.set('velocity', {
@@ -1010,7 +1010,7 @@ Fireworks.ShapeSphere.prototype.randomPoint	= function(vector){
 	point.x	= Math.random()-0.5;
 	point.y	= Math.random()-0.5;
 	point.z	= Math.random()-0.5;
-	// compute the length between the point 
+	// compute the length between the point
 	var length	= Math.random()*this.radius;
 	// set the point at the proper distance;
 	point.setLength( length );
@@ -1021,7 +1021,7 @@ Fireworks.ShapeSphere.prototype.randomPoint	= function(vector){
 }
 /**
  * Spawner deliverying paricles in one shot
- * 
+ *
  * @param {Number?} the number of particle to emit
 */
 Fireworks.EffectsStackBuilder.prototype.spawnerOneShot	= function(nParticles)
@@ -1057,7 +1057,7 @@ Fireworks.EffectsStackBuilder.prototype.spawnerOneShot	= function(nParticles)
 };
 /**
  * Spawner deliverying paricles at a steady rate
- * 
+ *
  * @param {Number?} rate the rate at which it gonna emit
 */
 Fireworks.EffectsStackBuilder.prototype.spawnerSteadyRate	= function(rate)
@@ -1068,7 +1068,7 @@ Fireworks.EffectsStackBuilder.prototype.spawnerSteadyRate	= function(rate)
 	var emitter	= this.emitter();
 	var nToCreate	= 1;
 	var spawning	= true;
-	
+
 	// create the effect itself
 	Fireworks.createEffect('spawner', {
 		rate	: rate,
@@ -1115,7 +1115,7 @@ Fireworks.EffectsStackBuilder.prototype.renderToCanvas	= function(opts)
 	}
 
 	return this;	// for chained API
-	
+
 
 	function buildDefaultContext(){
 		// build canvas element
@@ -1143,9 +1143,9 @@ Fireworks.EffectsStackBuilder.prototype.renderToCanvas	= function(opts)
 			var size	= particle.get('renderToCanvas').size;
 
 			ctx.beginPath();
-			ctx.arc(position.x + canvas.width /2, 
-				position.y + canvas.height/2, size, 0, Math.PI*2, true); 
-			ctx.fill();					
+			ctx.arc(position.x + canvas.width /2,
+				position.y + canvas.height/2, size, 0, Math.PI*2, true);
+			ctx.fill();
 		});
 	};
 	function ctorTypeDrawImage(){
@@ -1180,10 +1180,10 @@ Fireworks.EffectsStackBuilder.prototype.renderToCanvas	= function(opts)
 			// set the rotation
 			ctx.rotate(data.rotation);
 			// set ctx.globalAlpha
-			ctx.globalAlpha	= data.opacity; 
+			ctx.globalAlpha	= data.opacity;
 			// draw the image itself
 			if( image instanceof Image ){
-				ctx.drawImage(image, -image.width/2, -image.height/2);			
+				ctx.drawImage(image, -image.width/2, -image.height/2);
 			}else if( typeof(image) === 'object' ){
 				ctx.drawImage(image.image
 				 	,  image.offsetX,  image.offsetY , image.width, image.height
@@ -1212,7 +1212,7 @@ Fireworks.EffectsStackBuilder.prototype.renderToThreejsObject3D	= function(opts)
 			object3d	: opts.create()
 		});
 		console.assert(particle.get('threejsObject3D').object3d instanceof THREE.Object3D);
-		
+
 		var object3d	= particle.get('threejsObject3D').object3d;
 
 //		object3d.visible= false;
@@ -1297,7 +1297,7 @@ Fireworks.EffectsStackBuilder.prototype.renderToThreejsParticleSystem	= function
 		var context	= canvas.getContext( '2d' );
 		canvas.width	= canvas.height	= size;
 
-		var gradient	= context.createRadialGradient( canvas.width/2, canvas.height /2, 0, canvas.width /2, canvas.height /2, canvas.width /2 );		
+		var gradient	= context.createRadialGradient( canvas.width/2, canvas.height /2, 0, canvas.width /2, canvas.height /2, canvas.width /2 );
 		gradient.addColorStop( 0  , 'rgba(255,255,255,1)' );
 		gradient.addColorStop( 0.5, 'rgba(255,255,255,1)' );
 		gradient.addColorStop( 0.7, 'rgba(128,128,128,1)' );
@@ -1332,7 +1332,7 @@ Fireworks.BindTriggerDomEvents	= function(emitter, domElement){
 	this._domElement.addEventListener('mousedown'	, this._onMouseDown	);
 	this._domElement.addEventListener('mouseup'	, this._onMouseUp	);
 
-	// change emitter intensity on mousewheel		
+	// change emitter intensity on mousewheel
 	this._onMouseWheel	= function(event){
 		var intensity	= emitter.intensity();
 		intensity	+= event.wheelDelta < 0 ? -0.05 : 0.05;
@@ -1384,7 +1384,7 @@ Fireworks.ProceduralTextures.buildTexture	= function(size)
 	var context	= canvas.getContext( '2d' );
 	canvas.width	= canvas.height	= size;
 
-	var gradient	= context.createRadialGradient( canvas.width/2, canvas.height /2, 0, canvas.width /2, canvas.height /2, canvas.width /2 );		
+	var gradient	= context.createRadialGradient( canvas.width/2, canvas.height /2, 0, canvas.width /2, canvas.height /2, canvas.width /2 );
 	gradient.addColorStop( 0  , 'rgba(255,255,255,1)' );
 	gradient.addColorStop( 0.5, 'rgba(255,255,255,1)' );
 	gradient.addColorStop( 0.7, 'rgba(128,128,128,1)' );
