@@ -67,10 +67,10 @@ function PlaneGeometry(width, height, segmentsX, segmentsY, dir, uRepeat, vRepea
 
 			this.faces.push( face );
 			this.faceVertexUvs[ 0 ].push([
-				new THREE.UV( ix / gridX * uRepeat, (1 - iz / gridZ) * vRepeat ),
-				new THREE.UV( ix / gridX * uRepeat, (1 - (iz + 1) / gridZ) * vRepeat ),
-				new THREE.UV( (ix + 1) / gridX * uRepeat, (1 - (iz+ 1) / gridZ) * vRepeat ),
-				new THREE.UV( (ix + 1) / gridX * uRepeat, (1 - iz / gridZ) * vRepeat )
+				new THREE.Vector2( ix / gridX * uRepeat, (1 - iz / gridZ) * vRepeat ),
+				new THREE.Vector2( ix / gridX * uRepeat, (1 - (iz + 1) / gridZ) * vRepeat ),
+				new THREE.Vector2( (ix + 1) / gridX * uRepeat, (1 - (iz+ 1) / gridZ) * vRepeat ),
+				new THREE.Vector2( (ix + 1) / gridX * uRepeat, (1 - iz / gridZ) * vRepeat )
 			]);
 		}
 	}

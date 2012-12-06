@@ -89,10 +89,10 @@ function BlockGeometry(width, height, depth, segmentsWidth, segmentsHeight, segm
 
 				scope.faces.push(face);
 				scope.faceVertexUvs[0].push([
-					new THREE.UV(ix / gridX * uRepeat, (1 - iy / gridY) * vRepeat),
-					new THREE.UV(ix / gridX * uRepeat, (1 - (iy + 1) / gridY) * vRepeat),
-					new THREE.UV((ix + 1) / gridX * uRepeat, (1- (iy + 1) / gridY) * vRepeat),
-					new THREE.UV((ix + 1) / gridX * uRepeat, (1 - iy / gridY) * vRepeat)
+					new THREE.Vector2(ix / gridX * uRepeat, (1 - iy / gridY) * vRepeat),
+					new THREE.Vector2(ix / gridX * uRepeat, (1 - (iy + 1) / gridY) * vRepeat),
+					new THREE.Vector2((ix + 1) / gridX * uRepeat, (1- (iy + 1) / gridY) * vRepeat),
+					new THREE.Vector2((ix + 1) / gridX * uRepeat, (1 - iy / gridY) * vRepeat)
 				]);
 			}
 		}
