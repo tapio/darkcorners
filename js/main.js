@@ -85,12 +85,9 @@ function init() {
 		preserveDrawingBuffer: true
 	});
 	renderer.setSize(window.innerWidth, window.innerHeight);
-	renderer.shadowMapEnabled = CONFIG.shadows;
-	renderer.shadowMapSoft = CONFIG.softShadows;
 	renderer.shadowMapDebug = false;
 	renderer.gammaInput = true;
 	renderer.gammaOutput = true;
-	renderer.physicallyBasedShading = CONFIG.physicalShading;
 	renderer.autoClear = false;
 	if (!CONFIG.anisotropy) CONFIG.anisotropy = renderer.getMaxAnisotropy();
 
