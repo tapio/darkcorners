@@ -79,10 +79,15 @@ function fixAnisotropy(mat, value) {
 
 
 function updateMaterials() {
-	for (var i in cache.materials) {
-		if (!cache.materials.hasOwnProperty(i)) continue;
-		cache.materials[i].needsUpdate = true;
-		// Also affected: shadows, soft shadows, physical shading
+	var m;
+	for (m in cache.materials) {
+		if (!cache.materials.hasOwnProperty(m)) continue;
+		cache.materials[m].needsUpdate = true;
+	}
+	for (m in cache.modelMaterials) {
+		var mm = cache.modelMaterials[m];
+		for (var i = 0; i < mm.length; ++i)
+			mm[i].needsUpdate = true;
 	}
 	updateConfig();
 }
