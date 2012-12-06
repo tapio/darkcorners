@@ -175,12 +175,12 @@ function screenshot(dontDownload, useJPG) {
 
 var performance = window.performance || {};
 performance.now = (function() {
-  return performance.now       ||
-         performance.mozNow    ||
-         performance.msNow     ||
-         performance.oNow      ||
-         performance.webkitNow ||
-         function() { return new Date().getTime(); };
+	return performance.now ||
+		performance.mozNow ||
+		performance.msNow ||
+		performance.oNow ||
+		performance.webkitNow ||
+		function() { return new Date().getTime(); };
 })();
 
 function Profiler(name) {
@@ -194,4 +194,25 @@ function Profiler(name) {
 		console.log(name + diff + "ms");
 	};
 	this.start();
+}
+
+function diagnose() {
+	var geometries = [];
+	var meshes = [];
+	var materials = [];
+	scene.traverse(function(node) {
+		meshes.push(node);
+		if (node.geometry) geometries.push(node.geometry);
+		if (node.material) {
+			if (node.material.materials)
+				for (var m = 0; m < node.material.materials.length; ++m)
+					materials.push(node.material.materials[m]);
+			else materials.push(node.material);
+		}
+	});
+	console.log("Geometries", geometries);
+	console.log("Meshes", meshes);
+	console.log("Materials", materials);
+	console.log("GeometryIdCount:", THREE.GeometryIdCount, "Object3DIdCount:", THREE.Object3DIdCount, "MaterialIdCount:", THREE.MaterialIdCount);
+	console.log("GeometryCount:", geometries.length, "MeshCount:", meshes.length, "MaterialCount:", materials.length);
 }
