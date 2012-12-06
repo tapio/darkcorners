@@ -218,7 +218,6 @@ function Dungeon(scene, player, levelName) {
 
 					// Collision body
 					if (cell === DIAG) {
-						cube.deallocate();
 						cube = new THREE.CubeGeometry(0.01, level.roomHeight, level.gridSize * sqrt2);
 					} else {
 						// Bounding box needs tweaking if there is only one side in the block
@@ -240,7 +239,6 @@ function Dungeon(scene, player, levelName) {
 						wallbody.rotation.y = rot;
 						wallbody.__dirtyRotation = true;
 					}
-					cube.deallocate(); // Remove the unneeded geometry
 				}
 			}
 		}
@@ -248,7 +246,6 @@ function Dungeon(scene, player, levelName) {
 		// Level mesh
 		geometry.dynamic = false;
 		//geometry.computeTangents();
-		mesh.deallocate();
 		mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial([ block_mat ]));
 		mesh.receiveShadow = true;
 		mesh.matrixAutoUpdate = false;
