@@ -137,9 +137,9 @@ function createMaterial(name) {
 		perPixel: true,
 		map: loadTexture(texture_path + name + ".jpg"),
 		specularMap: CONFIG.specularMapping ? loadTexture(texture_path  + "specular/" + name + ".jpg") : undefined,
-		normalMap: CONFIG.normalMapping ? loadTexture(texture_path + "normal/" + name + ".jpg") : undefined
+		normalMap: CONFIG.normalMapping ? loadTexture(texture_path + "normal/" + name + ".jpg") : undefined,
+		normalScale: new THREE.Vector2(CONFIG.normalScale, CONFIG.normalScale)
 	});
-
 }
 
 

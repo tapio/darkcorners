@@ -40,7 +40,8 @@ var CONFIG = {
 	bloom: true,
 	SSAO: true,
 	FXAA: false,
-	textureQuality: 2
+	textureQuality: 2,
+	normalScale: 2
 };
 
 var updateConfig = function() {

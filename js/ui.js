@@ -77,8 +77,9 @@ function initUI() {
 	var guiRenderer = gui.addFolder("Renderer options (reload required)");
 	guiRenderer.add(CONFIG, "antialias").onChange(updateConfig);
 	guiRenderer.add(CONFIG, "physicalShading").onChange(updateConfig);
-	guiRenderer.add(CONFIG, "normalMapping").onChange(updateConfig);
 	guiRenderer.add(CONFIG, "specularMapping").onChange(updateConfig);
+	guiRenderer.add(CONFIG, "normalMapping").onChange(updateConfig);
+	guiRenderer.add(CONFIG, "normalScale", 1.0, 5.0).step(0.5).onChange(updateConfig);
 	guiRenderer.add(CONFIG, "particles").onChange(updateConfig);
 	guiRenderer.add(window, "reload");
 	var guiLighting = gui.addFolder("Light and shadow");

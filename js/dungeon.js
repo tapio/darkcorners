@@ -31,9 +31,12 @@ function Dungeon(scene, player, levelName) {
 			if (!geometry.boundingBox) geometry.computeBoundingBox();
 			geometry.dynamic = false;
 
-			// Fix anisotropy
-			for (var m = 0; m < materials.length; ++m)
+			// Fix anisotropy and set normalScale
+			for (var m = 0; m < materials.length; ++m) {
 				fixAnisotropy(materials[m]);
+				if (materials[m].normalScale)
+					materials[m].normalScale.set(CONFIG.normalScale, CONFIG.normalScale);
+			}
 
 			var mat = materials.length > 1 ? new THREE.MeshFaceMaterial(materials) : materials[0];
 
