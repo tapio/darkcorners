@@ -110,24 +110,20 @@ function createTexturedFire(parent) {
 				origin: spriteSize / 1000,
 				factor: 1.02
 			}).onBirth(function(particle) {
-				var object3d = particle.get('threejsObject3D').object3d;
 				var scale = this.opts.origin;
-				object3d.scale.set(scale*1.5, scale*4);
+				particle.threejsObject3D.object3d.scale.set(scale * 1.5, scale * 4);
 			}).onUpdate(function(particle, deltaTime) {
-				var object3d = particle.get('threejsObject3D').object3d;
-				object3d.scale.multiplyScalar(this.opts.factor);
+				particle.threejsObject3D.object3d.scale.multiplyScalar(this.opts.factor);
 			}).back()
 		.createEffect('rotation')
 			.onBirth(function(particle) {
-				var object3d = particle.get('threejsObject3D').object3d;
-				object3d.rotation = Math.random() * Math.PI * 2;
+				particle.threejsObject3D.object3d.rotation = Math.random() * Math.PI * 2;
 			}).back()
 		.createEffect('opacity', {
 				gradient: _fireGradient
 			}).onUpdate(function(particle) {
-				var object3d = particle.get('threejsObject3D').object3d;
-				var canonAge = particle.get('lifeTime').normalizedAge();
-				object3d.opacity = this.opts.gradient.get(canonAge);
+				var canonAge = particle.lifeTime.normalizedAge();
+				particle.threejsObject3D.object3d.opacity = this.opts.gradient.get(canonAge);
 			}).back()
 		.renderToThreejsObject3D({
 			container: parent,
@@ -140,11 +136,10 @@ function createTexturedFire(parent) {
 		})
 		.createEffect("updateSpritesheet")
 			.onUpdate(function(particle, deltaTime) {
-				var object3d = particle.get('threejsObject3D').object3d;
-				var canonAge = particle.get('lifeTime').normalizedAge();
+				var canonAge = particle.lifeTime.normalizedAge();
 				var imageIdx = Math.floor(canonAge * (numSprites));
 				var uvOffsetY = imageIdx * 1 / numSprites;
-				object3d.material.uvOffset.set(0, uvOffsetY);
+				particle.threejsObject3D.object3d.material.uvOffset.set(0, uvOffsetY);
 			}).back()
 		.back()
 	.start();
