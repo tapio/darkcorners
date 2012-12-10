@@ -100,6 +100,7 @@ var assets = {
 	monsters: {
 		"cerberus": { collision: "box", character: { speed: 4, hp: 50 }, animation: { type: "morph", duration: 750 } },
 		"spider": { collision: "box", character: { speed: 4, hp: 50 }, animation: { type: "morph", duration: 750 } },
+		"golem": { collision: "box", character: { speed: 4, hp: 100 }, animation: { type: "morph", duration: 750 } },
 		"minotaur": { collision: "box", character: { speed: 10, hp: 50 }, animation: { type: "morph", duration: 750 } }
 	},
 	environments: {
