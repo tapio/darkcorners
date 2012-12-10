@@ -332,6 +332,10 @@ function Dungeon(scene, player, levelName) {
 				scene.add(light);
 				lightManager.addLight(light);
 
+				// Debug geometry
+				var helper = new THREE.PointLightHelper(light, 0.05);
+				scene.add(helper);
+
 				// Shadow casting light
 				var light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
 				light2.position.copy(light.position);
