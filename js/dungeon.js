@@ -297,21 +297,66 @@ function Dungeon(scene, player, levelName) {
 	};
 
 	this.addLights = function(level) {
-		// Torch model load callback
-		function torchHandler(pos, rot) {
+		// Light model load callback
+		function lightHandler(pos, rot, offsetDir, target, def) {
 			return function(geometry, materials) {
 				for (var m = 0; m < materials.length; ++m)
 					fixAnisotropy(materials[m]);
+				if (!geometry.boundingBox) geometry.computeBoundingBox();
 				geometry.dynamic = false;
 				var mat = materials.length > 1 ? new THREE.MeshFaceMaterial(materials) : materials[0];
 				var obj = new THREE.Mesh(geometry, mat, 0);
 				obj.position.copy(pos);
+				// Offset position.xz only by boundingBox.z due to rotation
+				// FIXME: Should properly translate in world space
+				obj.position.x += offsetDir.x * (geometry.boundingBox.max.z - geometry.boundingBox.min.z) * 0.5;
+				obj.position.y += offsetDir.y * (geometry.boundingBox.max.y - geometry.boundingBox.min.y) * 0.5;
+				obj.position.z += offsetDir.z * (geometry.boundingBox.max.z - geometry.boundingBox.min.z) * 0.5;
 				obj.rotation.y = rot;
-				obj.castShadow = true;
-				obj.receiveShadow = true;
+				obj.castShadow = false;
+				obj.receiveShadow = false;
 				obj.matrixAutoUpdate = false;
 				obj.updateMatrix();
 				scene.add(obj);
+
+				// Actual light
+				var light = new THREE.PointLight(0xffffaa, 1, 2 * level.gridSize);
+				light.position.copy(obj.position);
+				if (def.offset) {
+					light.position.x += def.offset.x * Math.cos(rot) + def.offset.z * Math.sin(rot);
+					light.position.y += def.offset.y;
+					light.position.z += def.offset.x * Math.sin(rot) + def.offset.z * Math.cos(rot);
+				}
+				light.matrixAutoUpdate = false;
+				light.updateMatrix();
+				scene.add(light);
+				lightManager.addLight(light);
+
+				// Shadow casting light
+				var light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
+				light2.position.copy(light.position);
+				light2.position.y = level.roomHeight;
+				light2.target.position.copy(target);
+				light2.angle = Math.PI / 2;
+				light2.castShadow = true;
+				light2.onlyShadow = true;
+				light2.shadowCameraNear = 0.1;
+				light2.shadowCameraFar = light.distance * 1.5;
+				light2.shadowCameraFov = 100;
+				light2.shadowBias = -0.0002;
+				light2.shadowDarkness = 0.3;
+				light2.shadowMapWidth = 512;
+				light2.shadowMapHeight = 512;
+				light2.shadowCameraVisible = false;
+				light2.matrixAutoUpdate = false;
+				light2.updateMatrix();
+				scene.add(light2);
+				lightManager.addShadow(light2);
+
+				// Flame
+				if (CONFIG.particles)
+					light.emitter = createTexturedFire(light);
+					//light.emitter = createSimpleFire(light.position);
 			};
 		}
 
@@ -320,23 +365,19 @@ function Dungeon(scene, player, levelName) {
 
 		// Point lights
 		var vec = new THREE.Vector2();
-		var target = new THREE.Vector3();
 		for (var i = 0; i < level.lights.length; ++i) {
 			if (level.lights[i].position.y === undefined)
 				level.lights[i].position.y = 2;
-			// Actual light
-			var light = new THREE.PointLight(0xffffaa, 1, 2 * level.gridSize);
-			light.position.copy(level.lights[i].position);
 			var name = Math.random() < 0.5 ? "torch-hanging-01" : "torch-hanging-02";
 
 			// Snap to wall
 			// Create wall candidates for checking which wall is closest to the light
 			vec.set(level.lights[i].position.x|0, level.lights[i].position.z|0);
 			var candidates = [
-				{ x: vec.x + 0.5, y: vec.y, a: Math.PI },
-				{ x: vec.x + 1.0, y: vec.y + 0.5, a: Math.PI/2 },
-				{ x: vec.x + 0.5, y: vec.y + 1.0, a: 0 },
-				{ x: vec.x, y: vec.y + 0.5, a: -Math.PI/2 }
+				{ x: vec.x + 0.5, y: vec.y, a: 0 },
+				{ x: vec.x + 1.0, y: vec.y + 0.5, a: -Math.PI/2 },
+				{ x: vec.x + 0.5, y: vec.y + 1.0, a: Math.PI },
+				{ x: vec.x, y: vec.y + 0.5, a: Math.PI/2 }
 			];
 			vec.set(level.lights[i].position.x, level.lights[i].position.z);
 			// Find the closest
@@ -346,68 +387,42 @@ function Dungeon(scene, player, levelName) {
 				if (candidates[j].d < snapped.d) snapped = candidates[j];
 			}
 			// Position the light to the wall
-			light.position.x = snapped.x;
-			light.position.z = snapped.y;
+			var lightPos = new THREE.Vector3(snapped.x, level.lights[i].position.y, snapped.y);
+			var target = new THREE.Vector3();
 			// Get wall normal vector
 			vec.set((level.lights[i].position.x|0) + 0.5, (level.lights[i].position.z|0) + 0.5);
 			vec.subSelf(snapped).multiplyScalar(2);
+			var offsetDir = new THREE.Vector3();
 			// Check if there actually is a wall
-			if (level.map.get((light.position.x - vec.x * 0.5)|0, (light.position.z - vec.y * 0.5)|0) == WALL) {
+			if (level.map.get((lightPos.x - vec.x * 0.5)|0, (lightPos.z - vec.y * 0.5)|0) == WALL) {
 				// Switch to wall light
 				name = "torch";
-				// Move out of the wall
-				light.position.x += vec.x * 0.08;
-				light.position.z += vec.y * 0.08;
-				target.set(light.position.x + vec.x , light.position.y - 1, light.position.z + vec.y);
+				// Setup moving out of the wall
+				offsetDir.set(vec.x, 0.0, vec.y);
+				// Setup shadow target
+				target.set(lightPos.x + vec.x , lightPos.y - 1, lightPos.z + vec.y);
 			} else {
 				// Center the ceiling hanging light to grid cell
-				light.position.x = (level.lights[i].position.x|0) + 0.5;
-				light.position.y = level.roomHeight - 0.9;
-				light.position.z = (level.lights[i].position.z|0) + 0.5;
-				target.copy(light.position);
+				lightPos.x = (level.lights[i].position.x|0) + 0.5;
+				lightPos.y = level.roomHeight;
+				lightPos.z = (level.lights[i].position.z|0) + 0.5;
+				// Setup moving out of the wall
+				offsetDir.set(0.0, -1.0, 0.0);
+				// Shadow target
+				target.copy(lightPos);
 				target.y -= 1;
 			}
 
-			light.position.x *= level.gridSize;
-			light.position.z *= level.gridSize;
+			// Convert from grid units to real units
+			lightPos.x *= level.gridSize;
+			lightPos.z *= level.gridSize;
 			target.x *= level.gridSize;
 			target.z *= level.gridSize;
-			var modelPos = new THREE.Vector3().copy(light.position);
-			if (assets.lights[name].offset) light.position.addSelf(assets.lights[name].offset);
-			light.matrixAutoUpdate = false;
-			light.updateMatrix();
-			scene.add(light);
-			lightManager.addLight(light);
 
-			// Shadow casting light
-			var light2 = new THREE.SpotLight(0xffffaa, light.intensity, light.distance);
-			light2.position.copy(light.position);
-			light2.position.y = level.roomHeight;
-			light2.target.position.copy(target);
-			light2.angle = Math.PI / 2;
-			light2.castShadow = true;
-			light2.onlyShadow = true;
-			light2.shadowCameraNear = 0.1;
-			light2.shadowCameraFar = light.distance * 1.5;
-			light2.shadowCameraFov = 100;
-			light2.shadowBias = -0.0002;
-			light2.shadowDarkness = 0.3;
-			light2.shadowMapWidth = 512;
-			light2.shadowMapHeight = 512;
-			light2.shadowCameraVisible = false;
-			light2.matrixAutoUpdate = false;
-			light2.updateMatrix();
-			scene.add(light2);
-			lightManager.addShadow(light2);
-
-			// Mesh
-			cache.loadModel("assets/models/" + name + "/" + name + ".js", torchHandler(modelPos, snapped.a),
+			// Mesh and actual light creating
+			cache.loadModel("assets/models/" + name + "/" + name + ".js",
+				lightHandler(lightPos, snapped.a, offsetDir, target, assets.lights[name]),
 				modelTexturePath + name);
-
-			// Flame
-			if (CONFIG.particles)
-				light.emitter = createTexturedFire(light);
-				//light.emitter = createSimpleFire(light.position);
 		}
 
 		// Player's torch
