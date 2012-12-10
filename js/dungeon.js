@@ -297,6 +297,7 @@ function Dungeon(scene, player, levelName) {
 	};
 
 	this.addLights = function(level) {
+		var shadowMapSizes = [ 64 /* Not used */, 128, 256, 512, 1024, 2048, 4096 /* Not used */ ];
 		// Light model load callback
 		function lightHandler(light, rot, offsetDir, def) {
 			return function(geometry, materials) {
@@ -378,8 +379,8 @@ function Dungeon(scene, player, levelName) {
 			light.shadow.shadowCameraFov = 100;
 			light.shadow.shadowBias = -0.0002;
 			light.shadow.shadowDarkness = 0.3;
-			light.shadow.shadowMapWidth = 512;
-			light.shadow.shadowMapHeight = 512;
+			light.shadow.shadowMapWidth = shadowMapSizes[CONFIG.shadowMapSize];
+			light.shadow.shadowMapHeight = shadowMapSizes[CONFIG.shadowMapSize];
 			light.shadow.shadowCameraVisible = CONFIG.debugLights;
 			light.shadow.matrixAutoUpdate = false;
 			scene.add(light.shadow);
@@ -451,8 +452,8 @@ function Dungeon(scene, player, levelName) {
 		player.shadow.shadowCameraFov = 90;
 		player.shadow.shadowBias = -0.0002;
 		player.shadow.shadowDarkness = 0.3;
-		player.shadow.shadowMapWidth = 1024;
-		player.shadow.shadowMapHeight = 1024;
+		player.shadow.shadowMapWidth = shadowMapSizes[CONFIG.shadowMapSize];
+		player.shadow.shadowMapHeight = shadowMapSizes[CONFIG.shadowMapSize];
 		player.shadow.shadowCameraVisible = false;
 		scene.add(player.shadow);
 	};

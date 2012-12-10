@@ -33,6 +33,7 @@ var CONFIG = {
 	anisotropy: 0, // 0 = auto
 	shadows: true,
 	softShadows: true,
+	shadowMapSize: 2,
 	physicalShading: true,
 	normalMapping: true,
 	specularMapping: true,
