@@ -342,9 +342,13 @@ function Dungeon(scene, player, levelName) {
 				lightManager.addShadow(light.shadow);
 
 				// Flame
-				if (CONFIG.particles)
-					light.emitter = createTexturedFire(light);
-					//light.emitter = createSimpleFire(light.position);
+				if (CONFIG.particles && def.particles) {
+					if (def.particles.type === "flame") {
+						light.emitter = createTexturedFire(light);
+					} else if (def.particles.type === "magic") {
+						light.emitter = createTeleporterParticles(light.position);
+					}
+				}
 			};
 		}
 

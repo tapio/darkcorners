@@ -38,9 +38,9 @@ var assets = {
 		"mana-potion": {}
 	},
 	lights: {
-		"torch-hanging-01": { type: "ceiling", offset: { x: 0, y: -0.4, z: 0 } },
-		"torch-hanging-02": { type: "ceiling", offset: { x: 0, y: -0.4, z: 0 } },
-		"torch": { type: "wall", offset: { x: 0, y: 0.25, z: 0.06 } }
+		"torch-hanging-01": { type: "ceiling", offset: { x: 0, y: -0.4, z: 0 }, particles: { type: "flame" } },
+		"torch-hanging-02": { type: "ceiling", offset: { x: 0, y: -0.4, z: 0 }, particles: { type: "flame" } },
+		"torch": { type: "wall", offset: { x: 0, y: 0.25, z: 0.06 }, particles: { type: "flame" } }
 	},
 	sounds: { },
 	materials: {
