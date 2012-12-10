@@ -298,7 +298,7 @@ function Dungeon(scene, player, levelName) {
 
 	this.addLights = function(level) {
 		// Light model load callback
-		function lightHandler(light, rot, offsetDir, target, def) {
+		function lightHandler(light, rot, offsetDir, def) {
 			return function(geometry, materials) {
 				for (var m = 0; m < materials.length; ++m)
 					fixAnisotropy(materials[m]);
@@ -319,17 +319,13 @@ function Dungeon(scene, player, levelName) {
 				obj.updateMatrix();
 				scene.add(obj);
 
-				// Actual light
-				light.color.setHex(0xffff00);
-				light.intensity = 1.0;
-				light.distance = level.gridSize * 2;
+				// Position actual light
 				light.position.copy(obj.position);
 				if (def.offset) {
 					light.position.x += def.offset.x * Math.cos(rot) + def.offset.z * Math.sin(rot);
 					light.position.y += def.offset.y;
 					light.position.z += def.offset.x * Math.sin(rot) + def.offset.z * Math.cos(rot);
 				}
-				light.matrixAutoUpdate = false;
 				light.updateMatrix();
 				lightManager.addLight(light);
 
@@ -340,19 +336,6 @@ function Dungeon(scene, player, levelName) {
 				// Shadow casting light
 				light.shadow.position.copy(light.position);
 				light.shadow.position.y = level.roomHeight - 0.1;
-				light.shadow.target.position.copy(target);
-				light.shadow.angle = Math.PI / 2;
-				light.shadow.castShadow = true;
-				light.shadow.onlyShadow = true;
-				light.shadow.shadowCameraNear = 0.1;
-				light.shadow.shadowCameraFar = light.distance * 1.5;
-				light.shadow.shadowCameraFov = 100;
-				light.shadow.shadowBias = -0.0002;
-				light.shadow.shadowDarkness = 0.3;
-				light.shadow.shadowMapWidth = 512;
-				light.shadow.shadowMapHeight = 512;
-				light.shadow.shadowCameraVisible = false;
-				light.shadow.matrixAutoUpdate = false;
 				light.shadow.updateMatrix();
 				lightManager.addShadow(light.shadow);
 
@@ -373,10 +356,25 @@ function Dungeon(scene, player, levelName) {
 				level.lights[i].position.y = 2;
 			var name = Math.random() < 0.5 ? "torch-hanging-01" : "torch-hanging-02";
 
-			// Need to add dummy lights for object materials are compile with enough lights
-			var light = new THREE.PointLight(0x000000, 0, 0);
-			light.shadow = new THREE.SpotLight(0x000000, light.intensity, light.distance);
+			// Need to add lights before model handler so that object materials are compiled with enough lights
+			var light = new THREE.PointLight(0xffff00, 1, level.gridSize * 2);
+			light.matrixAutoUpdate = false;
 			scene.add(light);
+
+			// Shadow light (position set in model handler)
+			light.shadow = new THREE.SpotLight(light.color.getHex(), light.intensity, light.distance);
+			light.shadow.angle = Math.PI / 2;
+			light.shadow.castShadow = true;
+			light.shadow.onlyShadow = true;
+			light.shadow.shadowCameraNear = 0.1;
+			light.shadow.shadowCameraFar = light.distance * 1.5;
+			light.shadow.shadowCameraFov = 100;
+			light.shadow.shadowBias = -0.0002;
+			light.shadow.shadowDarkness = 0.3;
+			light.shadow.shadowMapWidth = 512;
+			light.shadow.shadowMapHeight = 512;
+			light.shadow.shadowCameraVisible = false;
+			light.shadow.matrixAutoUpdate = false;
 			scene.add(light.shadow);
 
 			// Snap to wall
@@ -409,7 +407,7 @@ function Dungeon(scene, player, levelName) {
 				// Setup moving out of the wall
 				offsetDir.set(vec.x, 0.0, vec.y);
 				// Setup shadow target
-				target.set(light.position.x + vec.x , light.position.y - 1, light.position.z + vec.y);
+				light.shadow.target.position.set(light.position.x + vec.x , light.position.y - 1, light.position.z + vec.y);
 			} else {
 				// Center the ceiling hanging light to grid cell
 				light.position.x = (level.lights[i].position.x|0) + 0.5;
@@ -418,19 +416,19 @@ function Dungeon(scene, player, levelName) {
 				// Setup moving out of the wall
 				offsetDir.set(0.0, -1.0, 0.0);
 				// Shadow target
-				target.copy(light.position);
-				target.y -= 1;
+				light.shadow.target.position.copy(light.position);
+				light.shadow.target.position.y -= 1;
 			}
 
 			// Convert from grid units to real units
 			light.position.x *= level.gridSize;
 			light.position.z *= level.gridSize;
-			target.x *= level.gridSize;
-			target.z *= level.gridSize;
+			light.shadow.target.position.x *= level.gridSize;
+			light.shadow.target.position.z *= level.gridSize;
 
 			// Mesh and final light positioning
 			cache.loadModel("assets/models/" + name + "/" + name + ".js",
-				lightHandler(light, snapped.a, offsetDir, target, assets.lights[name]),
+				lightHandler(light, snapped.a, offsetDir, assets.lights[name]),
 				modelTexturePath + name);
 		}
 
