@@ -326,6 +326,7 @@ function Dungeon(scene, player, levelName) {
 					light.position.y += def.offset.y;
 					light.position.z += def.offset.x * Math.sin(rot) + def.offset.z * Math.cos(rot);
 				}
+				if (def.color) light.color.set(def.color);
 				light.updateMatrix();
 				lightManager.addLight(light);
 
