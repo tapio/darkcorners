@@ -40,7 +40,7 @@ var assets = {
 	lights: {
 		"torch-hanging-01": { type: "ceiling", offset: { x: 0, y: -0.4, z: 0 } },
 		"torch-hanging-02": { type: "ceiling", offset: { x: 0, y: -0.4, z: 0 } },
-		"torch": { type: "wall", offset: { x: 0, y: 0.21, z: 0.08 } }
+		"torch": { type: "wall", offset: { x: 0, y: 0.25, z: 0.06 } }
 	},
 	sounds: { },
 	materials: {
