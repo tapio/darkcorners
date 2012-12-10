@@ -7,12 +7,6 @@ Core engine
 * Campaign files
 	- Levels
 	- Default background music(s)
-* Light properties from assets.js
-	- Center the torch models
-	- Auto place model based on bounding box
-	- Particle effect config
-	- Light placement offset config
-	- Light color, range config
 * Weapons from assets.js
 	- Type (projectile, melee)
 	- Model
