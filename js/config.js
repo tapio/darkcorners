@@ -41,7 +41,8 @@ var CONFIG = {
 	SSAO: true,
 	FXAA: false,
 	textureQuality: 2,
-	normalScale: 2
+	normalScale: 2,
+	debugLights: false
 };
 
 var updateConfig = function() {

@@ -330,8 +330,10 @@ function Dungeon(scene, player, levelName) {
 				lightManager.addLight(light);
 
 				// Debug geometry
-				//var helper = new THREE.PointLightHelper(light, 0.05);
-				//scene.add(helper);
+				if (CONFIG.debugLights) {
+					var helper = new THREE.PointLightHelper(light, 0.05);
+					scene.add(helper);
+				}
 
 				// Shadow casting light
 				light.shadow.position.copy(light.position);
@@ -373,7 +375,7 @@ function Dungeon(scene, player, levelName) {
 			light.shadow.shadowDarkness = 0.3;
 			light.shadow.shadowMapWidth = 512;
 			light.shadow.shadowMapHeight = 512;
-			light.shadow.shadowCameraVisible = false;
+			light.shadow.shadowCameraVisible = CONFIG.debugLights;
 			light.shadow.matrixAutoUpdate = false;
 			scene.add(light.shadow);
 

@@ -87,6 +87,7 @@ function initUI() {
 	guiLighting.add(CONFIG, "maxShadows", 0, 6).step(1).onChange(updateConfig);
 	guiLighting.add(CONFIG, "shadows").onChange(updateMaterials);
 	guiLighting.add(CONFIG, "softShadows").onChange(updateMaterials);
+	guiLighting.add(CONFIG, "debugLights").onChange(updateConfig);
 	var guiTextures = gui.addFolder("Texture options");
 	//guiTextures.add(CONFIG, "textureQuality", 0, 2).step(1).onChange(updateConfig);
 	guiTextures.add(CONFIG, "anisotropy", 1, renderer.getMaxAnisotropy()).step(1).onChange(updateTextures);
