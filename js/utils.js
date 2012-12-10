@@ -14,7 +14,7 @@ function _resize(img, ratio) {
 	_resizeCtx.drawImage(img, 0, 0, _resizeCanvas.width, _resizeCanvas.height);
 	img.sized = true;
 	img.src = _resizeCanvas.toDataURL("image/png");
-};
+}
 
 function loadTexture(path, opts) {
 	opts = opts || {};

@@ -9,7 +9,9 @@ chrome:
 	google-chrome --allow-file-access-from-files
 
 hint:
-	jshint js/*.js assets/*.js editor/*.js | grep -v "is not defined."
+	for i in `ls js/*.js`; do jshint "$$i" | grep -v "is not defined."; done
+	jshint assets/*.js
+	jshint editor/*.js
 
 help: README.html CONTRIBUTING.html ART-TODO.html CODE-TODO.html
 

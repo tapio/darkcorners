@@ -1,3 +1,6 @@
+/*jshint devel:true */
+/*global s:true, putMouse:true, getMouse:true, canvas:true, WALL:true, DIAG:true, OPEN:true, level:true */
+
 var tools = {};
 
 tools.walls = {
@@ -177,7 +180,7 @@ tools.del = function(e) {
 	if (tools.delHelper(e, level.triggers)) return;
 };
 
-tools["Clear"] = function() {
+tools.Clear = function() {
 	if (confirm("Are you sure you want to erase everything?")) {
 		localStorage.removeItem("editor-autosave");
 		window.location.reload();
@@ -225,7 +228,7 @@ tools["Import level"] = function(json) {
 	document.getElementById("exported").style.display = "none";
 };
 
-tools["Test"] = function() {
+tools.Test = function() {
 	var url = "../game_dev.html#level=" + window.btoa(JSON.stringify(level));
 	window.open(url, "_blank");
 };
