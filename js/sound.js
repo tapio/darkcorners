@@ -44,6 +44,10 @@ DC.SoundManager = function() {
 	};
 
 	this.playMusic = function(name) {
+		if (!name) {
+			if (this.currentMusic) name = this.currentMusic;
+			else return;
+		}
 		this.stopMusic();
 		music = new Audio("assets/music/" + name + ".ogg");
 		music.loop = true;
@@ -53,4 +57,6 @@ DC.SoundManager = function() {
 	this.stopMusic = function() {
 		if (music) music.pause();
 	};
+
+	this.currentMusic = "";
 };
