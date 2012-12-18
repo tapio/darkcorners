@@ -150,8 +150,6 @@ function resetLevel(levelName) {
 	soundManager = new DC.SoundManager();
 	aiManager = new DC.AIManager();
 	dungeon = new DC.Dungeon(scene, pl, levelName);
-
-	if (CONFIG.music) soundManager.playMusic("dark-ambiance-01");
 }
 
 function savePlayerState(levelName) {
@@ -361,6 +359,9 @@ $(document).ready(function() {
 				resetLevel(dungeon.level.next);
 			}
 		}, 45);
+
+		if (dungeon.level.music) soundManager.currentMusic = dungeon.level.music;
+		if (CONFIG.music) soundManager.playMusic();
 
 		render();
 	});

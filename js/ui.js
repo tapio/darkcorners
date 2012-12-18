@@ -69,7 +69,7 @@ DC.initUI = function() {
 	var guiAudio = gui.addFolder("Audio");
 	guiAudio.add(CONFIG, "sounds").onChange(DC.updateConfig);
 	guiAudio.add(CONFIG, "music").onChange(function() {
-		if (CONFIG.music) soundManager.playMusic("dark-ambiance-01");
+		if (CONFIG.music) soundManager.playMusic();
 		else soundManager.stopMusic();
 		DC.updateConfig();
 	});
