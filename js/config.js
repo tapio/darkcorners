@@ -57,9 +57,9 @@ var updateConfig = function() {
 	passes.fxaa.enabled = CONFIG.FXAA;
 	scene.setFixedTimeStep(1 / CONFIG.physicsFPS);
 	var statDisplay = CONFIG.showStats ? "block" : "none";
-	if (renderStats) renderStats.domElement.style.display = statDisplay;
-	if (physicsStats) physicsStats.domElement.style.display = statDisplay;
-	if (rendererInfo) rendererInfo.style.display = statDisplay;
+	if (DC.renderStats) DC.renderStats.domElement.style.display = statDisplay;
+	if (DC.physicsStats) DC.physicsStats.domElement.style.display = statDisplay;
+	if (DC.rendererInfo) DC.rendererInfo.style.display = statDisplay;
 	localStorage.setItem("CONFIG", JSON.stringify(CONFIG));
 };
 

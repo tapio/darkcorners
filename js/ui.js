@@ -1,27 +1,26 @@
 "use strict";
-var renderStats, physicsStats, rendererInfo;
 
 DC.initUI = function() {
 	var container = document.getElementById('container');
 	container.appendChild(renderer.domElement);
 
-	renderStats = new Stats();
-	renderStats.domElement.style.position = 'absolute';
-	renderStats.domElement.style.bottom = '0px';
-	container.appendChild(renderStats.domElement);
+	DC.renderStats = new Stats();
+	DC.renderStats.domElement.style.position = 'absolute';
+	DC.renderStats.domElement.style.bottom = '0px';
+	container.appendChild(DC.renderStats.domElement);
 
-	physicsStats = new Stats();
-	physicsStats.domElement.style.position = 'absolute';
-	physicsStats.domElement.style.bottom = '0px';
-	physicsStats.domElement.style.left = '85px';
-	container.appendChild(physicsStats.domElement);
+	DC.physicsStats = new Stats();
+	DC.physicsStats.domElement.style.position = 'absolute';
+	DC.physicsStats.domElement.style.bottom = '0px';
+	DC.physicsStats.domElement.style.left = '85px';
+	container.appendChild(DC.physicsStats.domElement);
 
 	if (!CONFIG.showStats) {
-		renderStats.domElement.style.display = "none";
-		physicsStats.domElement.style.display = "none";
+		DC.renderStats.domElement.style.display = "none";
+		DC.physicsStats.domElement.style.display = "none";
 	}
 
-	rendererInfo = document.getElementById("renderer-info");
+	DC.rendererInfo = document.getElementById("renderer-info");
 
 	container.requestPointerLock = container.requestPointerLock ||
 		container.mozRequestPointerLock || container.webkitRequestPointerLock;
