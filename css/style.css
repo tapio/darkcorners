@@ -136,9 +136,12 @@ canvas {
 #credits ul {
 	list-style-type: none;
 	padding: 0;
+	width: 320px;
+	margin: auto;
 }
 
-#credits a {
+#credits a,
+#credits li {
 	color: #a53;
 }
 
