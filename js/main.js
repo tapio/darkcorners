@@ -5,7 +5,7 @@ var colorTarget, depthTarget, depthPassPlugin;
 var lightManager, animationManager, soundManager, aiManager, dungeon;
 var projector = new THREE.Projector();
 var clock = new THREE.Clock();
-var cache = new Cache();
+var cache = new DC.Cache();
 var passes = {};
 
 function init() {
@@ -71,7 +71,7 @@ function init() {
 
 	pl.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 25);
 
-	controls = new Controls(pl.camera, { mouse: mouseHandler });
+	controls = new DC.Controls(pl.camera, { mouse: mouseHandler });
 	controls.movementSpeed = 10;
 	controls.lookSpeed = 0.5;
 	controls.lookVertical = true;
@@ -127,12 +127,12 @@ function init() {
 	depthPassPlugin.renderTarget = depthTarget;
 	renderer.addPrePlugin(depthPassPlugin);
 
-	if (CONFIG.resolution != 1.0) onWindowResize();
+	if (CONFIG.resolution != 1.0) DC.onWindowResize();
 
 	resetLevel();
 	updateConfig();
 	dumpInfo();
-	initUI();
+	DC.initUI();
 }
 
 function resetLevel(levelName) {
@@ -145,11 +145,11 @@ function resetLevel(levelName) {
 		if (levelName) window.location.hash = "#level=" + levelName;
 		window.location.reload(true);
 	}
-	lightManager = new LightManager({ maxLights: CONFIG.maxLights, maxShadows: CONFIG.maxShadows });
-	animationManager = new AnimationManager();
-	soundManager = new SoundManager();
-	aiManager = new AIManager();
-	dungeon = new Dungeon(scene, pl, levelName);
+	lightManager = new DC.LightManager({ maxLights: CONFIG.maxLights, maxShadows: CONFIG.maxShadows });
+	animationManager = new DC.AnimationManager();
+	soundManager = new DC.SoundManager();
+	aiManager = new DC.AIManager();
+	dungeon = new DC.Dungeon(scene, pl, levelName);
 
 	if (CONFIG.music) soundManager.playMusic("dark-ambiance-01");
 }

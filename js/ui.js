@@ -1,7 +1,7 @@
 "use strict";
 var renderStats, physicsStats, rendererInfo;
 
-function initUI() {
+DC.initUI = function() {
 	var container = document.getElementById('container');
 	container.appendChild(renderer.domElement);
 
@@ -29,7 +29,7 @@ function initUI() {
 	container.requestFullscreen = container.requestFullscreen ||
 		container.mozRequestFullscreen || container.mozRequestFullScreen || container.webkitRequestFullscreen;
 
-	$(window).resize(onWindowResize);
+	$(window).resize(DC.onWindowResize);
 	$(window).blur(pause);
 	$(window).focus(resume);
 	$("#instructions").click(function() {
@@ -62,7 +62,7 @@ function initUI() {
 	dat.GUI.TEXT_OPEN = 'Options';
 	var gui = new dat.GUI();
 	gui.add(CONFIG, "fullscreen").onChange(updateConfig);
-	gui.add(CONFIG, "resolution", 0.1, 1.0).step(0.1).onChange(function() { updateConfig(); onWindowResize(); });
+	gui.add(CONFIG, "resolution", 0.1, 1.0).step(0.1).onChange(function() { updateConfig(); DC.onWindowResize(); });
 	gui.add(CONFIG, "physicsFPS", 30, 100).step(10).onChange(updateConfig);
 	gui.add(CONFIG, "showStats").onChange(updateConfig);
 	gui.add(controls, "mouseFallback");
@@ -99,7 +99,7 @@ function initUI() {
 	guiPostproc.add(CONFIG, "FXAA").onChange(updateConfig);
 	guiPostproc.add(CONFIG, "bloom").onChange(updateConfig);
 	gui.close();
-}
+};
 
 function updateHUD() {
 	$("#health").html(pl.hp);
@@ -132,7 +132,7 @@ function editLevel() {
 	window.open(url, "_blank");
 }
 
-function onWindowResize() {
+DC.onWindowResize = function() {
 	var scale = CONFIG.resolution;
 	pl.camera.aspect = window.innerWidth / window.innerHeight;
 	pl.camera.updateProjectionMatrix();
@@ -145,7 +145,7 @@ function onWindowResize() {
 	passes.ssao.uniforms.size.value.set(window.innerWidth * scale, window.innerHeight * scale);
 	passes.fxaa.uniforms.resolution.value.set(scale/window.innerWidth, scale/window.innerHeight);
 	controls.handleResize();
-}
+};
 
 function onPointerLockChange() {
 	if (document.pointerLockElement || document.mozPointerLockElement || document.webkitPointerLockElement) {

@@ -1,9 +1,10 @@
+"use strict";
 
-function AnimationManager() {
+DC.AnimationManager = function() {
 	this.anims = [];
-}
+};
 
-AnimationManager.prototype.createAnimatedMesh = function(geometry, materials, def) {
+DC.AnimationManager.prototype.createAnimatedMesh = function(geometry, materials, def) {
 	var obj;
 	// Handle material animation stuff
 	for (var m = 0; m < materials.length; ++m) {
@@ -30,7 +31,7 @@ AnimationManager.prototype.createAnimatedMesh = function(geometry, materials, de
 	return obj;
 };
 
-AnimationManager.prototype.update = function(dt) {
+DC.AnimationManager.prototype.update = function(dt) {
 	for (var i = 0; i < this.anims.length; ++i) {
 		var obj = this.anims[i];
 		// Update SkinnedMesh animation state

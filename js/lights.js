@@ -1,5 +1,6 @@
 "use strict";
-function LightManager(params) {
+
+DC.LightManager = function(params) {
 	params = params || {};
 	this.maxLights = params.maxLights || 4;
 	this.maxShadows = params.maxShadows || 2;

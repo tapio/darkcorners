@@ -1,5 +1,6 @@
+"use strict";
 
-function AIManager() {
+DC.AIManager = function() {
 	var v1 = new THREE.Vector3();
 	var v2 = new THREE.Vector3();
 	var turnGain = 10;
@@ -86,7 +87,7 @@ function AIManager() {
 		}
 	};
 
-}
+};
 
 
 

@@ -4,7 +4,7 @@
  * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Plane.as
  */
 
-function PlaneGeometry(width, height, segmentsX, segmentsY, dir, uRepeat, vRepeat, randDisplace) {
+DC.PlaneGeometry = function(width, height, segmentsX, segmentsY, dir, uRepeat, vRepeat, randDisplace) {
 
 	THREE.Geometry.call(this);
 
@@ -80,6 +80,6 @@ function PlaneGeometry(width, height, segmentsX, segmentsY, dir, uRepeat, vRepea
 		this.computeVertexNormals();
 
 	this.dynamic = false;
-}
+};
 
-PlaneGeometry.prototype = Object.create( THREE.Geometry.prototype );
+DC.PlaneGeometry.prototype = Object.create(THREE.Geometry.prototype);

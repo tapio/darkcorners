@@ -4,7 +4,7 @@
  * based on http://papervision3d.googlecode.com/svn/trunk/as3/trunk/src/org/papervision3d/objects/primitives/Cube.as
  */
 
-function BlockGeometry(width, height, depth, segmentsWidth, segmentsHeight, segmentsDepth, individualMaterials, sides, uRepeat, vRepeat, randDisplace) {
+DC.BlockGeometry = function(width, height, depth, segmentsWidth, segmentsHeight, segmentsDepth, individualMaterials, sides, uRepeat, vRepeat, randDisplace) {
 	THREE.Geometry.call(this);
 
 	var scope = this,
@@ -111,6 +111,6 @@ function BlockGeometry(width, height, depth, segmentsWidth, segmentsHeight, segm
 		this.computeVertexNormals();
 
 	this.dynamic = false;
-}
+};
 
-BlockGeometry.prototype = Object.create(THREE.Geometry.prototype);
+DC.BlockGeometry.prototype = Object.create(THREE.Geometry.prototype);

@@ -7,7 +7,7 @@
  */
 
 // Based on THREE.FirstPersonControls
-function Controls(object, handlers, domElement) {
+DC.Controls = function(object, handlers, domElement) {
 	this.object = object;
 	this.handlers = handlers || {};
 	this.target = new THREE.Vector3(0, 0, 0);
@@ -199,4 +199,4 @@ function Controls(object, handlers, domElement) {
 	}
 
 	this.handleResize();
-}
+};

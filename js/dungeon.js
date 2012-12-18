@@ -1,5 +1,5 @@
 "use strict";
-function Dungeon(scene, player, levelName) {
+DC.Dungeon = function(scene, player, levelName) {
 	var self = this;
 	this.onLoad = null;
 	this.objects = [];
@@ -203,14 +203,14 @@ function Dungeon(scene, player, levelName) {
 					repeat = block_params.repeat || 1;
 					rot = 0;
 					if (cell === DIAG && (hash == 5 || hash == 6 || hash == 9 || hash == 10)) {
-						cube = new PlaneGeometry(level.gridSize * sqrt2, level.roomHeight, tess, tess,
+						cube = new DC.PlaneGeometry(level.gridSize * sqrt2, level.roomHeight, tess, tess,
 							"px", level.gridSize * sqrt2 / 2 * repeat, level.roomHeight / 2 * repeat, block_params.roughness);
 						if (hash == 5) rot = -45 / 180 * Math.PI;
 						else if (hash == 6) rot = -135 / 180 * Math.PI;
 						else if (hash == 9) rot = 45 / 180 * Math.PI;
 						else if (hash == 10) rot = 135 / 180 * Math.PI;
 					} else {
-						cube = new BlockGeometry(level.gridSize, level.roomHeight, level.gridSize,
+						cube = new DC.BlockGeometry(level.gridSize, level.roomHeight, level.gridSize,
 							tess, tess, tess, false,
 							{ px: px, nx: nx, py: 0, ny: 0, pz: pz, nz: nz },
 							level.gridSize/2 * repeat, level.roomHeight/2 * repeat, block_params.roughness);
@@ -262,7 +262,7 @@ function Dungeon(scene, player, levelName) {
 		// Ceiling
 		repeat = assets.materials[level.materials.ceiling] ? assets.materials[level.materials.ceiling].repeat || 1 : 1;
 		var ceiling_plane = new Physijs.PlaneMesh(
-			new PlaneGeometry(level.gridSize * level.width, level.gridSize * level.depth,
+			new DC.PlaneGeometry(level.gridSize * level.width, level.gridSize * level.depth,
 				1, 1, "ny", level.width * repeat, level.depth * repeat),
 			Physijs.createMaterial(cache.getMaterial(level.materials.ceiling), 0.9, 0.0), // friction, restitution
 			0 // mass
@@ -276,7 +276,7 @@ function Dungeon(scene, player, levelName) {
 		// Floor
 		repeat = assets.materials[level.materials.floor] ? assets.materials[level.materials.floor].repeat || 1 : 1;
 		var floor_plane = new Physijs.PlaneMesh(
-			new PlaneGeometry(level.gridSize * level.width, level.gridSize * level.depth,
+			new DC.PlaneGeometry(level.gridSize * level.width, level.gridSize * level.depth,
 				1, 1, "py", level.width * repeat, level.depth * repeat),
 			Physijs.createMaterial(cache.getMaterial(level.materials.floor), 0.9, 0.0), // friction, restitution
 			0 // mass
@@ -292,7 +292,7 @@ function Dungeon(scene, player, levelName) {
 		cache.loadModel("assets/models/teleporter/teleporter.js",
 			objectHandler(level, new THREE.Vector3().set(level.exit[0], null, level.exit[1]), 0, assets.objects.teleporter));
 		if (CONFIG.particles)
-			this.exitParticles = createTeleporterParticles(
+			this.exitParticles = DC.createTeleporterParticles(
 				new THREE.Vector3(level.exit[0] * level.gridSize, 0.5, level.exit[1] * level.gridSize));
 	};
 
@@ -346,9 +346,9 @@ function Dungeon(scene, player, levelName) {
 				// Flame
 				if (CONFIG.particles && def.particles) {
 					if (def.particles.type === "flame") {
-						light.emitter = createTexturedFire(light);
+						light.emitter = DC.createTexturedFire(light);
 					} else if (def.particles.type === "magic") {
-						light.emitter = createTeleporterParticles(light.position);
+						light.emitter = DC.createTeleporterParticles(light.position);
 					}
 				}
 			};
@@ -562,4 +562,4 @@ function Dungeon(scene, player, levelName) {
 		if (this.onLoad === true) callback();
 		else this.onLoad = callback;
 	};
-}
+};

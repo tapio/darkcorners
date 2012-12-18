@@ -44,7 +44,7 @@ var particleMaterials = {
 
 
 // Particle system initializer for simple particle flames
-function particleSystemCreator(emitter, position, material) {
+DC._particleSystemCreator = function(emitter, position, material) {
 	var i, geometry = new THREE.Geometry();
 	// Init vertices
 	for (i = 0; i < emitter.nParticles(); i++)
@@ -60,10 +60,10 @@ function particleSystemCreator(emitter, position, material) {
 	particleSystem.position = position;
 	scene.add(particleSystem);
 	return particleSystem;
-}
+};
 
 // Create a simple fire emitter
-function createSimpleFire(position) {
+DC.createSimpleFire = function(position) {
 	var emitter = Fireworks.createEmitter({ nParticles: 30 });
 	emitter.effectsStackBuilder()
 		.spawnerSteadyRate(20)
@@ -71,15 +71,15 @@ function createSimpleFire(position) {
 		.velocity(Fireworks.createShapePoint(0, 1, 0))
 		.lifeTime(0.3, 0.6)
 		.renderToThreejsParticleSystem({
-			particleSystem: particleSystemCreator(emitter, position, particleMaterials.simpleFire)
+			particleSystem: DC._particleSystemCreator(emitter, position, particleMaterials.simpleFire)
 		}).back()
 	.start();
 	return emitter;
-}
+};
 
 
 // Create a teleporter emitter
-function createTeleporterParticles(position) {
+DC.createTeleporterParticles = function(position) {
 	var emitter = Fireworks.createEmitter({ nParticles: 30 });
 	emitter.effectsStackBuilder()
 		.spawnerSteadyRate(20)
@@ -87,7 +87,7 @@ function createTeleporterParticles(position) {
 		.velocity(Fireworks.createShapePoint(0, 1, 0))
 		.lifeTime(0.6, 1.2)
 		.renderToThreejsParticleSystem({
-			particleSystem: particleSystemCreator(emitter, position, particleMaterials.teleporter)
+			particleSystem: DC._particleSystemCreator(emitter, position, particleMaterials.teleporter)
 		}).back()
 	.start();
 	return emitter;
@@ -95,7 +95,7 @@ function createTeleporterParticles(position) {
 
 
 // Create a torch fire emitter
-function createTexturedFire(parent) {
+DC.createTexturedFire = function(parent) {
 	var numSprites = 8;
 	var spriteSize = 128;
 	var emitter = Fireworks.createEmitter({ nParticles: 5 });
@@ -144,4 +144,4 @@ function createTexturedFire(parent) {
 		.back()
 	.start();
 	return emitter;
-}
+};

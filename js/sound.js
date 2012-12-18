@@ -1,5 +1,6 @@
+"use strict";
 
-function Sound(samples, minPlayers) {
+DC.Sound = function(samples, minPlayers) {
 	if (typeof samples === "string") samples = [ samples ];
 	minPlayers = minPlayers || 1;
 
@@ -22,14 +23,14 @@ function Sound(samples, minPlayers) {
 			this.sampleIndex = (this.sampleIndex + 1) % this.samples.length;
 		} catch(e) {}
 	};
-}
+};
 
 
-function SoundManager() {
+DC.SoundManager = function() {
 	var sounds = {};
 	var music;
 	for (var s in assets.sounds)
-		sounds[s] = new Sound(assets.sounds[s], 5);
+		sounds[s] = new DC.Sound(assets.sounds[s], 5);
 
 	this.play = function(name) {
 		sounds[name].play();
@@ -52,4 +53,4 @@ function SoundManager() {
 	this.stopMusic = function() {
 		if (music) music.pause();
 	};
-}
+};

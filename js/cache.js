@@ -1,5 +1,5 @@
 "use strict";
-function Cache() {
+DC.Cache = function() {
 	this.models = {};
 	this.modelMaterials = {};
 	this.geometries = {};
@@ -48,4 +48,4 @@ function Cache() {
 		this.materials[name] = t = createMaterial(name);
 		return t;
 	};
-}
+};
