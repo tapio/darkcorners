@@ -543,7 +543,7 @@ DC.Dungeon = function(scene, player, levelName) {
 		if (level.title) displayMessage(level.title);
 	}
 
-	levelName = levelName || hashParams.level || "cave-test";
+	levelName = levelName || DC.hashParams.level || "cave-test";
 	if (levelName == "rand") {
 		var gen = new MapGen();
 		processLevel(gen.generate());

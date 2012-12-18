@@ -8,7 +8,7 @@ if (!Detector.webgl) {
 Physijs.scripts.worker = 'libs/physijs_worker.js';
 Physijs.scripts.ammo = '../libs/ammo.js';
 
-var hashParams = (function() {
+DC.hashParams = (function() {
 	var params = {}, param;
 	var q = window.location.hash.replace('#', '').split('&');
 	for (var i = 0; i < q.length; ++i) {
@@ -46,7 +46,7 @@ var CONFIG = {
 	debugLights: false
 };
 
-var updateConfig = function() {
+DC.updateConfig = function() {
 	lightManager.maxLights = CONFIG.maxLights;
 	lightManager.maxShadows = CONFIG.maxShadows;
 	renderer.shadowMapEnabled = CONFIG.shadows;

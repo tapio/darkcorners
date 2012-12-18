@@ -60,43 +60,43 @@ DC.initUI = function() {
 	dat.GUI.TEXT_CLOSED = 'Close Options';
 	dat.GUI.TEXT_OPEN = 'Options';
 	var gui = new dat.GUI();
-	gui.add(CONFIG, "fullscreen").onChange(updateConfig);
-	gui.add(CONFIG, "resolution", 0.1, 1.0).step(0.1).onChange(function() { updateConfig(); DC.onWindowResize(); });
-	gui.add(CONFIG, "physicsFPS", 30, 100).step(10).onChange(updateConfig);
-	gui.add(CONFIG, "showStats").onChange(updateConfig);
+	gui.add(CONFIG, "fullscreen").onChange(DC.updateConfig);
+	gui.add(CONFIG, "resolution", 0.1, 1.0).step(0.1).onChange(function() { DC.updateConfig(); DC.onWindowResize(); });
+	gui.add(CONFIG, "physicsFPS", 30, 100).step(10).onChange(DC.updateConfig);
+	gui.add(CONFIG, "showStats").onChange(DC.updateConfig);
 	gui.add(controls, "mouseFallback");
 	gui.add(window, "editLevel");
 	var guiAudio = gui.addFolder("Audio");
-	guiAudio.add(CONFIG, "sounds").onChange(updateConfig);
+	guiAudio.add(CONFIG, "sounds").onChange(DC.updateConfig);
 	guiAudio.add(CONFIG, "music").onChange(function() {
 		if (CONFIG.music) soundManager.playMusic("dark-ambiance-01");
 		else soundManager.stopMusic();
-		updateConfig();
+		DC.updateConfig();
 	});
 	var guiRenderer = gui.addFolder("Renderer options (reload required)");
-	guiRenderer.add(CONFIG, "antialias").onChange(updateConfig);
-	guiRenderer.add(CONFIG, "physicalShading").onChange(updateConfig);
-	guiRenderer.add(CONFIG, "specularMapping").onChange(updateConfig);
-	guiRenderer.add(CONFIG, "normalMapping").onChange(updateConfig);
-	guiRenderer.add(CONFIG, "normalScale", 1.0, 5.0).step(0.5).onChange(updateConfig);
-	guiRenderer.add(CONFIG, "particles").onChange(updateConfig);
+	guiRenderer.add(CONFIG, "antialias").onChange(DC.updateConfig);
+	guiRenderer.add(CONFIG, "physicalShading").onChange(DC.updateConfig);
+	guiRenderer.add(CONFIG, "specularMapping").onChange(DC.updateConfig);
+	guiRenderer.add(CONFIG, "normalMapping").onChange(DC.updateConfig);
+	guiRenderer.add(CONFIG, "normalScale", 1.0, 5.0).step(0.5).onChange(DC.updateConfig);
+	guiRenderer.add(CONFIG, "particles").onChange(DC.updateConfig);
 	guiRenderer.add(window, "reload");
 	var guiLighting = gui.addFolder("Light and shadow");
-	guiLighting.add(CONFIG, "maxLights", 0, 10).step(1).onChange(updateConfig);
-	guiLighting.add(CONFIG, "maxShadows", 0, 6).step(1).onChange(updateConfig);
+	guiLighting.add(CONFIG, "maxLights", 0, 10).step(1).onChange(DC.updateConfig);
+	guiLighting.add(CONFIG, "maxShadows", 0, 6).step(1).onChange(DC.updateConfig);
 	guiLighting.add(CONFIG, "shadows").onChange(updateMaterials);
 	guiLighting.add(CONFIG, "softShadows").onChange(updateMaterials);
-	guiLighting.add(CONFIG, "shadowMapSize", 1, 5).step(1).onChange(updateConfig);
-	guiLighting.add(CONFIG, "debugLights").onChange(updateConfig);
+	guiLighting.add(CONFIG, "shadowMapSize", 1, 5).step(1).onChange(DC.updateConfig);
+	guiLighting.add(CONFIG, "debugLights").onChange(DC.updateConfig);
 	var guiTextures = gui.addFolder("Texture options");
-	//guiTextures.add(CONFIG, "textureQuality", 0, 2).step(1).onChange(updateConfig);
+	//guiTextures.add(CONFIG, "textureQuality", 0, 2).step(1).onChange(DC.updateConfig);
 	guiTextures.add(CONFIG, "anisotropy", 1, renderer.getMaxAnisotropy()).step(1).onChange(updateTextures);
 	guiTextures.add(CONFIG, "linearTextureFilter").onChange(updateTextures);
 	var guiPostproc = gui.addFolder("Post-processing");
-	guiPostproc.add(CONFIG, "postprocessing").onChange(updateConfig);
-	guiPostproc.add(CONFIG, "SSAO").onChange(updateConfig);
-	guiPostproc.add(CONFIG, "FXAA").onChange(updateConfig);
-	guiPostproc.add(CONFIG, "bloom").onChange(updateConfig);
+	guiPostproc.add(CONFIG, "postprocessing").onChange(DC.updateConfig);
+	guiPostproc.add(CONFIG, "SSAO").onChange(DC.updateConfig);
+	guiPostproc.add(CONFIG, "FXAA").onChange(DC.updateConfig);
+	guiPostproc.add(CONFIG, "bloom").onChange(DC.updateConfig);
 	gui.close();
 };
 
@@ -165,6 +165,6 @@ function resume() {
 }
 
 function reload() {
-	updateConfig();
+	DC.updateConfig();
 	window.location.reload();
 }

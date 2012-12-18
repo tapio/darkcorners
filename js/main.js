@@ -51,8 +51,8 @@ function init() {
 
 	// Player stats
 	var loadedStats = {};
-	if (hashParams.level && localStorage.getItem("campaingState-" + hashParams.level)) {
-		loadedStats = JSON.parse(localStorage.getItem("campaingState-" + hashParams.level));
+	if (DC.hashParams.level && localStorage.getItem("campaingState-" + DC.hashParams.level)) {
+		loadedStats = JSON.parse(localStorage.getItem("campaingState-" + DC.hashParams.level));
 		pl.hp = loadedStats.hp;
 		pl.bulletsPerClip = loadedStats.bulletsPerClip;
 		pl.bullets = loadedStats.bullets;
@@ -130,8 +130,8 @@ function init() {
 	if (CONFIG.resolution != 1.0) DC.onWindowResize();
 
 	resetLevel();
-	updateConfig();
-	dumpInfo();
+	DC.updateConfig();
+	DC.dumpInfo();
 	DC.initUI();
 }
 

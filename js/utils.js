@@ -48,7 +48,7 @@ function updateTextures() {
 		_textures[i].anisotropy = CONFIG.anisotropy;
 		_textures[i].needsUpdate = true;
 	}
-	updateConfig();
+	DC.updateConfig();
 }
 
 
@@ -89,7 +89,7 @@ function updateMaterials() {
 		for (var i = 0; i < mm.length; ++i)
 			mm[i].needsUpdate = true;
 	}
-	updateConfig();
+	DC.updateConfig();
 }
 
 
@@ -148,7 +148,7 @@ function createMaterial(name) {
 }
 
 
-function dumpInfo() {
+DC.dumpInfo = function() {
 	var gl = renderer.context;
 	var gl_info = {
 		"Version": gl.getParameter(gl.VERSION),
@@ -168,7 +168,7 @@ function dumpInfo() {
 		"Max viewport dims": gl.getParameter(gl.MAX_VIEWPORT_DIMS)[0] + "x" + gl.getParameter(gl.MAX_VIEWPORT_DIMS)[1]
 	};
 	console.log("WebGL info: ", gl_info);
-}
+};
 
 function screenshot(dontDownload, useJPG) {
 	var imgtype = useJPG ? "image/jpeg" : "image/png";
