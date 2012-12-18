@@ -2,21 +2,21 @@
 // Most of the contents from this file is adapted from examples of firework.js
 // http://jeromeetienne.github.com/fireworks.js/
 
-var _novaTexture = loadTexture("assets/particles/nova.png", { alpha: true });
-var _fireTexture = loadTexture("assets/particles/flame.png", { alpha: true });
-var _fireGradient = Fireworks.createLinearGradient()
+DC.internal.novaTexture = loadTexture("assets/particles/nova.png", { alpha: true });
+DC.internal.fireTexture = loadTexture("assets/particles/flame.png", { alpha: true });
+DC.internal.fireGradient = Fireworks.createLinearGradient()
 	.push(0.00, 0.00)
 	.push(0.05, 1.00)
 	.push(0.99, 1.00)
 	.push(1.00, 0.00);
 
-var particleMaterials = {
+DC.ParticleMaterials = {
 	teleporter: new THREE.ParticleBasicMaterial({
 		color: 0x0088ee,
 		size: 0.3,
 		sizeAttenuation: true,
 		vertexColors: true,
-		map: _novaTexture,
+		map: DC.internal.novaTexture,
 		blending: THREE.AdditiveBlending,
 		depthWrite: false,
 		transparent: true
@@ -32,7 +32,7 @@ var particleMaterials = {
 		transparent: true
 	}),
 	texturedFire: new THREE.SpriteMaterial({
-		map: _fireTexture,
+		map: DC.internal.fireTexture,
 		useScreenCoordinates: false,
 		depthTest: true,
 		sizeAttenuation: true,
@@ -71,7 +71,7 @@ DC.createSimpleFire = function(position) {
 		.velocity(Fireworks.createShapePoint(0, 1, 0))
 		.lifeTime(0.3, 0.6)
 		.renderToThreejsParticleSystem({
-			particleSystem: DC._particleSystemCreator(emitter, position, particleMaterials.simpleFire)
+			particleSystem: DC._particleSystemCreator(emitter, position, DC.ParticleMaterials.simpleFire)
 		}).back()
 	.start();
 	return emitter;
@@ -87,11 +87,11 @@ DC.createTeleporterParticles = function(position) {
 		.velocity(Fireworks.createShapePoint(0, 1, 0))
 		.lifeTime(0.6, 1.2)
 		.renderToThreejsParticleSystem({
-			particleSystem: DC._particleSystemCreator(emitter, position, particleMaterials.teleporter)
+			particleSystem: DC._particleSystemCreator(emitter, position, DC.ParticleMaterials.teleporter)
 		}).back()
 	.start();
 	return emitter;
-}
+};
 
 
 // Create a torch fire emitter
@@ -120,7 +120,7 @@ DC.createTexturedFire = function(parent) {
 				particle.threejsObject3D.object3d.rotation = Math.random() * Math.PI * 2;
 			}).back()
 		.createEffect('opacity', {
-				gradient: _fireGradient
+				gradient: DC.internal.fireGradient
 			}).onUpdate(function(particle) {
 				var canonAge = particle.lifeTime.normalizedAge();
 				particle.threejsObject3D.object3d.opacity = this.opts.gradient.get(canonAge);
@@ -129,7 +129,7 @@ DC.createTexturedFire = function(parent) {
 			container: parent,
 			create: function() {
 				// Unfortunately material clone is needed due to uvOffset in onUpdate :(
-				var object3d = new THREE.Sprite(particleMaterials.texturedFire.clone());
+				var object3d = new THREE.Sprite(DC.ParticleMaterials.texturedFire.clone());
 				object3d.material.uvScale.set(1, 1 / numSprites);
 				return object3d;
 			}

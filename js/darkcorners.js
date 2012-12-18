@@ -1,1 +1,3 @@
-var DC = DC || {};
+var DC = DC || {
+	internal: {}
+};

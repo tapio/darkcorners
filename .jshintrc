@@ -1,5 +1,5 @@
 {
-	"predef": [ "console", "THREE", "Physijs", "Fireworks", "dat", "Detector", "CONFIG", "assets" ],
+	"predef": [ "console", "THREE", "Physijs", "Fireworks", "dat", "Detector", "DC", "CONFIG", "assets" ],
 	"browser": true,
 	"jquery": true,
 	"newcap": true,

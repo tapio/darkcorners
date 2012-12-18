@@ -56,4 +56,4 @@ DC.LightManager = function(params) {
 			}
 		}
 	};
-}
+};
