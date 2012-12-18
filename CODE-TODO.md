@@ -14,7 +14,6 @@ Core engine
 	- Ammo type
 	- Sound (shoot, reload, empty)
 	- Offset from player
-* Background music support for level files
 * Make the engine run Plasma Forks
 	- Then sync code to PF so that only assets differ
 * Texture sharing between models
