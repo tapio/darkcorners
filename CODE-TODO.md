@@ -5,7 +5,7 @@ Core engine
 -----------
 
 * Reduce global namespace pollution
-	- Introduce "DC" container global for the engine classes
+	- Move all remaining relevant stuff under `DC` namespace
 	- Create suitable containers for global variables in main.js
 	- Mark all remaining globals to JSHint
 * Weapons from assets.js
@@ -16,6 +16,13 @@ Core engine
 	- Offset from player
 * Make the engine run Plasma Forks
 	- Then sync code to PF so that only assets differ
+* Outdoors levels
+	- Skybox
+	- Heightmap terrain (one texture)
+	- Grass & vegetation
+	- Terrain splatting?
+	- Optimized terrain (chunks, LOD)
+	- Editor support
 * Texture sharing between models
 	- Mention texture path in assets.js
 	- Expand to model sharing
