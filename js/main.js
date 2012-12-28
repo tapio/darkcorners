@@ -1,5 +1,5 @@
 "use strict";
-var pl, controls, scene, renderer, composer;
+var pl, controls, scene, skyScene, renderer, composer;
 var renderTargetParametersRGBA, renderTargetParametersRGB;
 var colorTarget, depthTarget, depthPassPlugin;
 var lightManager, animationManager, soundManager, aiManager, dungeon;
@@ -15,6 +15,7 @@ function init() {
 	scene.addEventListener('update', function() {
 		if (CONFIG.showStats) DC.physicsStats.update();
 	});
+	skyScene = new THREE.Scene();
 
 	pl = new Physijs.CapsuleMesh(
 		new THREE.CylinderGeometry(0.8, 0.8, 2.0),
@@ -70,6 +71,7 @@ function init() {
 	updateHUD();
 
 	pl.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 25);
+	pl.skyCamera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 150);
 
 	controls = new DC.Controls(pl.camera, { mouse: mouseHandler });
 	controls.movementSpeed = 10;
@@ -311,10 +313,12 @@ $(document).ready(function() {
 		controls.object.position.set(pl.position.x, pl.position.y + 0.5, pl.position.z);
 		pl.rotation.copy(pl.camera.rotation);
 		pl.__dirtyRotation = true;
+		pl.skyCamera.rotation.copy(pl.camera.rotation);
 
 		animate(dt);
 
 		renderer.clear();
+		renderer.render(skyScene, pl.skyCamera);
 		if (CONFIG.postprocessing) {
 			renderer.shadowMapEnabled = CONFIG.shadows;
 			depthPassPlugin.enabled = true;

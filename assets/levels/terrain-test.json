@@ -206,5 +206,6 @@
 	"terrain": {
 		"heightmap": "terrain-test.png"
 	},
-	"title": "Terrain"
+	"title": "Terrain",
+	"skybox": "stormy-day"
 }

@@ -336,6 +336,38 @@ DC.Dungeon = function(scene, player, levelName) {
 		makeBorder(level.width, "nz", level.gridSize * level.width / 2, level.gridSize * level.depth); // pos z
 	};
 
+	this.addSky = function(level) {
+		// Textures
+		var prefix = "assets/skyboxes/" + level.skybox + "/";
+		var urls = [
+			prefix + "px.jpg", prefix + "nx.jpg",
+			prefix + "py.jpg", prefix + "ny.jpg",
+			prefix + "pz.jpg", prefix + "nz.jpg"
+		];
+		var cubetex = THREE.ImageUtils.loadTextureCube(urls);
+		cubetex.format = THREE.RGBFormat;
+		// Shader
+		var shader = THREE.ShaderUtils.lib["cube"];
+		var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
+		uniforms["tCube"].value = cubetex;
+		// Material
+		var material = new THREE.ShaderMaterial({
+			fragmentShader: shader.fragmentShader,
+			vertexShader: shader.vertexShader,
+			uniforms: uniforms,
+			depthWrite: false,
+			side: THREE.BackSide
+		});
+		// Mesh
+		var size = 100;
+		var mesh = new THREE.Mesh(new THREE.CubeGeometry(size, size, size), material);
+		mesh.position.set(level.gridSize * level.width * 0.5, 0.0, level.gridSize * level.depth * 0.5);
+		mesh.geometry.dynamic = false;
+		mesh.matrixAutoUpdate = false;
+		mesh.updateMatrix();
+		skyScene.add(mesh);
+	};
+
 	this.addLights = function(level) {
 		var shadowMapSizes = [ 64 /* Not used */, 128, 256, 512, 1024, 2048, 4096 /* Not used */ ];
 		// Light model load callback
@@ -578,6 +610,7 @@ DC.Dungeon = function(scene, player, levelName) {
 		if (level.map)
 			self.generateMesh(level);
 		else level.map = new Map(level.width, level.depth, VOID);
+		self.addSky(level);
 		self.addLights(level);
 		self.addObjects(level);
 		self.addItems(level);
