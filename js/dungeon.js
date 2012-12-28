@@ -299,19 +299,19 @@ DC.Dungeon = function(scene, player, levelName) {
 		var geometry = new DC.PlaneGeometry(
 			level.width * level.gridSize,
 			level.depth * level.gridSize,
-			level.width,
-			level.depth,
+			level.width - 1,
+			level.depth - 1,
 			"py", level.width * repeat, level.depth * repeat
 		);
 		for (var i = 0; i < geometry.vertices.length; ++i) {
 			var vertex = geometry.vertices[i];
-			vertex.y = Math.random() * level.roomHeight;
+			vertex.y = heightData[i * 4] / 255.0 * level.roomHeight;
 		}
 		geometry.computeFaceNormals();
 		geometry.computeVertexNormals();
 		geometry.dynamic = false;
 		// Mesh
-		var mesh = new Physijs.HeightfieldMesh(geometry, material, 0, level.width, level.depth);
+		var mesh = new Physijs.HeightfieldMesh(geometry, material, 0, level.width - 1, level.depth - 1);
 		mesh.position.set(level.gridSize * level.width * 0.5, 0.0, level.gridSize * level.depth * 0.5);
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;

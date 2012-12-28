@@ -6,7 +6,7 @@
 		"terrain": "grass-01"
 	},
 	"roomHeight": 3,
-	"gridSize": 2,
+	"gridSize": 1,
 	"objects": [
 	],
 	"lights": [
