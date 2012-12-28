@@ -294,13 +294,14 @@ DC.Dungeon = function(scene, player, levelName) {
 		// Material
 		var material = Physijs.createMaterial(
 			cache.getMaterial(level.materials.terrain), 0.9, 0.0); // friction, restitution
+		var repeat = assets.materials[level.materials.terrain] ? assets.materials[level.materials.terrain].repeat || 1 : 1;
 		// Geometry
 		var geometry = new DC.PlaneGeometry(
 			level.width * level.gridSize,
 			level.depth * level.gridSize,
 			level.width,
 			level.depth,
-			"py"
+			"py", level.width * repeat, level.depth * repeat
 		);
 		for (var i = 0; i < geometry.vertices.length; ++i) {
 			var vertex = geometry.vertices[i];
