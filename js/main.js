@@ -99,7 +99,6 @@ function init() {
 	colorTarget = new THREE.WebGLRenderTarget(window.innerWidth, window.innerHeight, renderTargetParametersRGB);
 
 	// Postprocessing effects
-	passes.scene = new THREE.RenderPass(scene, pl.camera);
 	passes.ssao = new THREE.ShaderPass(THREE.ShaderExtras.ssao);
 	passes.ssao.uniforms.tDepth.value = depthTarget;
 	passes.ssao.uniforms.size.value.set(window.innerWidth, window.innerHeight);
@@ -117,7 +116,6 @@ function init() {
 	passes.adjust.uniforms.saturation.value = 0.2;
 
 	composer = new THREE.EffectComposer(renderer, colorTarget);
-	//composer.addPass(passes.scene);
 	composer.addPass(passes.ssao);
 	composer.addPass(passes.fxaa);
 	composer.addPass(passes.bloom);
@@ -318,16 +316,17 @@ $(document).ready(function() {
 		animate(dt);
 
 		renderer.clear();
-		renderer.render(skyScene, pl.skyCamera);
 		if (CONFIG.postprocessing) {
+			renderer.render(skyScene, pl.skyCamera, composer.renderTarget2, true);
 			renderer.shadowMapEnabled = CONFIG.shadows;
 			depthPassPlugin.enabled = true;
-			renderer.render(scene, pl.camera, composer.renderTarget2, true);
+			renderer.render(scene, pl.camera, composer.renderTarget2, false);
 			if (CONFIG.showStats) DC.rendererInfo.innerHTML = formatRenderInfo(renderer.info);
 			renderer.shadowMapEnabled = false;
 			depthPassPlugin.enabled = false;
 			composer.render(dt);
 		} else {
+			renderer.render(skyScene, pl.skyCamera);
 			renderer.render(scene, pl.camera);
 			if (CONFIG.showStats) DC.rendererInfo.innerHTML = formatRenderInfo(renderer.info);
 		}
