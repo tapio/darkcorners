@@ -41,6 +41,21 @@ function loadTexture(path, opts) {
 }
 
 
+function loadHeightMap(path, callback) {
+	if (!callback) console.error("Callback required for loadHeightMap");
+	var image = new Image();
+	image.onload = function() {
+		var canvas = document.createElement("canvas");
+		canvas.width = image.width;
+		canvas.height = image.height;
+		var context = canvas.getContext('2d');
+		context.drawImage(image, 0, 0);
+		callback(context.getImageData(0, 0, canvas.width, canvas.height).data);
+	};
+	image.src = path;
+}
+
+
 function updateTextures() {
 	for (var i = 0; i < _textures.length; ++i) {
 		_textures[i].magFilter = CONFIG.linearTextureFilter ? THREE.LinearFilter : THREE.NearestFilter;

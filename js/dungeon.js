@@ -179,6 +179,7 @@ DC.Dungeon = function(scene, player, levelName) {
 	}
 
 	this.generateMesh = function(level) {
+		if (!level.map) return;
 		var sqrt2 = Math.sqrt(2);
 		var block_mat = cache.getMaterial(level.materials.wall);
 		var block_params = assets.materials[level.materials.wall] || {};
@@ -294,6 +295,10 @@ DC.Dungeon = function(scene, player, levelName) {
 		if (CONFIG.particles)
 			this.exitParticles = DC.createTeleporterParticles(
 				new THREE.Vector3(level.exit[0] * level.gridSize, 0.5, level.exit[1] * level.gridSize));
+	};
+
+	this.generateTerrain = function(level, heightData) {
+
 	};
 
 	this.addLights = function(level) {
@@ -510,26 +515,38 @@ DC.Dungeon = function(scene, player, levelName) {
 	function processLevel(level) {
 		if (typeof(level) == "string")
 			level = JSON.parse(level);
+
+		// Floorplan
 		if (level.map instanceof Array)
 			level.map = new Map(level.width, level.depth, level.map);
 
+		// Terrain heightmap
+		if (level.terrain && level.terrain.heightmap) {
+			loadHeightMap("assets/levels/" + level.terrain.heightmap, function(data) {
+				self.generateTerrain(level, data);
+			});
+		}
+
+		// Player
 		player.geometry.computeBoundingBox();
 		player.position.x = level.start[0] * level.gridSize;
 		player.position.y = 0.5 * (player.geometry.boundingBox.max.y - player.geometry.boundingBox.min.y) + 0.001;
 		player.position.z = level.start[1] * level.gridSize;
 		if (level.startAngle)
 			controls.setYAngle(level.startAngle);
-
 		scene.add(player); // Here player is added to the scene
 		player.setAngularFactor({ x: 0, y: 0, z: 0 });
 
-		self.generateMesh(level);
+		if (level.map)
+			self.generateMesh(level);
+		else level.map = new Map(level.width, level.depth, VOID);
 		self.addLights(level);
 		self.addObjects(level);
 		self.addItems(level);
 		self.addMonsters(level);
 		lightManager.update(pl);
 		self.level = level;
+		// Path finding stuff
 		self.grid = new PF.Grid(level.width, level.depth, level.map.getWalkableMatrix());
 		self.pathFinder = new PF.AStarFinder({
 			allowDiagonal: true,

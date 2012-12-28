@@ -1,0 +1,35 @@
+{
+	"materials": {
+		"ceiling": "rock-01",
+		"wall": "rock-02",
+		"floor": "rock-03",
+		"terrain": "grass-01"
+	},
+	"roomHeight": 3,
+	"gridSize": 2,
+	"objects": [
+	],
+	"lights": [
+		{
+			"position": {
+				"x": 20,
+				"z": 20
+			}
+		}
+	],
+	"start": [
+		10.5,
+		20
+	],
+	"startAngle": 90,
+	"exit": [
+		38,
+		38
+	],
+	"width": 40,
+	"depth": 40,
+	"terrain": {
+		"heightmap": "terrain-test.png"
+	},
+	"title": "Terrain"
+}
