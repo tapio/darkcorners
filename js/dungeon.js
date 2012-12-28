@@ -379,7 +379,10 @@ DC.Dungeon = function(scene, player, levelName) {
 		}
 
 		// Ambient
-		scene.add(new THREE.AmbientLight(0x444444));
+		if (level.terrain)
+			scene.add(new THREE.AmbientLight(0x777777));
+		else
+			scene.add(new THREE.AmbientLight(0x444444));
 
 		// Point lights
 		var vec = new THREE.Vector2();
