@@ -320,6 +320,20 @@ DC.Dungeon = function(scene, player, levelName) {
 		mesh.matrixAutoUpdate = false;
 		mesh.updateMatrix();
 		scene.add(mesh);
+		// Borders
+		function makeBorder(w, dir, x, z) {
+			var border = new Physijs.PlaneMesh(
+				new DC.PlaneGeometry(level.gridSize * w, level.roomHeight, 1, 1, dir, w, level.roomHeight / 2),
+				dummy_material, 0
+			);
+			border.position.set(x, level.roomHeight/2, z);
+			border.visible = false;
+			scene.add(border);
+		}
+		makeBorder(level.depth, "px", 0, level.gridSize * level.depth / 2); // neg x
+		makeBorder(level.depth, "nx", level.gridSize * level.width, level.gridSize * level.depth / 2); // pos x
+		makeBorder(level.width, "pz", level.gridSize * level.width / 2, 0); // neg z
+		makeBorder(level.width, "nz", level.gridSize * level.width / 2, level.gridSize * level.depth); // pos z
 	};
 
 	this.addLights = function(level) {
