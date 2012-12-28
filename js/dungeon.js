@@ -291,7 +291,32 @@ DC.Dungeon = function(scene, player, levelName) {
 	};
 
 	this.generateTerrain = function(level, heightData) {
-
+		// Material
+		var material = Physijs.createMaterial(
+			cache.getMaterial(level.materials.terrain), 0.9, 0.0); // friction, restitution
+		// Geometry
+		var geometry = new DC.PlaneGeometry(
+			level.width * level.gridSize,
+			level.depth * level.gridSize,
+			level.width,
+			level.depth,
+			"py"
+		);
+		for (var i = 0; i < geometry.vertices.length; ++i) {
+			var vertex = geometry.vertices[i];
+			vertex.y = Math.random() * level.roomHeight;
+		}
+		geometry.computeFaceNormals();
+		geometry.computeVertexNormals();
+		geometry.dynamic = false;
+		// Mesh
+		var mesh = new Physijs.HeightfieldMesh(geometry, material, 0, level.width, level.depth);
+		mesh.position.set(level.gridSize * level.width * 0.5, 0.0, level.gridSize * level.depth * 0.5);
+		mesh.castShadow = true;
+		mesh.receiveShadow = true;
+		mesh.matrixAutoUpdate = false;
+		mesh.updateMatrix();
+		scene.add(mesh);
 	};
 
 	this.addLights = function(level) {

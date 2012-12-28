@@ -26,8 +26,8 @@
 		38,
 		38
 	],
-	"width": 40,
-	"depth": 40,
+	"width": 64,
+	"depth": 64,
 	"terrain": {
 		"heightmap": "terrain-test.png"
 	},
