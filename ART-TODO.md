@@ -15,6 +15,7 @@ Bugs
 Wishlist
 ========
 
+* More skyboxes
 * More monsters!
 	- Requirements:
 		+ Preferably around 1000 vertices

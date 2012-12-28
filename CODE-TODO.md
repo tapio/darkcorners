@@ -17,12 +17,14 @@ Core engine
 * Make the engine run Plasma Forks
 	- Then sync code to PF so that only assets differ
 * Outdoors levels
-	- Skybox
-	- Heightmap terrain (one texture)
-	- Grass & vegetation
-	- Terrain splatting?
-	- Optimized terrain (chunks, LOD)
+	- Smart object placing
+	- Directional light for sun
+	- Sun shadow map follows player
+	- Grass & vegetation from a density texture
+	- Optimized terrain & vegetation (chunks, LOD)
 	- Editor support
+	- Terrain splatting?
+	- Regular block maps on terrain?
 * Texture sharing between models
 	- Mention texture path in assets.js
 	- Expand to model sharing
