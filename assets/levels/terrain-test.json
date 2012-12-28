@@ -8,6 +8,181 @@
 	"roomHeight": 3,
 	"gridSize": 1,
 	"objects": [
+		{
+			"name": "barrel",
+			"position": {
+				"x": 17.4375,
+				"z": 12.25
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 18.875,
+				"z": 24
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 7.3125,
+				"z": 6.8125
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 7.125,
+				"z": 15.875
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 7.625,
+				"z": 28.8125
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 14.875,
+				"z": 34.25
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 27.875,
+				"z": 34.3125
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 24.875,
+				"z": 26.0625
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 24.3125,
+				"z": 15.8125
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 26.4375,
+				"z": 5.6875
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 35.75,
+				"z": 6
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 38.0625,
+				"z": 17
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 38.625,
+				"z": 29.1875
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 39.6875,
+				"z": 38.625
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 33.4375,
+				"z": 33.3125
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 33.0625,
+				"z": 22.4375
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 31.75,
+				"z": 12.6875
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 19.75,
+				"z": 9.6875
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 13.0625,
+				"z": 5
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 11.4375,
+				"z": 14.5625
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 8.0625,
+				"z": 21.6875
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 3.375,
+				"z": 36.25
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 6.5625,
+				"z": 39.1875
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 23.75,
+				"z": 38.8125
+			}
+		},
+		{
+			"name": "barrel",
+			"position": {
+				"x": 33.6875,
+				"z": 38.6875
+			}
+		}
 	],
 	"lights": [
 		{
