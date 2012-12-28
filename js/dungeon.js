@@ -301,19 +301,20 @@ DC.Dungeon = function(scene, player, levelName) {
 			level.depth * level.gridSize,
 			level.width - 1,
 			level.depth - 1,
-			"nz", level.width * repeat, level.depth * repeat
+			"pz", level.width * repeat, level.depth * repeat
 		);
 		for (var i = 0; i < geometry.vertices.length; ++i) {
 			var vertex = geometry.vertices[i];
 			vertex.z = heightData[i * 4] / 255.0 * level.roomHeight;
 		}
+		geometry.computeCentroids();
 		geometry.computeFaceNormals();
 		geometry.computeVertexNormals();
 		geometry.dynamic = false;
 		// Mesh
 		var mesh = new Physijs.HeightfieldMesh(geometry, material, 0, level.width - 1, level.depth - 1);
-		mesh.position.set(level.gridSize * level.width * 0.5, 0.0, level.gridSize * level.depth * 0.5);
-		mesh.rotation.x = Math.PI / 2;
+		mesh.position.set(level.gridSize * level.width * 0.5, -level.roomHeight, level.gridSize * level.depth * 0.5);
+		mesh.rotation.x = -Math.PI / 2;
 		mesh.castShadow = true;
 		mesh.receiveShadow = true;
 		mesh.matrixAutoUpdate = false;
