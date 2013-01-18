@@ -337,6 +337,7 @@ DC.Dungeon = function(scene, player, levelName) {
 	};
 
 	this.addSky = function(level) {
+		if (!level.skybox) return;
 		// Textures
 		var prefix = "assets/skyboxes/" + level.skybox + "/";
 		var urls = [
