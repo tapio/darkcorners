@@ -347,7 +347,7 @@ DC.Dungeon = function(scene, player, levelName) {
 		var cubetex = THREE.ImageUtils.loadTextureCube(urls);
 		cubetex.format = THREE.RGBFormat;
 		// Shader
-		var shader = THREE.ShaderUtils.lib["cube"];
+		var shader = THREE.ShaderLib["cube"];
 		var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
 		uniforms["tCube"].value = cubetex;
 		// Material
@@ -495,7 +495,7 @@ DC.Dungeon = function(scene, player, levelName) {
 			var target = new THREE.Vector3();
 			// Get wall normal vector
 			vec.set((level.lights[i].position.x|0) + 0.5, (level.lights[i].position.z|0) + 0.5);
-			vec.subSelf(snapped).multiplyScalar(2);
+			vec.sub(snapped).multiplyScalar(2);
 			var offsetDir = new THREE.Vector3();
 			// Check if there actually is a wall
 			if (level.map.get((light.position.x - vec.x * 0.5)|0, (light.position.z - vec.y * 0.5)|0) == WALL) {

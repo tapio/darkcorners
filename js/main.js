@@ -177,7 +177,7 @@ var shootVector = new THREE.Vector3();
 	if (flip) bullet.matrixRotationWorld.rotateY(Math.PI);
 	bullet.rotation.setEulerFromRotationMatrix(bullet.matrixRotationWorld);
 	bullet.updateMatrix();
-	bullet.matrixRotationWorld.multiplyVector3(shootVector.set(0, 0, 1));
+	shootVector.set(0, 0, 1).applyMatrix3(matrixRotationWorld); // FIXME: API changed
 	// Offset launch point
 	bullet.translateX(off.x);
 	bullet.translateY(off.y);
@@ -186,7 +186,7 @@ var shootVector = new THREE.Vector3();
 	bullet.__dirtyPosition = true;
 	bullet.__dirtyRotation = true;
 	var velObj = obj.parent instanceof THREE.Scene ? obj : obj.parent;
-	bullet.setLinearVelocity(shootVector.multiplyScalar(25.0).addSelf(velObj.getLinearVelocity()));
+	bullet.setLinearVelocity(shootVector.multiplyScalar(25.0).add(velObj.getLinearVelocity()));
 	// Gameplay properties
 	bullet.damage = dungeon.forkTypes[type].damage;
 	bullet.material = dungeon.forkTypes[type].material;
@@ -230,7 +230,7 @@ function mouseHandler(button) {
 		// Punch/push
 		shootVector.set(0, 0, 1);
 		projector.unprojectVector(shootVector, pl.camera);
-		var ray = new THREE.Ray(pl.camera.position, shootVector.subSelf(pl.camera.position).normalize());
+		var ray = new THREE.Ray(pl.camera.position, shootVector.sub(pl.camera.position).normalize());
 		var intersections = ray.intersectObjects(dungeon.objects);
 		if (intersections.length > 0) {
 			var target = intersections[0].object;
@@ -297,7 +297,7 @@ $(document).ready(function() {
 		// Get the new position
 		v1.set(pl.camera.position.x, 0, pl.camera.position.z);
 		// Subtract them to get the velocity
-		v1.subSelf(v0);
+		v1.sub(v0);
 		// Convert the velocity unit to per second
 		v1.divideScalar(dt);
 		// We only use the planar velocity, so we preserve the old y-velocity

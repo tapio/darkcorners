@@ -47,7 +47,7 @@ DC.PlaneGeometry = function(width, height, segmentsX, segmentsY, dir, uRepeat, v
 			if (randDisplace && ix > 0 && ix < gridX1 - 1) {
 				displace.copy(normal);
 				displace.multiplyScalar(-randDisplace + Math.random() * randDisplace * 2);
-				vert.addSelf(displace);
+				vert.add(displace);
 			}
 			this.vertices.push(vert);
 		}

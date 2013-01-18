@@ -10,10 +10,10 @@ DC.AIManager = function() {
 		// Get monster's look vector in world space
 		monster.updateMatrixWorld();
 		monster.matrixRotationWorld.extractRotation(monster.matrixWorld);
-		monster.matrixRotationWorld.multiplyVector3(v1.set(0, 0, 1));
+		v1.set(0, 0, 1).applyMatrix4(monster.matrixRotationWorld);
 		// Calculate target vector
 		v2.copy(pos);
-		v2.subSelf(monster.position);
+		v2.sub(monster.position);
 		v2.y = 0;
 		v2.normalize();
 		// Difference in angle
