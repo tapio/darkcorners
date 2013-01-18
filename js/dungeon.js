@@ -404,10 +404,8 @@ DC.Dungeon = function(scene, player, levelName) {
 				lightManager.addLight(light);
 
 				// Debug geometry
-				if (CONFIG.debugLights) {
-					var helper = new THREE.PointLightHelper(light, 0.05);
-					scene.add(helper);
-				}
+				if (CONFIG.debugLights)
+					scene.add(new THREE.PointLightHelper(light, 0.05));
 
 				// Shadow casting light
 				light.shadow.position.copy(light.position);
@@ -426,12 +424,28 @@ DC.Dungeon = function(scene, player, levelName) {
 			};
 		}
 
-		// Ambient
-		if (level.terrain)
-			scene.add(new THREE.AmbientLight(0x777777));
-		else
+		// Ambient / global lighting
+		if (level.terrain) {
+			//scene.add(new THREE.AmbientLight(0x444444));
+			// TODO: Should probably take these from level file
+			// Hemisphere light
+			// TODO: Figure out colors based on ground texture and skybox?
+			var hemiLight = new THREE.HemisphereLight(0x7777ff, 0xaaffaa, 0.5);
+			hemiLight.position.set(level.width * level.gridSize * 0.5, 0, level.depth * level.gridSize * 0.5);
+			//scene.add(hemiLight);
+			if (CONFIG.debugLights)
+				scene.add(new THREE.HemisphereLightHelper(hemiLight, 0.1, 0.5, 4));
+			// Sun
+			var sunLight = new THREE.DirectionalLight(0xaaaa00, 1.0);
+			sunLight.position.set(1, 1, 1);
+			//sunLight.castShadow = true;
+			scene.add(sunLight);
+			if (CONFIG.debugLights)
+				scene.add(new THREE.DirectionalLightHelper(sunLight, 0.05, 1));
+		} else {
+			// Only simple, dim ambient light in dungeon levels
 			scene.add(new THREE.AmbientLight(0x444444));
-
+		}
 		// Point lights
 		var vec = new THREE.Vector2();
 		for (var i = 0; i < level.lights.length; ++i) {
