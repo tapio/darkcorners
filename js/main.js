@@ -230,12 +230,12 @@ function mouseHandler(button) {
 		// Punch/push
 		shootVector.set(0, 0, 1);
 		projector.unprojectVector(shootVector, pl.camera);
-		var ray = new THREE.Ray(pl.camera.position, shootVector.sub(pl.camera.position).normalize());
-		var intersections = ray.intersectObjects(dungeon.objects);
+		var raycaster = new THREE.Raycaster(
+			pl.camera.position, shootVector.sub(pl.camera.position).normalize(),
+			0, 2); // near, far
+		var intersections = raycaster.intersectObjects(dungeon.objects);
 		if (intersections.length > 0) {
-			var target = intersections[0].object;
-			if (target.position.distanceToSquared(pl.position) < 9)
-				target.applyCentralImpulse(shootVector.multiplyScalar(10000));
+			intersections[0].object.applyCentralImpulse(shootVector.multiplyScalar(10000));
 		}
 	}
 }

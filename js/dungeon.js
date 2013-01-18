@@ -143,6 +143,8 @@ DC.Dungeon = function(scene, player, levelName) {
 						}
 					}
 				});
+			} else {
+				self.objects.push(obj);
 			}
 
 			if (def.item) {
