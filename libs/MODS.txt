@@ -1,0 +1,6 @@
+Modifications made to the libs here:
+
+* Three.js has zz85's BufferGeometry improvements
+* Three.js Loader uses Phong instead of normal map material
+* Fireworks has some whitespace changes and reduced asserts
+
