@@ -82,10 +82,10 @@ function init() {
 	controls.verticalMax = 2.2;
 
 	renderer = new THREE.WebGLRenderer({
-		clearColor: 0x000000,
 		antialias: CONFIG.antialias,
 		preserveDrawingBuffer: true
 	});
+	renderer.setClearColor(0x000000);
 	renderer.setSize(window.innerWidth, window.innerHeight);
 	renderer.shadowMapDebug = false;
 	renderer.gammaInput = true;
