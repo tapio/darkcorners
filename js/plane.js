@@ -8,7 +8,8 @@ DC.PlaneGeometry = function(width, height, segmentsX, segmentsY, dir, uRepeat, v
 
 	THREE.Geometry.call(this);
 
-	var ix, iz,
+	var scope = this,
+	ix, iz,
 	width_half = width / 2,
 	height_half = height / 2,
 	gridX = segmentsX || 1,
@@ -60,18 +61,24 @@ DC.PlaneGeometry = function(width, height, segmentsX, segmentsY, dir, uRepeat, v
 			var c = ( ix + 1 ) + gridX1 * ( iz + 1 );
 			var d = ( ix + 1 ) + gridX1 * iz;
 
-			var face = new THREE.Face4( a, b, c, d );
-			face.normal.copy( normal );
-			face.vertexNormals.push( normal.clone(), normal.clone(), normal.clone(), normal.clone() );
-			face.materialIndex = 0;
+			var uva = new THREE.Vector2(ix / gridX * uRepeat, (1 - iz / gridZ) * vRepeat);
+			var uvb = new THREE.Vector2(ix / gridX * uRepeat, (1 - (iz + 1) / gridZ) * vRepeat);
+			var uvc = new THREE.Vector2((ix + 1) / gridX * uRepeat, (1 - (iz + 1) / gridZ) * vRepeat);
+			var uvd = new THREE.Vector2((ix + 1) / gridX * uRepeat, (1 - iz / gridZ) * vRepeat);
 
-			this.faces.push( face );
-			this.faceVertexUvs[ 0 ].push([
-				new THREE.Vector2( ix / gridX * uRepeat, (1 - iz / gridZ) * vRepeat ),
-				new THREE.Vector2( ix / gridX * uRepeat, (1 - (iz + 1) / gridZ) * vRepeat ),
-				new THREE.Vector2( (ix + 1) / gridX * uRepeat, (1 - (iz+ 1) / gridZ) * vRepeat ),
-				new THREE.Vector2( (ix + 1) / gridX * uRepeat, (1 - iz / gridZ) * vRepeat )
-			]);
+			var face = new THREE.Face3(a, b, d);
+			face.normal.copy(normal);
+			face.vertexNormals.push(normal.clone(), normal.clone(), normal.clone());
+
+			scope.faces.push(face);
+			scope.faceVertexUvs[0].push([ uva, uvb, uvd ]);
+
+			face = new THREE.Face3(b, c, d);
+			face.normal.copy(normal);
+			face.vertexNormals.push(normal.clone(), normal.clone(), normal.clone());
+
+			scope.faces.push(face);
+			scope.faceVertexUvs[0].push([ uvb.clone(), uvc, uvd.clone() ]);
 		}
 	}
 

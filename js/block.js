@@ -34,7 +34,7 @@ DC.BlockGeometry = function(width, height, depth, segmentsWidth, segmentsHeight,
 		}
 	}
 
-	function buildPlane(u, v, udir, vdir, width, height, depth, material, flipNormal) {
+	function buildPlane(u, v, udir, vdir, width, height, depth, materialIndex, flipNormal) {
 		var w, ix, iy,
 		gridX = segmentsWidth || 1,
 		gridY = segmentsHeight || 1,
@@ -82,18 +82,26 @@ DC.BlockGeometry = function(width, height, depth, segmentsWidth, segmentsHeight,
 				var c = (ix + 1) + gridX1 * (iy + 1);
 				var d = (ix + 1) + gridX1 * iy;
 
-				var face = new THREE.Face4(a + offset, b + offset, c + offset, d + offset);
+				var uva = new THREE.Vector2(ix / gridX * uRepeat, (1 - iy / gridY) * vRepeat);
+				var uvb = new THREE.Vector2(ix / gridX * uRepeat, (1 - (iy + 1) / gridY) * vRepeat);
+				var uvc = new THREE.Vector2((ix + 1) / gridX * uRepeat, (1 - (iy + 1) / gridY) * vRepeat);
+				var uvd = new THREE.Vector2((ix + 1) / gridX * uRepeat, (1 - iy / gridY) * vRepeat);
+
+				var face = new THREE.Face3(a + offset, b + offset, d + offset);
 				face.normal.copy(normal);
-				face.vertexNormals.push(normal.clone(), normal.clone(), normal.clone(), normal.clone());
-				face.materialIndex = material;
+				face.vertexNormals.push(normal.clone(), normal.clone(), normal.clone());
+				face.materialIndex = materialIndex;
 
 				scope.faces.push(face);
-				scope.faceVertexUvs[0].push([
-					new THREE.Vector2(ix / gridX * uRepeat, (1 - iy / gridY) * vRepeat),
-					new THREE.Vector2(ix / gridX * uRepeat, (1 - (iy + 1) / gridY) * vRepeat),
-					new THREE.Vector2((ix + 1) / gridX * uRepeat, (1- (iy + 1) / gridY) * vRepeat),
-					new THREE.Vector2((ix + 1) / gridX * uRepeat, (1 - iy / gridY) * vRepeat)
-				]);
+				scope.faceVertexUvs[0].push([ uva, uvb, uvd ]);
+
+				face = new THREE.Face3(b + offset, c + offset, d + offset);
+				face.normal.copy(normal);
+				face.vertexNormals.push(normal.clone(), normal.clone(), normal.clone());
+				face.materialIndex = materialIndex;
+
+				scope.faces.push(face);
+				scope.faceVertexUvs[0].push([ uvb.clone(), uvc, uvd.clone() ]);
 			}
 		}
 	}

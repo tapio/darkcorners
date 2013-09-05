@@ -1,6 +1,5 @@
 Modifications made to the libs here:
 
-* Physijs has some three.js r58 fixes
 * Three.js Loader uses Phong instead of normal map material
 * Fireworks has some whitespace changes and reduced asserts
 

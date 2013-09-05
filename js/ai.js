@@ -1,6 +1,7 @@
 "use strict";
 
 DC.AIManager = function() {
+	var m1 = new THREE.Matrix4();
 	var v1 = new THREE.Vector3();
 	var v2 = new THREE.Vector3();
 	var turnGain = 10;
@@ -9,8 +10,8 @@ DC.AIManager = function() {
 	function walkTowards(monster, pos, sq_thres) {
 		// Get monster's look vector in world space
 		monster.updateMatrixWorld();
-		monster.matrixRotationWorld.extractRotation(monster.matrixWorld);
-		v1.set(0, 0, 1).applyMatrix4(monster.matrixRotationWorld);
+		m1.extractRotation(monster.matrixWorld);
+		v1.set(0, 0, 1).applyMatrix4(m1);
 		// Calculate target vector
 		v2.copy(pos);
 		v2.sub(monster.position);
