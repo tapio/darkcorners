@@ -19,7 +19,7 @@ function init() {
 
 	pl = new Physijs.CapsuleMesh(
 		new THREE.CylinderGeometry(0.8, 0.8, 2.0),
-		new THREE.MeshBasicMaterial({ color: 0xff00ff }),
+		Physijs.createMaterial(new THREE.MeshBasicMaterial({ color: 0xff00ff }), 0.5, 0.0),
 		100
 	);
 	pl.visible = false;
@@ -287,29 +287,22 @@ $(document).ready(function() {
 		requestAnimationFrame(render);
 		if (pl.dead) return;
 
-		// Player movement, controls and physics
 		var dt = clock.getDelta();
 		if (dt > 0.05) dt = 0.05; // Limit delta to 20 FPS
-		// Take note of the position
-		v0.set(pl.camera.position.x, 0, pl.camera.position.z);
-		// Let controls update the position
+
+		// Player movement & controls
 		controls.update(dt);
-		// Get the new position
-		v1.set(pl.camera.position.x, 0, pl.camera.position.z);
-		// Subtract them to get the velocity
-		v1.sub(v0);
-		// Convert the velocity unit to per second
-		v1.divideScalar(dt);
-		// We only use the planar velocity, so we preserve the old y-velocity
-		var vy = pl.getLinearVelocity().y;
-		// Set the velocity, but disallow jumping/flying, i.e. upwards velocity
-		pl.setLinearVelocity({ x: v1.x, y: vy < 0 ? vy : 0, z: v1.z });
+		pl.applyCentralImpulse(controls.movement);
+		// Brake force to limit speed
+		v0 = pl.getLinearVelocity();
+		v1.set(-v0.x, 0, -v0.z);
+		pl.applyCentralImpulse(v1.multiplyScalar(controls.brakeForce));
 		// Simulate physics
 		scene.simulate();
-		// Put the camera/controls back to the real, simulated position
+		// Put the camera to the real, simulated position
 		// FIXME: 0.5 below is magic number to rise camera
 		controls.object.position.set(pl.position.x, pl.position.y + 0.5, pl.position.z);
-		pl.rotation.copy(pl.camera.rotation);
+		pl.rotation.y = pl.camera.rotation.y;
 		pl.__dirtyRotation = true;
 		pl.skyCamera.rotation.copy(pl.camera.rotation);
 

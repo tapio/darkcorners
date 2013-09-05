@@ -12,11 +12,12 @@ DC.Controls = function(object, handlers, domElement) {
 	this.handlers = handlers || {};
 	this.target = new THREE.Vector3(0, 0, 0);
 	this.domElement = (domElement !== undefined) ? domElement : document;
+	this.movement = new THREE.Vector3();
 
-	this.movementSpeed = 1.0;
+	this.moveForce = 100.0;
+	this.brakeForce = 10.0;
 	this.lookSpeed = 0.005;
 	this.lookVertical = true;
-	this.autoForward = false;
 	this.mouseEnabled = true;
 	this.active = true;
 
@@ -33,7 +34,6 @@ DC.Controls = function(object, handlers, domElement) {
 	var lat = 0, lon = 0, phi = 0, theta = 0;
 	var moveForward = false, moveBackward = false;
 	var moveLeft = false, moveRight = false;
-	var moveUp = false, moveDown = false;
 	var viewHalfX = 0, viewHalfY = 0;
 
 	if (this.domElement !== document) {
@@ -130,15 +130,14 @@ DC.Controls = function(object, handlers, domElement) {
 	this.update = function(delta) {
 		if (!this.active) return;
 
-		var actualMoveSpeed = delta * this.movementSpeed,
-			actualLookSpeed = this.mouseEnabled ? delta * this.lookSpeed : 0,
+		var actualLookSpeed = this.mouseEnabled ? delta * this.lookSpeed : 0,
 			cameraPosition = this.object.position;
 
 		// Looking
 
 		if (this.pointerLockEnabled ||
 			(this.mouseFallback && this.mouseX * this.mouseX + this.mouseY * this.mouseY > 5000))
-			{
+		{
 			lon += this.mouseX * actualLookSpeed;
 			if (this.lookVertical)
 				lat -= this.mouseY * actualLookSpeed;
@@ -163,27 +162,15 @@ DC.Controls = function(object, handlers, domElement) {
 		this.object.lookAt(this.target);
 
 		// Movement
-
-		if (moveForward || (this.autoForward && !moveBackward)) {
-			this.object.translateZ(-actualMoveSpeed);
-		} else if (moveBackward) {
-			this.object.translateZ(actualMoveSpeed);
-		}
-
-		if (moveLeft) {
-			this.object.translateX(-actualMoveSpeed);
-		} else if (moveRight) {
-			this.object.translateX(actualMoveSpeed);
-		}
-
-		if (moveUp) {
-			this.object.translateY(actualMoveSpeed);
-		} else if (moveDown) {
-			this.object.translateY(-actualMoveSpeed);
-		}
-
+		this.movement.set(0, 0, 0);
+		if (moveForward) this.movement.z = -1
+		else if (moveBackward) this.movement.z = 1;
+		if (moveLeft) this.movement.x = -1;
+		else if (moveRight) this.movement.x = 1;
+		this.movement.normalize().applyQuaternion(this.object.quaternion);
+		this.movement.y = 0;
+		this.movement.multiplyScalar(this.moveForce);
 	};
-
 
 	this.domElement.addEventListener('contextmenu', function (event) { event.preventDefault(); }, false);
 	this.domElement.addEventListener('mousemove', bind(this, this.onMouseMove), false);
