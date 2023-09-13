@@ -23,36 +23,15 @@
 		.red { color: red; }
 		.alert a { color: blue; }
 		#webgl-error { display: none; }
-		#firefox-warning { display: none; }
 		#angle-warning { display: none; }
 		#carousel { width: 300px; }
 	</style>
 	<link href="css/bootstrap-responsive.min.css" rel="stylesheet">
-
-	<!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-	<!--[if lt IE 9]>
-		<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
-
-	<script>
-		var _gaq = _gaq || [];
-		_gaq.push(['_setAccount', 'UA-32826962-1']);
-		_gaq.push(['_trackPageview']);
-		(function() {
-			var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-			ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-			var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		})();
-	</script>
 </head>
 
 <body>
 
 	<div class="container">
-
-		<a href="https://github.com/tapio/darkcorners/">
-			<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub">
-		</a>
 
 		<div class="hero-unit">
 			<div class="row">
@@ -70,18 +49,12 @@
 					</div>
 					<div class="alert">
 						<button type="button" class="close" data-dismiss="alert">×</button>
-						This is an early alpha. Performance or compatibility has <strong>not</strong>
-						been optimized and gameplay is mostly missing.
+						This is an old prototype. It's amazing if it still works.
 					</div>
 					<div id="angle-warning" class="alert">
 						<button type="button" class="close" data-dismiss="alert">×</button>
 						You may be affected by ANGLE/browser bug.<br/>
 						Try disabling <em>shadows</em> in the options and reloading the game if there are missing textures.
-					</div>
-					<div id="firefox-warning" class="alert">
-						<button type="button" class="close" data-dismiss="alert">×</button>
-						You seem to be using Firefox. It has bad performance and reduced features.<br/>
-						Check out <a href="https://github.com/tapio/plasma-forks/wiki/Performance-Tips">Performance Tips</a> or switch to Chrome.
 					</div>
 				</div>
 				<div class="span5">
@@ -129,11 +102,7 @@
 			<div class="span4">
 				<h2>Requirements</h2>
 				<p><ul>
-					<li>Latest version of Chrome
-						<ul>
-							<li>Firefox kind of works too, but has bad performance and some missing features</li>
-						</ul>
-					</li>
+					<li>Browser supporting WebGL</li>
 					<li><strong class="red">Excellent dedicated GPU and drivers</strong> (both must not be blacklisted for WebGL by the browser vendors)</li>
 					<li><strong class="red">Fast CPU and 1GB of free RAM</strong> so that JavaScript runs well</li>
 				</ul></p>
@@ -231,7 +200,6 @@
 		var isFirefox = /Firefox/i.test(navigator.userAgent);
 		var isChrome = /Chrome/i.test(navigator.userAgent);
 		var isWindows = /Win/i.test(navigator.platform);
-		if (isFirefox) $("#firefox-warning").show();
 		if (isWindows && (isFirefox || isChrome)) $("#angle-warning").show();
 	</script>
 

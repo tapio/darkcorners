@@ -40,6 +40,8 @@ DC.AIManager = function() {
 	}
 
 	this.process = function() {
+		if (!dungeon.level)
+			return;
 		var i, j;
 		var gridSize = dungeon.level.gridSize;
 		// TODO: Should probably keep own collection
